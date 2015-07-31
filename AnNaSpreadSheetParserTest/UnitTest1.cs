@@ -8,10 +8,10 @@ namespace AnNaSpreadSheetParserTest
 	[TestClass]
 	public class UnitTest1
 	{
-		private static AnNaSpreadSheetParser10 GetParser()
+		private static AnNaSpreadSheetParserSSG GetParser()
 		{
-			var parser = new AnNaSpreadSheetParser10();
-			parser.OpenFile("./../../../lol.xlsx");
+			var parser = new AnNaSpreadSheetParserSSG();
+			parser.OpenFile("./../../TestSheet.xlsx");
 			return parser;
 		}
 

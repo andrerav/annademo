@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnNaSpreadSheetParserTest",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnNaSpreadSheetDemo", "AnNaSpreadSheetDemo\AnNaSpreadSheetDemo.csproj", "{FA64F281-E461-4DA6-8B2D-3298EBCF4805}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnNaSpreadSheetParserSSG", "AnNaSpreadSheetParserSSG\AnNaSpreadSheetParserSSG.csproj", "{256A707E-53DA-4349-A04A-DE315A60F610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FA64F281-E461-4DA6-8B2D-3298EBCF4805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA64F281-E461-4DA6-8B2D-3298EBCF4805}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA64F281-E461-4DA6-8B2D-3298EBCF4805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{256A707E-53DA-4349-A04A-DE315A60F610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{256A707E-53DA-4349-A04A-DE315A60F610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{256A707E-53DA-4349-A04A-DE315A60F610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{256A707E-53DA-4349-A04A-DE315A60F610}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

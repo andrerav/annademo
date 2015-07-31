@@ -5,16 +5,7 @@ using SpreadsheetGear;
 
 namespace AnNaSpreadSheetParser
 {
-	public enum AnNaSheets
-	{
-		// ReSharper disable once InconsistentNaming
-		Crew_List,
-		Pax_List,
-		Waste_And_Residues,
-		Security
-	}
-
-	public class AnNaSpreadSheetParser10
+	public class AnNaSpreadSheetParserSSG : IAnNaSpreadSheetParser10
 	{
 
 		protected const string Version = "1.0";
@@ -150,43 +141,5 @@ namespace AnNaSpreadSheetParser
 			workbook.ProtectStructure = false;
 		}
 		#endregion // Utility methods
-	}
-
-	//public interface IRange
-	//{
-	//	object Value { get; set; }
-	//	int Column { get; set; }
-	//	int Row { get; set; }
-	//}
-
-	//public interface IWorksheet
-	//{
-	//	IEnumerable<IRange> UsedRange { get; set; }
-	//	bool ProtectContents { get; set; }
-	//	string Name { get; set; }
-	//	void Unprotect(string password);
-	//}
-
-	//public interface IWorkbook
-	//{
-	//	IEnumerable<IWorksheet> Sheets { get; }
-	//	bool ProtectStructure { get; set; }
-	//	void Unprotect(string password);
-	//}
-
-	public class InvalidColumnPositionException : Exception
-	{
-		public InvalidColumnPositionException(string message)
-			: base(message)
-		{
-		}
-	}
-
-	public class ColumnNotFoundException : Exception
-	{
-		public ColumnNotFoundException(string message)
-			: base(message)
-		{
-		}
 	}
 }

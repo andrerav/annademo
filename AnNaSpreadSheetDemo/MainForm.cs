@@ -29,7 +29,7 @@ namespace AnNaSpreadSheetDemo
 			}
 			else
 			{
-				var parser = new AnNaSpreadSheetParser10();
+				var parser = new AnNaSpreadSheetParserSSG();
 				parser.OpenFile(openFileDialog.FileName);
 
 				var type = typeof(ISheetSpecification);
