@@ -35,8 +35,8 @@ namespace AnNaSpreadSheetParser
 				IWorksheet versionSheet = Workbook.Worksheets["Version"];
 				if (versionSheet != null)
 				{
-					var lol = versionSheet.UsedRange["B3"].Value;
-					if (lol.ToString().StartsWith("1.0"))
+					var versionCellValue = versionSheet.UsedRange["B3"].Value;
+					if (versionCellValue.ToString().StartsWith("1.0"))
 					{
 						return true;
 					}
