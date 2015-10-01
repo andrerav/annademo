@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using SpreadsheetGear;
 
@@ -25,6 +26,24 @@ namespace AnNaSpreadSheetParser
 			{
 				UnprotectSpreadsheet(password, _workbook);
 			}
+		}
+
+		public bool IsAnNaSpreadsheet()
+		{
+			if (Workbook != null)
+			{
+				IWorksheet versionSheet = Workbook.Worksheets["Version"];
+				if (versionSheet != null)
+				{
+					var lol = versionSheet.UsedRange["B3"].Value;
+					if (lol.ToString().StartsWith("1.0"))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -69,8 +88,11 @@ namespace AnNaSpreadSheetParser
 				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
 				if (cell == null)
 				{
-					throw new ColumnNotFoundException(string.Format("Unable to find column {0} in sheet {1}", columnName,
-						sheetSpecification.Sheet.ToString()));
+					//throw new ColumnNotFoundException(string.Format("Unable to find column {0} in sheet {1}", columnName,
+					//	sheetSpecification.Sheet.ToString()));
+
+					// Skip this column
+					continue;
 				}
 
 				// Save the starting point for the data
@@ -101,7 +123,18 @@ namespace AnNaSpreadSheetParser
 
 					if (result.ElementAtOrDefault(listIdx) == null)
 					{
-						result.Insert(listIdx, new Dictionary<string, string>());
+						var dict = new Dictionary<string, string>();
+
+						// Initialize dictionary with null values
+						foreach (var col in sheetSpecification.ColumnNames)
+						{
+							dict[col] = null;
+						}
+
+						// Set row index and column index
+						dict["__RowIndex"] = cell.Row.ToString();
+
+						result.Insert(listIdx, dict);
 					}
 
 
