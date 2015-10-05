@@ -33,6 +33,7 @@
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openUsingEPPlusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -44,7 +45,7 @@
 			this.txtSerializedContents.Location = new System.Drawing.Point(12, 27);
 			this.txtSerializedContents.Multiline = true;
 			this.txtSerializedContents.Name = "txtSerializedContents";
-			this.txtSerializedContents.Size = new System.Drawing.Size(724, 425);
+			this.txtSerializedContents.Size = new System.Drawing.Size(842, 513);
 			this.txtSerializedContents.TabIndex = 0;
 			// 
 			// openFileDialog
@@ -58,14 +59,15 @@
             this.fileToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(748, 24);
+			this.menuStrip.Size = new System.Drawing.Size(866, 24);
 			this.menuStrip.TabIndex = 1;
 			this.menuStrip.Text = "menuStrip";
 			// 
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.openUsingEPPlusToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
@@ -73,15 +75,22 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.openToolStripMenuItem.Text = "Open..";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+			this.openToolStripMenuItem.Text = "Open using SpreadSheetGear";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+			// 
+			// openUsingEPPlusToolStripMenuItem
+			// 
+			this.openUsingEPPlusToolStripMenuItem.Name = "openUsingEPPlusToolStripMenuItem";
+			this.openUsingEPPlusToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+			this.openUsingEPPlusToolStripMenuItem.Text = "Open using EPPlus";
+			this.openUsingEPPlusToolStripMenuItem.Click += new System.EventHandler(this.openUsingEPPlusToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(748, 464);
+			this.ClientSize = new System.Drawing.Size(866, 552);
 			this.Controls.Add(this.txtSerializedContents);
 			this.Controls.Add(this.menuStrip);
 			this.MainMenuStrip = this.menuStrip;
@@ -101,6 +110,7 @@
 		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem openUsingEPPlusToolStripMenuItem;
 	}
 }
 

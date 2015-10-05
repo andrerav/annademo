@@ -6,9 +6,9 @@
     <ProjectGuid>{B91A529B-DDA7-4C24-8D9A-1D684667981C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnNaSpreadSheetParserTest</RootNamespace>
-    <AssemblyName>AnNaSpreadSheetParserTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>AnNa.SpreadsheetParser.Test</RootNamespace>
+    <AssemblyName>AnNa.SpreadsheetParser.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -45,23 +54,34 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="AnNaSpreadsheetParserTestBase.cs" />
+    <Compile Include="AnNaSpreadSheetParserSpreadsheetGearTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AnNaSpreadSheetParserEPPlusTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnNaSpreadSheetParserSSG\AnNaSpreadSheetParserSSG.csproj">
-      <Project>{256A707E-53DA-4349-A04A-DE315A60F610}</Project>
-      <Name>AnNaSpreadSheetParserSSG</Name>
+    <ProjectReference Include="..\AnNa.SpreadSheetParser.EPPlus\AnNa.SpreadsheetParser.EPPlus.csproj">
+      <Project>{A7B953B4-AC6B-4D76-B573-29EBF85409A5}</Project>
+      <Name>AnNa.SpreadsheetParser.EPPlus</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AnNaSpreadSheetParser\AnNaSpreadSheetParser.csproj">
+    <ProjectReference Include="..\AnNa.SpreadsheetParser.Interface\AnNa.SpreadsheetParser.Interface.csproj">
       <Project>{2FB80A1A-45C7-4A6F-BE96-05F053B63353}</Project>
-      <Name>AnNaSpreadSheetParser</Name>
+      <Name>AnNa.SpreadsheetParser.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AnNaSpreadsheetParser.SpreadsheetGear\AnNa.SpreadsheetParser.SpreadsheetGear.csproj">
+      <Project>{256A707E-53DA-4349-A04A-DE315A60F610}</Project>
+      <Name>AnNa.SpreadsheetParser.SpreadsheetGear</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

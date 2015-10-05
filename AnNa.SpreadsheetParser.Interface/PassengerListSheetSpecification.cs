@@ -10,7 +10,7 @@ namespace AnNaSpreadSheetParser
 			public const string Port_Of_Embarkation = "Port_Of_Embarkation";
 			public const string Port_Of_Disembarkation = "Port_Of_Disembarkation";
 			public const string Transit = "Transit";
-			public const string Number = "Number";
+			public new const string Number = "Number";
 		}
 	
 		public override AnNaSheets Sheet { get { return AnNaSheets.Pax_List; }}

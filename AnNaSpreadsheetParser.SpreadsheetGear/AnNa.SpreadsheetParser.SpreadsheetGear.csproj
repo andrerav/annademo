@@ -7,8 +7,8 @@
     <ProjectGuid>{256A707E-53DA-4349-A04A-DE315A60F610}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnNaSpreadSheetParserSSG</RootNamespace>
-    <AssemblyName>AnNaSpreadSheetParserSSG</AssemblyName>
+    <RootNamespace>AnNa.SpreadsheetParser.SpreadsheetGear</RootNamespace>
+    <AssemblyName>AnNaSpreadsheetParserSpreadsheetGear</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -47,13 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnNaSpreadSheetParserSSG.cs" />
+    <Compile Include="AnNaSpreadSheetParserSpreadsheetGear.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnNaSpreadSheetParser\AnNaSpreadSheetParser.csproj">
+    <ProjectReference Include="..\AnNa.SpreadsheetParser.Interface\AnNa.SpreadsheetParser.Interface.csproj">
       <Project>{2FB80A1A-45C7-4A6F-BE96-05F053B63353}</Project>
-      <Name>AnNaSpreadSheetParser</Name>
+      <Name>AnNa.SpreadsheetParser.Interface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

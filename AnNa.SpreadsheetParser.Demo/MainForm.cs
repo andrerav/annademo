@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AnNa.SpreadsheetParser.SpreadsheetGear;
+using AnNa.SpreadSheetParser.EPPlus;
 using AnNaSpreadSheetParser;
 using Newtonsoft.Json;
 
@@ -22,6 +24,17 @@ namespace AnNaSpreadSheetDemo
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenFile(new AnNaSpreadSheetParserSpreadsheetGear());
+		}
+
+		private void openUsingEPPlusToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFile(new AnNaSpreadSheetParserEPPlus());
+
+		}
+
+		private void OpenFile(IAnNaSpreadSheetParser10 parser)
+		{
 			var result = openFileDialog.ShowDialog();
 			if (!File.Exists(openFileDialog.FileName))
 			{
@@ -29,14 +42,13 @@ namespace AnNaSpreadSheetDemo
 			}
 			else
 			{
-				var parser = new AnNaSpreadSheetParserSSG();
 				parser.OpenFile(openFileDialog.FileName);
 
-				var type = typeof(ISheetSpecification);
+				var type = typeof (ISheetSpecification);
 				var types = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(s => s.GetTypes())
 					.Where(p => type.IsAssignableFrom(p)
-							&& p != typeof(ISheetSpecification));
+					            && p != typeof (ISheetSpecification));
 
 				var everything = new Dictionary<string, List<Dictionary<string, string>>>();
 				foreach (var t in types)
@@ -50,8 +62,8 @@ namespace AnNaSpreadSheetDemo
 				settings.Formatting = Formatting.Indented;
 
 				txtSerializedContents.Text = JsonConvert.SerializeObject(everything);
-
 			}
 		}
+
 	}
 }

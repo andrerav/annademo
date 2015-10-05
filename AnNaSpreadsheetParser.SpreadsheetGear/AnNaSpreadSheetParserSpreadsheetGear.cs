@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using AnNaSpreadSheetParser;
 using SpreadsheetGear;
 
-namespace AnNaSpreadSheetParser
+namespace AnNa.SpreadsheetParser.SpreadsheetGear
 {
-	public class AnNaSpreadSheetParserSSG : IAnNaSpreadSheetParser10
+	public class AnNaSpreadSheetParserSpreadsheetGear : IAnNaSpreadSheetParser10
 	{
 
 		protected const string Version = "1.0";
