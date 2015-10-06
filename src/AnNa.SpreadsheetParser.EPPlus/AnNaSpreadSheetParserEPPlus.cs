@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AnNaSpreadSheetParser;
+using AnNa.SpreadsheetParser.Interface;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 using OfficeOpenXml;
 
 namespace AnNa.SpreadSheetParser.EPPlus

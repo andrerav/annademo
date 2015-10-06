@@ -1,4 +1,4 @@
-namespace AnNaSpreadSheetParser
+namespace AnNa.SpreadsheetParser.Interface
 {
 	public enum AnNaSheets
 	{

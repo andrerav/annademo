@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AnNaSpreadSheetParser
+namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public interface ISheetSpecification
 	{

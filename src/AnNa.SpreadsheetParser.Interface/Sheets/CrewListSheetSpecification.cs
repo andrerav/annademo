@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 
-namespace AnNaSpreadSheetParser
+namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public class CrewListSheetSpecification : AbstractCrewPaxListSheetSpecification
 	{

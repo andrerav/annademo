@@ -44,16 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractCrewPaxListSheetSpecification.cs" />
+    <Compile Include="Sheets\AbstractCrewPaxListSheetSpecification.cs" />
     <Compile Include="AnNaSheetsEnum.cs" />
-    <Compile Include="CrewListSheetSpecification.cs" />
+    <Compile Include="Sheets\CrewListSheetSpecification.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
-    <Compile Include="ISheetSpecification.cs" />
-    <Compile Include="PassengerListSheetSpecification.cs" />
+    <Compile Include="Sheets\ISheetSpecification.cs" />
+    <Compile Include="Sheets\PassengerListSheetSpecification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecurityPortCallsSheetSpecification.cs" />
-    <Compile Include="SecurityS2SActivitiesSheetSpecification.cs" />
-    <Compile Include="WasteSheetSpecification.cs" />
+    <Compile Include="Sheets\SecurityPortCallsSheetSpecification.cs" />
+    <Compile Include="Sheets\SecurityS2SActivitiesSheetSpecification.cs" />
+    <Compile Include="Sheets\WasteSheetSpecification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

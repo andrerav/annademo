@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 
-namespace AnNaSpreadSheetParser
+namespace AnNa.SpreadsheetParser.Interface
 {
 	public interface IAnNaSpreadSheetParser10
 	{

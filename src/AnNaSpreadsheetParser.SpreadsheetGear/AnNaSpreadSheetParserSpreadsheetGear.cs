@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AnNaSpreadSheetParser;
+using AnNa.SpreadsheetParser.Interface;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 using SpreadsheetGear;
 
 namespace AnNa.SpreadsheetParser.SpreadsheetGear

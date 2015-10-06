@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using AnNaSpreadSheetParser;
+using AnNa.SpreadsheetParser.Interface;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnNaSpreadSheetParserTest

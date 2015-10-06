@@ -8,9 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AnNa.SpreadsheetParser.Interface;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 using AnNa.SpreadsheetParser.SpreadsheetGear;
 using AnNa.SpreadSheetParser.EPPlus;
-using AnNaSpreadSheetParser;
 using Newtonsoft.Json;
 
 namespace AnNaSpreadSheetDemo
