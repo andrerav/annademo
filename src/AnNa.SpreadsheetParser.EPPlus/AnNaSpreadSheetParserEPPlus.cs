@@ -15,10 +15,10 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		protected const string Version = "1.0";
 		private ExcelWorkbook _workbook;
 
-		public ExcelWorkbook Workbook
+		protected ExcelWorkbook Workbook
 		{
 			get { return _workbook; }
-			protected set { _workbook = value; }
+			set { _workbook = value; }
 		}
 
 		public void OpenFile(string path, string password = null)
