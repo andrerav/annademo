@@ -29,10 +29,8 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 	    public List<Dictionary<string, string>> GetSheetContents(ISheetSpecification sheetSpecification)
 	    {
-			if (Workbook == null)
-			{
-				throw new InvalidOperationException("You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
-			}
+			ValidateWorkbook();
+
 			foreach (ExcelWorksheet sheet in Workbook.Worksheets)
 			{
 				if (sheet.Name.ToLower() == sheetSpecification.Sheet.ToString().ToLower())
@@ -44,7 +42,30 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			return new List<Dictionary<string, string>>();
 		}
 
-	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification)
+	    private void ValidateWorkbook()
+	    {
+		    if (Workbook == null)
+		    {
+			    throw new InvalidOperationException(
+				    "You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
+		    }
+	    }
+
+	    public string GetValueAt(AnNaSheets annaSheet, string cellAddress)
+	    {
+			ValidateWorkbook();
+			foreach (var sheet in Workbook.Worksheets)
+			{
+				if (sheet.Name.ToLower() == annaSheet.ToString().ToLower())
+				{
+					return sheet.Cells[cellAddress].Text.ToString();
+				}
+			}
+
+		    return null;
+	    }
+
+		private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification)
 	    {
 			var result = new List<Dictionary<string, string>>();
 			var columnLookup = new Dictionary<int, string>();

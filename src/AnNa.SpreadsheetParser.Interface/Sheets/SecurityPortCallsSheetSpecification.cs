@@ -2,10 +2,9 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class SecurityPortCallsSheetSpecification : ISheetSpecification
+	public class SecurityPortCallsSheetSpecification : SecuritySheetSpecification
 	{
-		public AnNaSheets Sheet { get { return AnNaSheets.Security; } }
-		public List<string> ColumnNames
+		public override List<string> ColumnNames
 		{
 			get
 			{
@@ -21,6 +20,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			}
 		}
 
-		public int MaximumNumberOfRows { get { return 10; /* Infinite */ } }
+		public override int MaximumNumberOfRows { get { return 10; /* Infinite */ } }
 	}
 }

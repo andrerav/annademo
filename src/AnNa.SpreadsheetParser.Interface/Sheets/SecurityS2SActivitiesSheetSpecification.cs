@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class SecurityS2SActivitiesSheetSpecification : ISheetSpecification
+	public class SecurityS2SActivitiesSheetSpecification : SecuritySheetSpecification 
 	{
-		public AnNaSheets Sheet { get { return AnNaSheets.Security; } }
-		public List<string> ColumnNames
+		public override List<string> ColumnNames
 		{
 			get
 			{
@@ -22,6 +22,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			}
 		}
 
-		public int MaximumNumberOfRows { get { return 14; /* Infinite */ } }
+		public override int MaximumNumberOfRows { get { return 14; /* Infinite */ } }
+
 	}
 }

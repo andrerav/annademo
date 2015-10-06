@@ -69,6 +69,29 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return new List<Dictionary<string, string>>();
 		}
 
+		private void ValidateWorkbook()
+		{
+			if (Workbook == null)
+			{
+				throw new InvalidOperationException(
+					"You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
+			}
+		}
+
+		public string GetValueAt(AnNaSheets annaSheets, string cellAddress)
+		{
+			ValidateWorkbook();
+			foreach (IWorksheet sheet in Workbook.Worksheets)
+			{
+				if (sheet.Name.ToLower() == annaSheets.ToString().ToLower())
+				{
+					return sheet.Cells[cellAddress].Value.ToString();
+				}
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		/// Retrieve data in a given sheet
 		/// </summary>
