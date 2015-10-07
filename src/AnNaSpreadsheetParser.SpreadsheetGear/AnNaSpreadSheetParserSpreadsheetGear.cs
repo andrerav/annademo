@@ -78,12 +78,17 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
-		public string GetValueAt(AnNaSheets annaSheets, string cellAddress)
+		public string GetValueAt(AnNaSheets annaSheet, string cellAddress)
+		{
+			return GetValueAt(annaSheet.ToString(), cellAddress);
+		}
+
+		public string GetValueAt(string sheetName, string cellAddress)
 		{
 			ValidateWorkbook();
 			foreach (IWorksheet sheet in Workbook.Worksheets)
 			{
-				if (sheet.Name.ToLower() == annaSheets.ToString().ToLower())
+				if (sheet.Name.ToLower() == sheetName.ToString().ToLower())
 				{
 					return sheet.Cells[cellAddress].Value.ToString();
 				}

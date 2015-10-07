@@ -50,5 +50,13 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0-SSNN");
 		}
+
+		[TestMethod]
+		public void GetVersionByGetValueAtString()
+		{
+			var value = parser.GetValueAt(AnNaSheets.Security.ToString(), "A1");
+			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
+			Assert.IsTrue(value == "Version: 1.0-SSNN");
+		}
 	}
 }

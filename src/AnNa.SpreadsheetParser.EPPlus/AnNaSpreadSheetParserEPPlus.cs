@@ -53,17 +53,22 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 	    public string GetValueAt(AnNaSheets annaSheet, string cellAddress)
 	    {
+		    return GetValueAt(annaSheet.ToString(), cellAddress);
+	    }
+
+		public string GetValueAt(string sheetName, string cellAddress)
+		{
 			ValidateWorkbook();
 			foreach (var sheet in Workbook.Worksheets)
 			{
-				if (sheet.Name.ToLower() == annaSheet.ToString().ToLower())
+				if (sheet.Name.ToLower() == sheetName.ToLower())
 				{
 					return sheet.Cells[cellAddress].Text.ToString();
 				}
 			}
 
-		    return null;
-	    }
+			return null;
+		}
 
 		private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification)
 	    {
