@@ -11,7 +11,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string Crew_Effects = "Crew_Effects";
 		}
 
-		public override AnNaSheets Sheet { get { return AnNaSheets.Crew_List; }}
+		public override string SheetName
+		{
+			get { return "Crew_List"; }
+		}
+
 		public override List<string> ColumnNames {
 			get
 			{

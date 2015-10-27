@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sheets\AbstractCrewPaxListSheetSpecification.cs" />
-    <Compile Include="AnNaSheetsEnum.cs" />
     <Compile Include="Sheets\CrewListSheetSpecification.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
     <Compile Include="Sheets\ISheetSpecification.cs" />

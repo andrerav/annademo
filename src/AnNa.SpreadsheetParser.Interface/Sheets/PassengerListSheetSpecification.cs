@@ -12,8 +12,9 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string Transit = "Transit";
 			public new const string Number = "Number";
 		}
-	
-		public override AnNaSheets Sheet { get { return AnNaSheets.Pax_List; }}
+
+		public override string SheetName { get { return "Pax_List"; } }
+
 		public override List<string> ColumnNames {
 			get
 			{

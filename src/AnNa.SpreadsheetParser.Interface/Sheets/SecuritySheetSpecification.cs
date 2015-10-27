@@ -4,7 +4,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public abstract class SecuritySheetSpecification: ISheetSpecification
 	{
-		public AnNaSheets Sheet { get { return AnNaSheets.Security; } }
+		public string SheetName { get { return "Security"; } }
 		public abstract List<string> ColumnNames { get; }
 		public abstract int MaximumNumberOfRows { get; }
 	}

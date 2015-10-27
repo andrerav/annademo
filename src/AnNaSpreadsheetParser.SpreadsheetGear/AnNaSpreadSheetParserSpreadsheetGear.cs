@@ -60,7 +60,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 			foreach (IWorksheet sheet in Workbook.Sheets)
 			{
-				if (sheet.Name.ToLower() == sheetSpecification.Sheet.ToString().ToLower())
+				if (sheet.Name.ToLower() == sheetSpecification.SheetName.ToLower())
 				{
 					return RetrieveData(sheet, sheetSpecification);
 				}
@@ -78,9 +78,9 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
-		public string GetValueAt(AnNaSheets annaSheet, string cellAddress)
+		public string GetValueAt(ISheetSpecification sheetSpecification, string cellAddress)
 		{
-			return GetValueAt(annaSheet.ToString(), cellAddress);
+			return GetValueAt(sheetSpecification.SheetName, cellAddress);
 		}
 
 		public string GetValueAt(string sheetName, string cellAddress)

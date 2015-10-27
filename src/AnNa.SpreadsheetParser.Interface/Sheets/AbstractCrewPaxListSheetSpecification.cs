@@ -17,7 +17,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string Visa_Residence_Permit_Number = "Visa_Residence_Permit_Number";
 		}
 
-		public abstract AnNaSheets Sheet { get; }
+		public abstract string SheetName { get; }
 		public abstract List<string> ColumnNames { get; }
 		public abstract int MaximumNumberOfRows { get; }
 	}

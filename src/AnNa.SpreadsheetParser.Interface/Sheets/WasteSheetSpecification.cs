@@ -17,7 +17,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string Date_Of_Delivery_Of_Remaining_Waste = "Date_Of_Delivery_Of_Remaining_Waste";
 		}
 
-		public AnNaSheets Sheet { get { return AnNaSheets.Waste_And_Residues; }}
+		public string SheetName { get { return "Waste_And_Residues"; } }
 		public List<string> ColumnNames {
 			get
 			{

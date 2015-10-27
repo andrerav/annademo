@@ -46,7 +46,7 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void GetVersionByGetValueAt()
 		{
-			var value = parser.GetValueAt(AnNaSheets.Security, "A1");
+			var value = parser.GetValueAt(new CrewListSheetSpecification(), "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0-SSNN");
 		}
@@ -54,7 +54,7 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void GetVersionByGetValueAtString()
 		{
-			var value = parser.GetValueAt(AnNaSheets.Security.ToString(), "A1");
+			var value = parser.GetValueAt(new CrewListSheetSpecification().SheetName, "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0-SSNN");
 		}

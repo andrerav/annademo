@@ -33,7 +33,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 			foreach (ExcelWorksheet sheet in Workbook.Worksheets)
 			{
-				if (sheet.Name.ToLower() == sheetSpecification.Sheet.ToString().ToLower())
+				if (sheet.Name.ToLower() == sheetSpecification.SheetName.ToLower())
 				{
 					return RetrieveData(sheet, sheetSpecification);
 				}
@@ -51,9 +51,9 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		    }
 	    }
 
-	    public string GetValueAt(AnNaSheets annaSheet, string cellAddress)
+	    public string GetValueAt(ISheetSpecification specification, string cellAddress)
 	    {
-		    return GetValueAt(annaSheet.ToString(), cellAddress);
+		    return GetValueAt(specification.SheetName, cellAddress);
 	    }
 
 		public string GetValueAt(string sheetName, string cellAddress)
