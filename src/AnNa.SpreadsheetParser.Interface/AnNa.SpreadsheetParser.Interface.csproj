@@ -53,6 +53,7 @@
     <Compile Include="Sheets\SecurityPortCallsSheetSpecification.cs" />
     <Compile Include="Sheets\SecurityS2SActivitiesSheetSpecification.cs" />
     <Compile Include="Sheets\SecuritySheetSpecification.cs" />
+    <Compile Include="Sheets\ShipStoresSheetSpecification.cs" />
     <Compile Include="Sheets\WasteSheetSpecification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

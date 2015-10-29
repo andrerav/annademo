@@ -12,7 +12,7 @@ namespace AnNaSpreadSheetParserTest
 		protected virtual void GetParser<T>() where T: class, IAnNaSpreadSheetParser10, new()
 		{
 			parser = new T();
-			parser.OpenFile("./../../TestSheet.xlsx");
+			parser.OpenFile("./../../AnNaTestSheet.xlsx");
 		}
 
 		[TestMethod]
@@ -44,11 +44,17 @@ namespace AnNaSpreadSheetParserTest
 		}
 
 		[TestMethod]
+		public void ReadShipStoresList()
+		{
+			Assert.IsTrue(parser.GetSheetContents(new ShipStoresSheetSpecification()).Any());
+		}
+
+		[TestMethod]
 		public void GetVersionByGetValueAt()
 		{
 			var value = parser.GetValueAt(new CrewListSheetSpecification(), "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
-			Assert.IsTrue(value == "Version: 1.0-SSNN");
+			Assert.IsTrue(value == "Version: 1.0");
 		}
 
 		[TestMethod]
@@ -56,7 +62,7 @@ namespace AnNaSpreadSheetParserTest
 		{
 			var value = parser.GetValueAt(new CrewListSheetSpecification().SheetName, "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
-			Assert.IsTrue(value == "Version: 1.0-SSNN");
+			Assert.IsTrue(value == "Version: 1.0");
 		}
 	}
 }
