@@ -9,6 +9,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string NameOfArticle = "Name_Of_Article";
 			public const string Quantity = "Quantity";
 			public const string Number = "Number";
+			public const string Unit = "Unit";
 			public const string LocationOnBoard = "Location_On_Board";
 			public const string OfficialUse = "Official_Use";
 		}
@@ -24,6 +25,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 					Columns.NameOfArticle,
 					Columns.Quantity,
 					Columns.Number,
+					Columns.Unit,
 					Columns.LocationOnBoard,
 					Columns.OfficialUse
 				};
