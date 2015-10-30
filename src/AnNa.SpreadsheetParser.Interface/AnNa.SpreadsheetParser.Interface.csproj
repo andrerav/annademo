@@ -47,6 +47,7 @@
     <Compile Include="Sheets\AbstractCrewPaxListSheetSpecification.cs" />
     <Compile Include="Sheets\CrewListSheetSpecification.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
+    <Compile Include="Sheets\DPGSheetSpecification.cs" />
     <Compile Include="Sheets\ISheetSpecification.cs" />
     <Compile Include="Sheets\PassengerListSheetSpecification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

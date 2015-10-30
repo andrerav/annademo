@@ -50,6 +50,48 @@ namespace AnNaSpreadSheetParserTest
 		}
 
 		[TestMethod]
+		public void ReadDPGList()
+		{
+			Assert.IsTrue(parser.GetSheetContents(new DPGSheetSpecification()).Any());
+		}
+
+		[TestMethod]
+		public void ReadDPGColumns()
+		{
+			var sheetContents = parser.GetSheetContents(new DPGSheetSpecification());
+			var headerRow = 5;
+
+			// Dangerous and Polluting Cargo
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.DGClassification));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.ImoHazardClass));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.UnNumber));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TransportUnitId));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TextualReference));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.StowagePosition));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.GrossQuantity));
+
+			// Conditional Information
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.NetQuantity));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.Flashpoint));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.MARPOLPollutionCode));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PortOfLoading));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PortOfDischarge));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TransportDocumentId));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.NumberOfPackages));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PackageType));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PackingGroup));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.SubsidiaryRisks));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.INFShipClass));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.MarksAndNumbers));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.EmergencyMeasures));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.AdditionalInformation));
+
+			// Supplemental Information
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.RadioactivityLevel));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.Criticality));
+		}
+
+		[TestMethod]
 		public void GetVersionByGetValueAt()
 		{
 			var value = parser.GetValueAt(new CrewListSheetSpecification(), "A1");
