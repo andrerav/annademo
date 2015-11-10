@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -105,6 +106,38 @@ namespace AnNaSpreadSheetParserTest
 			var value = parser.GetValueAt(new CrewListSheetSpecification().SheetName, "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0");
+		}
+
+		[TestMethod]
+		public void ParseODDate1()
+		{
+			var items = parser.GetSheetContents(new SecurityPortCallsSheetSpecification());
+			foreach (var item in items)
+			{
+				var dateOfArrivalStr = item[SecurityPortCallsSheetSpecification.Columns.DateOfArrival];
+				var dateOfDepStr = item[SecurityPortCallsSheetSpecification.Columns.DateOfDeparture];
+
+				DateTime dateOfArrival = DateTime.Parse(dateOfArrivalStr);
+				DateTime dateOfDep = DateTime.Parse(dateOfDepStr);
+
+				Assert.IsTrue(dateOfArrival < dateOfDep);
+			}
+		}
+
+		[TestMethod]
+		public void ParseODDate2()
+		{
+			var items = parser.GetSheetContents(new CrewListSheetSpecification());
+			foreach (var item in items)
+			{
+				var dateOfBirthStr = item[AbstractCrewPaxListSheetSpecification.CommonColumns.Date_Of_Birth];
+
+				if (dateOfBirthStr != null)
+				{
+					DateTime dateOfBirth = DateTime.Parse(dateOfBirthStr);
+					Assert.IsTrue(dateOfBirth > DateTime.MinValue);
+				}
+			}
 		}
 	}
 }

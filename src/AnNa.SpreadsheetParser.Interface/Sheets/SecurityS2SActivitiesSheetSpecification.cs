@@ -5,9 +5,12 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public class SecurityS2SActivitiesSheetSpecification : SecuritySheetSpecification 
 	{
-		public class Columns
+		public class Columns: ISheetColumns
 		{
+			[TypeHint(typeof(DateTime))]
 			public const string DateFrom = "Date_from";
+
+			[TypeHint(typeof(DateTime))]
 			public const string DateTo = "Date_to";
 			public const string Location = "*Location";
 			public const string Latitude = "Latitude";

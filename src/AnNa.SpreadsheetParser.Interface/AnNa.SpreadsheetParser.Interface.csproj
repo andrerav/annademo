@@ -48,6 +48,7 @@
     <Compile Include="Sheets\CrewListSheetSpecification.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
     <Compile Include="Sheets\DPGSheetSpecification.cs" />
+    <Compile Include="Sheets\ISheetColumns.cs" />
     <Compile Include="Sheets\ISheetSpecification.cs" />
     <Compile Include="Sheets\PassengerListSheetSpecification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,6 +57,8 @@
     <Compile Include="Sheets\SecuritySheetSpecification.cs" />
     <Compile Include="Sheets\ShipStoresSheetSpecification.cs" />
     <Compile Include="Sheets\WasteSheetSpecification.cs" />
+    <Compile Include="TypeHintAttribute.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,7 +4,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public class DPGSheetSpecification : ISheetSpecification
 	{
-		public class Columns
+		public class Columns: ISheetColumns
 		{
 			public const string DGClassification = "DG_classification";
 			public const string ImoHazardClass = "IMO_Hazard_Class";

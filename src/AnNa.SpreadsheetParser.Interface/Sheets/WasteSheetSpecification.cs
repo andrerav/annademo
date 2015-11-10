@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public class WasteSheetSpecification : ISheetSpecification
 	{
-		public class Columns
+		public class Columns: ISheetColumns
 		{
 			public const string Waste_Type = "Waste_Type";
 			public const string Waste_Type_Code = "Waste_Type_Code";
@@ -14,6 +15,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string Amount_Retained_On_Board = "Amount_Retained_On_Board";
 			public const string Port_Of_Delivery_Of_Remaining_Waste = "Port_Of_Delivery_Of_Remaining_Waste";
 			public const string Estimated_Amount_Of_Waste_To_Be_Generated = "Estimated_Amount_Of_Waste_To_Be_Generated";
+
+			[TypeHint(typeof(DateTime))]
 			public const string Date_Of_Delivery_Of_Remaining_Waste = "Date_Of_Delivery_Of_Remaining_Waste";
 		}
 

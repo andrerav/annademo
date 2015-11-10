@@ -171,13 +171,19 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 						result.Insert(listIdx, dict);
 					}
 
-					var value = cell.Value;
-					result[listIdx][columnLookup[cell.Column]] = value != null ? value.ToString() : null;
+					var columnName = columnLookup[cell.Column];
+					var inValue = cell.Value;
+					var typeHint = columnName.GetTypeHint(sheetSpecification);
+					var outValue = Util.ApplyTypeHint(typeHint, inValue);
+
+					result[listIdx][columnLookup[cell.Column]] = outValue;
 				}
 			}
 
 			return result;
 		}
+
+
 
 		#region Utility methods
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -138,8 +139,12 @@ namespace AnNa.SpreadSheetParser.EPPlus
 					}
 
 
-					var value = cell.Value;
-					result[listIdx][columnLookup[cell.Start.Column]] = value != null ? value.ToString() : null;
+					var columnName = columnLookup[cell.Start.Column];
+					var inValue = cell.Value;
+					var typeHint = columnName.GetTypeHint(sheetSpecification);
+					var outValue = Util.ApplyTypeHint(typeHint, inValue);
+
+					result[listIdx][columnName] = outValue;
 				}
 
 

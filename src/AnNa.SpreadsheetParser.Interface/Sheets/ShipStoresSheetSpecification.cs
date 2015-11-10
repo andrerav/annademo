@@ -4,7 +4,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
 	public class ShipStoresSheetSpecification : ISheetSpecification
 	{
-		public class Columns
+		public class Columns: ISheetColumns
 		{
 			public const string NameOfArticle = "Name_Of_Article";
 			public const string Quantity = "Quantity";
