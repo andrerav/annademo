@@ -149,6 +149,11 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				// Check that we are at a valid data row
 				if (cell.Row >= dataStartRow && columnLookup.ContainsKey(cell.Column))
 				{
+					// Disregard rows beyond the maximum number of rows
+					if (sheetSpecification.MaximumNumberOfRows > 0 && listIdx >= sheetSpecification.MaximumNumberOfRows)
+					{
+						continue;
+					}
 
 					if (result.ElementAtOrDefault(listIdx) == null)
 					{
@@ -166,15 +171,8 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 						result.Insert(listIdx, dict);
 					}
 
-
 					var value = cell.Value;
 					result[listIdx][columnLookup[cell.Column]] = value != null ? value.ToString() : null;
-				}
-
-				// Stop if we have reached the maximum number of rows
-				if (sheetSpecification.MaximumNumberOfRows > 0 && result.Count == sheetSpecification.MaximumNumberOfRows)
-				{
-					break;
 				}
 			}
 

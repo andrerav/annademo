@@ -115,6 +115,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				// Check that we are at a valid data row
 				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column))
 				{
+					// Disregard rows beyond the maximum number of rows
+					if (sheetSpecification.MaximumNumberOfRows > 0 && listIdx >= sheetSpecification.MaximumNumberOfRows)
+					{
+						continue;
+					}
 
 					if (result.ElementAtOrDefault(listIdx) == null)
 					{
@@ -137,11 +142,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 					result[listIdx][columnLookup[cell.Start.Column]] = value != null ? value.ToString() : null;
 				}
 
-				// Stop if we have reached the maximum number of rows
-				if (sheetSpecification.MaximumNumberOfRows > 0 && result.Count == sheetSpecification.MaximumNumberOfRows)
-				{
-					break;
-				}
+
 			}
 
 			return result;
