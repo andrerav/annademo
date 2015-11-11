@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	interface ISheetColumns
+	public interface ISheetColumns
 	{
 	}
 }
