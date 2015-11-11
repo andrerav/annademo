@@ -2,7 +2,7 @@
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class DPGSheetSpecification : ISheetSpecification
+	public class DpgSheet : ISheetWithBulkData
 	{
 		public class Columns: ISheetColumns
 		{

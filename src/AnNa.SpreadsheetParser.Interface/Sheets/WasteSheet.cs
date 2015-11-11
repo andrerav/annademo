@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class WasteSheetSpecification : ISheetSpecification
+	public class WasteSheet : ISheetWithBulkData
 	{
 		public class Columns: ISheetColumns
 		{

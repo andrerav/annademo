@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class SecurityPortCallsSheetSpecification : SecuritySheetSpecification
+	public class SecurityPortCallsSheet : SecuritySheet, ISheetWithBulkData
 	{
 		public class Columns:ISheetColumns
 		{
@@ -19,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string SpecialOrAdditionalSecurityMeasuresTakenByTheShip = "Special_or_additional_security_measures_taken_by_the_ship";
 		}
 
-		public override List<string> ColumnNames
+		public List<string> ColumnNames
 		{
 			get
 			{
@@ -35,6 +35,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			}
 		}
 
-		public override int MaximumNumberOfRows { get { return 10; } }
+		public int MaximumNumberOfRows { get { return 10; } }
 	}
 }

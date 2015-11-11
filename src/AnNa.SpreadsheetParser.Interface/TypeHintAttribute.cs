@@ -26,7 +26,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 	public static class StringExtensions
 	{
-		public static Type GetTypeHint(this string subject, ISheetSpecification sheet)
+		public static Type GetTypeHint(this string subject, ISheet sheet)
 		{
 			foreach (var nestedType in sheet.GetType().GetNestedTypes())
 			{

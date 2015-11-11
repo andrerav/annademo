@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
-    public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10, IDisposable
+    public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10
 	{
 
 		protected const string Version = "1.0";
@@ -52,21 +52,21 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		    }
 	    }
 
-	    public List<Dictionary<string, string>> GetSheetContents(ISheetSpecification sheetSpecification)
+	    public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet)
 	    {
 			ValidateWorkbook();
-			var sheet = GetWorksheet(sheetSpecification.SheetName);
-			return sheet != null ? RetrieveData(sheet, sheetSpecification) : new List<Dictionary<string, string>>();
+			var worksheet = GetWorksheet(sheet.SheetName);
+			return worksheet != null ? RetrieveData(worksheet, sheet) : new List<Dictionary<string, string>>();
 	    }
 
-		public void SetSheetContents(ISheetSpecification sheetSpecification, List<Dictionary<string, string>> contents)
+		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
 		{
 			ValidateWorkbook();
-			var sheet = GetWorksheet(sheetSpecification.SheetName);
-			SetData(sheet, sheetSpecification, contents);
+			var worksheet = GetWorksheet(sheet.SheetName);
+			SetData(worksheet, sheet, contents);
 		}
 
-	    public string GetValueAt(ISheetSpecification specification, string cellAddress)
+	    public string GetValueAt(ISheet specification, string cellAddress)
 	    {
 		    return GetValueAt(specification.SheetName, cellAddress);
 	    }
@@ -74,35 +74,35 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		public string GetValueAt(string sheetName, string cellAddress)
 		{
 			ValidateWorkbook();
-			var sheet = GetWorksheet(sheetName);
-			return sheet?.Cells[cellAddress].Text;
+			var worksheet = GetWorksheet(sheetName);
+			return worksheet?.Cells[cellAddress].Text;
 		}
 
-	    public void SetValueAt<T>(ISheetSpecification sheetSpecification, string cellAddress, T value)
+	    public void SetValueAt<T>(ISheet sheet, string cellAddress, T value)
 	    {
-			SetValueAt(sheetSpecification.SheetName, cellAddress, value);
+			SetValueAt(sheet.SheetName, cellAddress, value);
 	    }
 
 		public void SetValueAt<T>(string sheetName, string cellAddress, T value)
 		{
 			ValidateWorkbook();
-			var sheet = GetWorksheet(sheetName);
-			if (sheet != null)
+			var worksheet = GetWorksheet(sheetName);
+			if (worksheet != null)
 			{
-				sheet.Cells[cellAddress].Value = value;
+				worksheet.Cells[cellAddress].Value = value;
 			}
 		}
 
-	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification)
+	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet worksheet, ISheetWithBulkData sheet)
 	    {
 			var result = new List<Dictionary<string, string>>();
-		    var columnNames = sheetSpecification.ColumnNames;
+		    var columnNames = sheet.ColumnNames;
 			int startrow;
-			var columnLookup = CreateColumnLookup(out startrow, sheet, columnNames);
+			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
 			var dataStartRow = startrow + 2;
 
-			foreach (var cell in sheet.Cells)
+			foreach (var cell in worksheet.Cells)
 			{
 				var listIdx = cell.Start.Row - dataStartRow;
 
@@ -110,7 +110,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column))
 				{
 					// Disregard rows beyond the maximum number of rows
-					if (sheetSpecification.MaximumNumberOfRows > 0 && listIdx >= sheetSpecification.MaximumNumberOfRows)
+					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)
 					{
 						continue;
 					}
@@ -134,7 +134,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 					var columnName = columnLookup[cell.Start.Column];
 					var inValue = cell.Value;
-					var typeHint = columnName.GetTypeHint(sheetSpecification);
+					var typeHint = columnName.GetTypeHint(sheet);
 					var outValue = Util.ApplyTypeHint(typeHint, inValue);
 
 					result[listIdx][columnName] = outValue;
@@ -144,17 +144,17 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 
-		private void SetData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification, List<Dictionary<string, string>> contents)
+		private void SetData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
 		{
 			// Find all the known columns and map them to spreadsheet columns
-			var columnNames = sheetSpecification.ColumnNames;
+			var columnNames = sheet.ColumnNames;
 
 			int startrow;
-			var columnLookup = CreateColumnLookup(out startrow, sheet, columnNames);
+			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
 			var dataStartRow = startrow + 2;
 
-			foreach (var cell in sheet.Cells)
+			foreach (var cell in worksheet.Cells)
 			{
 				var listIdx = cell.Start.Row - dataStartRow;
 
@@ -162,7 +162,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column))
 				{
 					// Disregard rows beyond the maximum number of rows
-					if (sheetSpecification.MaximumNumberOfRows > 0 && listIdx >= sheetSpecification.MaximumNumberOfRows)
+					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)
 					{
 						continue;
 					}
@@ -184,15 +184,13 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 
-	    private static Dictionary<int, string> CreateColumnLookup(out int startrow, ExcelWorksheet sheet, List<string> columnNames)
+	    private static Dictionary<int, string> CreateColumnLookup(out int startrow, ExcelWorksheet worksheet, List<string> columnNames)
 	    {
 		    startrow = -1;
 			var columnLookup = new Dictionary<int, string>();
 			foreach (var columnName in columnNames)
 		    {
-			    //var cell = sheet.Find(columnName, null, FindLookIn.Values, LookAt.Whole, SearchOrder.ByColumns, SearchDirection.Next, matchCase: true);
-
-			    var cell = sheet.Cells.FirstOrDefault(c => c.Value != null && c.Value.ToString() == columnName);
+			    var cell = worksheet.Cells.FirstOrDefault(c => c.Value != null && c.Value.ToString() == columnName);
 
 			    // If the column was not found, then throw exception since this spreadsheet is probably not following the standard
 			    if (cell == null)

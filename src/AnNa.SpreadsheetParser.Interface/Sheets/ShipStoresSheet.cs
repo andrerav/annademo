@@ -2,7 +2,7 @@
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class ShipStoresSheetSpecification : ISheetSpecification
+	public class ShipStoresSheet : ISheetWithBulkData
 	{
 		public class Columns: ISheetColumns
 		{

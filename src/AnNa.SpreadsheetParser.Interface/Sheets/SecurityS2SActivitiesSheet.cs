@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class SecurityS2SActivitiesSheetSpecification : SecuritySheetSpecification 
+	public class SecurityS2SActivitiesSheet : SecuritySheet, ISheetWithBulkData 
 	{
 		public class Columns: ISheetColumns
 		{
@@ -19,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string SecurityMeasuresAppliedInLieu = "Security_measures_applied_in_lieu";
 		}
 
-		public override List<string> ColumnNames
+		public List<string> ColumnNames
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			}
 		}
 
-		public override int MaximumNumberOfRows { get { return 14; } }
+		public int MaximumNumberOfRows { get { return 14; } }
 
 	}
 }

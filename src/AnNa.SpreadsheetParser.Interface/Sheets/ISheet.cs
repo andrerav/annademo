@@ -2,10 +2,14 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public interface ISheetSpecification
+	public interface ISheet
 	{
-		//AnNaSheets Sheet { get; }
 		string SheetName { get; }
+	}
+
+
+	public interface ISheetWithBulkData : ISheet
+	{
 		List<string> ColumnNames { get; }
 		int MaximumNumberOfRows { get; }
 	}

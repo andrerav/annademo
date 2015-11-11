@@ -2,7 +2,7 @@
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class PassengerListSheetSpecification : AbstractCrewPaxListSheetSpecification
+	public class PassengerListSheet : AbstractCrewPaxListSheet
 	{
 		public class Columns : CommonColumns
 		{

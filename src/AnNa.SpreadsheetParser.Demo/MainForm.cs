@@ -45,18 +45,18 @@ namespace AnNaSpreadSheetDemo
 			{
 				parser.OpenFile(openFileDialog.FileName);
 
-				var type = typeof (ISheetSpecification);
+				var type = typeof (ISheetWithBulkData);
 				var types = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(s => s.GetTypes())
 					.Where(p => !p.IsAbstract
 								&& type.IsAssignableFrom(p)
-					            && p != typeof (ISheetSpecification)).ToList();
+					            && p != typeof (ISheetWithBulkData)).ToList();
 
 				var everything = new Dictionary<string, List<Dictionary<string, string>>>();
 				foreach (var t in types)
 				{
 					var instance = Activator.CreateInstance(t);
-					var contents = parser.GetSheetContents(instance as ISheetSpecification);
+					var contents = parser.GetSheetBulkData(instance as ISheetWithBulkData);
 					everything[t.Name] = contents;
 				}
 

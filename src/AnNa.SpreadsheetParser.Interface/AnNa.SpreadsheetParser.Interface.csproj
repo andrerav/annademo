@@ -44,19 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sheets\AbstractCrewPaxListSheetSpecification.cs" />
-    <Compile Include="Sheets\CrewListSheetSpecification.cs" />
+    <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
+    <Compile Include="Sheets\CrewListSheet.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
-    <Compile Include="Sheets\DPGSheetSpecification.cs" />
+    <Compile Include="Sheets\DpgSheet.cs" />
     <Compile Include="Sheets\ISheetColumns.cs" />
-    <Compile Include="Sheets\ISheetSpecification.cs" />
-    <Compile Include="Sheets\PassengerListSheetSpecification.cs" />
+    <Compile Include="Sheets\ISheet.cs" />
+    <Compile Include="Sheets\PassengerListSheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sheets\SecurityPortCallsSheetSpecification.cs" />
-    <Compile Include="Sheets\SecurityS2SActivitiesSheetSpecification.cs" />
-    <Compile Include="Sheets\SecuritySheetSpecification.cs" />
-    <Compile Include="Sheets\ShipStoresSheetSpecification.cs" />
-    <Compile Include="Sheets\WasteSheetSpecification.cs" />
+    <Compile Include="Sheets\SecurityPortCallsSheet.cs" />
+    <Compile Include="Sheets\SecurityS2SActivitiesSheet.cs" />
+    <Compile Include="Sheets\SecuritySheet.cs" />
+    <Compile Include="Sheets\ShipStoresSheet.cs" />
+    <Compile Include="Sheets\WasteSheet.cs" />
     <Compile Include="TypeHintAttribute.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

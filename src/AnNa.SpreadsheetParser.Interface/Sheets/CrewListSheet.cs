@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	public class CrewListSheetSpecification : AbstractCrewPaxListSheetSpecification
+	public class CrewListSheet : AbstractCrewPaxListSheet
 	{
 		public class Columns : CommonColumns
 		{

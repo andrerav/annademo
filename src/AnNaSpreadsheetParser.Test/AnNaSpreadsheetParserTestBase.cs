@@ -19,83 +19,83 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void ReadCrewList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new CrewListSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new CrewListSheet()).Any());
 		}
 
 		[TestMethod]
 		public void ReadPaxList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new PassengerListSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
 		}
 		[TestMethod]
 		public void ReadWasteList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new WasteSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new WasteSheet()).Any());
 		}
 
 		[TestMethod]
 		public void ReadLast10CallsList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new SecurityPortCallsSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new SecurityPortCallsSheet()).Any());
 		}
 		[TestMethod]
 		public void ReadS2SList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new SecurityS2SActivitiesSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new SecurityS2SActivitiesSheet()).Any());
 		}
 
 		[TestMethod]
 		public void ReadShipStoresList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new ShipStoresSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new ShipStoresSheet()).Any());
 		}
 
 		[TestMethod]
 		public void ReadDPGList()
 		{
-			Assert.IsTrue(parser.GetSheetContents(new DPGSheetSpecification()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new DpgSheet()).Any());
 		}
 
 		[TestMethod]
 		public void ReadDPGColumns()
 		{
-			var sheetContents = parser.GetSheetContents(new DPGSheetSpecification());
+			var sheetContents = parser.GetSheetBulkData(new DpgSheet());
 			var headerRow = 5;
 
 			// Dangerous and Polluting Cargo
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.DGClassification));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.ImoHazardClass));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.UnNumber));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TransportUnitId));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TextualReference));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.StowagePosition));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.GrossQuantity));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.DGClassification));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.ImoHazardClass));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.UnNumber));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TransportUnitId));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TextualReference));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.StowagePosition));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.GrossQuantity));
 
 			// Conditional Information
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.NetQuantity));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.Flashpoint));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.MARPOLPollutionCode));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PortOfLoading));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PortOfDischarge));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.TransportDocumentId));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.NumberOfPackages));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PackageType));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.PackingGroup));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.SubsidiaryRisks));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.INFShipClass));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.MarksAndNumbers));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.EmergencyMeasures));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.AdditionalInformation));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.NetQuantity));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.Flashpoint));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.MARPOLPollutionCode));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PortOfLoading));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PortOfDischarge));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TransportDocumentId));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.NumberOfPackages));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PackageType));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PackingGroup));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.SubsidiaryRisks));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.INFShipClass));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.MarksAndNumbers));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.EmergencyMeasures));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.AdditionalInformation));
 
 			// Supplemental Information
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.RadioactivityLevel));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DPGSheetSpecification.Columns.Criticality));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.RadioactivityLevel));
+			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.Criticality));
 		}
 
 		[TestMethod]
 		public void GetVersionByGetValueAt()
 		{
-			var value = parser.GetValueAt(new CrewListSheetSpecification(), "A1");
+			var value = parser.GetValueAt(new CrewListSheet(), "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0");
 		}
@@ -103,7 +103,7 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void GetVersionByGetValueAtString()
 		{
-			var value = parser.GetValueAt(new CrewListSheetSpecification().SheetName, "A1");
+			var value = parser.GetValueAt(new CrewListSheet().SheetName, "A1");
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
 			Assert.IsTrue(value == "Version: 1.0");
 		}
@@ -111,11 +111,11 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void ParseODDate1()
 		{
-			var items = parser.GetSheetContents(new SecurityPortCallsSheetSpecification());
+			var items = parser.GetSheetBulkData(new SecurityPortCallsSheet());
 			foreach (var item in items)
 			{
-				var dateOfArrivalStr = item[SecurityPortCallsSheetSpecification.Columns.DateOfArrival];
-				var dateOfDepStr = item[SecurityPortCallsSheetSpecification.Columns.DateOfDeparture];
+				var dateOfArrivalStr = item[SecurityPortCallsSheet.Columns.DateOfArrival];
+				var dateOfDepStr = item[SecurityPortCallsSheet.Columns.DateOfDeparture];
 
 				DateTime dateOfArrival = DateTime.Parse(dateOfArrivalStr);
 				DateTime dateOfDep = DateTime.Parse(dateOfDepStr);
@@ -127,10 +127,10 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public void ParseODDate2()
 		{
-			var items = parser.GetSheetContents(new CrewListSheetSpecification());
+			var items = parser.GetSheetBulkData(new CrewListSheet());
 			foreach (var item in items)
 			{
-				var dateOfBirthStr = item[AbstractCrewPaxListSheetSpecification.CommonColumns.Date_Of_Birth];
+				var dateOfBirthStr = item[AbstractCrewPaxListSheet.CommonColumns.Date_Of_Birth];
 
 				if (dateOfBirthStr != null)
 				{
@@ -145,26 +145,26 @@ namespace AnNaSpreadSheetParserTest
 		{
 			var newValue = "Test1";
 			var address = "A1";
-			parser.SetValueAt(new CrewListSheetSpecification(), address, newValue);
-			Assert.IsTrue(parser.GetValueAt(new CrewListSheetSpecification(), address) == newValue, "Values not equal");
+			parser.SetValueAt(new CrewListSheet(), address, newValue);
+			Assert.IsTrue(parser.GetValueAt(new CrewListSheet(), address) == newValue, "Values not equal");
 		}
 
 		[TestMethod]
 		public void GetAndSetLast10CallsList()
 		{
-			var securityPortCallsSheetSpecification = new SecurityPortCallsSheetSpecification();
-			var contents = parser.GetSheetContents(securityPortCallsSheetSpecification);
+			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
+			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
 			Assert.IsTrue(contents.Any());
-			parser.SetSheetContents(securityPortCallsSheetSpecification, contents);
+			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
 		}
 
 		[TestMethod]
 		public void SaveToStreamTest1()
 		{
-			var securityPortCallsSheetSpecification = new SecurityPortCallsSheetSpecification();
-			var contents = parser.GetSheetContents(securityPortCallsSheetSpecification);
+			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
+			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
 			Assert.IsTrue(contents.Any());
-			parser.SetSheetContents(securityPortCallsSheetSpecification, contents);
+			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
 			var stream = parser.SaveToStream();
 			Assert.IsTrue(stream.Length > 0);
 		}

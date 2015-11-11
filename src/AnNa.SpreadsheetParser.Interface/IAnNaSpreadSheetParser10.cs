@@ -18,24 +18,24 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Retrieve the bulk data from a specific sheet
 		/// </summary>
-		/// <param name="sheetSpecification"></param>
+		/// <param name="sheet"></param>
 		/// <returns></returns>
-		List<Dictionary<string, string>> GetSheetContents(ISheetSpecification sheetSpecification);
+		List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet);
 
 		/// <summary>
 		/// Write bulk data to a specific sheet
 		/// </summary>
-		/// <param name="sheetSpecification"></param>
+		/// <param name="sheet"></param>
 		/// <param name="contents"></param>
-		void SetSheetContents(ISheetSpecification sheetSpecification, List<Dictionary<string, string>> contents);
+		void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents);
 
 		/// <summary>
 		/// Overload
 		/// </summary>
-		/// <param name="sheetSpecification"></param>
+		/// <param name="sheet"></param>
 		/// <param name="cellAddress"></param>
 		/// <returns></returns>
-		string GetValueAt(ISheetSpecification sheetSpecification, string cellAddress);
+		string GetValueAt(ISheet sheet, string cellAddress);
 
 		/// <summary>
 		/// Get a value from a specific cell in a specific sheet. Cells are addressed in the form "A1", "B3" etc.
@@ -49,10 +49,10 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// Overload
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="sheetSpecification"></param>
+		/// <param name="sheet"></param>
 		/// <param name="cellAddress"></param>
 		/// <param name="value"></param>
-		void SetValueAt<T>(ISheetSpecification sheetSpecification, string cellAddress, T value);
+		void SetValueAt<T>(ISheet sheet, string cellAddress, T value);
 
 		/// <summary>
 		/// Set a value in a specific cell in a specific sheet. Cells are addressed in the form "A1", "B3" etc.
