@@ -159,7 +159,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				var listIdx = cell.Start.Row - dataStartRow;
 
 				// Check that we are at a valid data row
-				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column))
+				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column) && listIdx < contents.Count)
 				{
 					// Disregard rows beyond the maximum number of rows
 					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)

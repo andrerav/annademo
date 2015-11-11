@@ -186,7 +186,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				var listIdx = cell.Row - dataStartRow;
 
 				// Check that we are at a valid data row
-				if (cell.Row >= dataStartRow && columnLookup.ContainsKey(cell.Column))
+				if (cell.Row >= dataStartRow && columnLookup.ContainsKey(cell.Column) && listIdx < contents.Count)
 				{
 					// Disregard rows beyond the maximum number of rows
 					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)

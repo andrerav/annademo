@@ -154,8 +154,13 @@ namespace AnNaSpreadSheetParserTest
 		{
 			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
 			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
+			var newValue = "Testing";
+			contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] = newValue;
 			Assert.IsTrue(contents.Any());
 			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
+
+			contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
+			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] == newValue);
 		}
 
 		[TestMethod]
