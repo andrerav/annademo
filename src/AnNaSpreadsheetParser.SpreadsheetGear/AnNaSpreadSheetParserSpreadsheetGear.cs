@@ -8,7 +8,7 @@ using SpreadsheetGear;
 
 namespace AnNa.SpreadsheetParser.SpreadsheetGear
 {
-	public class AnNaSpreadSheetParserSpreadsheetGear : IAnNaSpreadSheetParser10
+	public class AnNaSpreadSheetParserSpreadsheetGear : IAnNaSpreadSheetParser10 
 	{
 
 		protected const string Version = "1.0";
@@ -88,15 +88,6 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			SetData(sheet, sheetSpecification, contents);
 		}
 
-		private void ValidateWorkbook()
-		{
-			if (Workbook == null)
-			{
-				throw new InvalidOperationException(
-					"You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
-			}
-		}
-
 		public string GetValueAt(ISheetSpecification sheetSpecification, string cellAddress)
 		{
 			return GetValueAt(sheetSpecification.SheetName, cellAddress);
@@ -122,11 +113,6 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			{
 				sheet.Cells[cellAddress].Value = value;
 			}
-		}
-
-		private IWorksheet GetWorksheet(string name)
-		{
-			return Workbook.Worksheets.Cast<IWorksheet>().FirstOrDefault(sheet => sheet.Name.ToLower() == name.ToLower());
 		}
 
 		/// <summary>
@@ -213,8 +199,9 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
-
 		#region Utility methods
+
+
 
 		/// <summary>
 		/// Unprotected workbook and all sheets using the given password
@@ -269,6 +256,26 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 			return columnLookup;
 		}
+
+		private IWorksheet GetWorksheet(string name)
+		{
+			return Workbook.Worksheets.Cast<IWorksheet>().FirstOrDefault(sheet => sheet.Name.ToLower() == name.ToLower());
+		}
+
+		private void ValidateWorkbook()
+		{
+			if (Workbook == null)
+			{
+				throw new InvalidOperationException(
+					"You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
+			}
+		}
+		#endregion // Utility methods
+
+		public void Dispose()
+		{
+			_workbook?.Close();
+			_workbook = null;
+		}
 	}
-	#endregion // Utility methods
 }

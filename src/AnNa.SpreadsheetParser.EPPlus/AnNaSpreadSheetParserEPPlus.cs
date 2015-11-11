@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
-    public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10
+    public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10, IDisposable
 	{
 
 		protected const string Version = "1.0";
@@ -66,15 +66,6 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			SetData(sheet, sheetSpecification, contents);
 		}
 
-		private void ValidateWorkbook()
-	    {
-		    if (Workbook == null)
-		    {
-			    throw new InvalidOperationException(
-				    "You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
-		    }
-	    }
-
 	    public string GetValueAt(ISheetSpecification specification, string cellAddress)
 	    {
 		    return GetValueAt(specification.SheetName, cellAddress);
@@ -101,11 +92,6 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				sheet.Cells[cellAddress].Value = value;
 			}
 		}
-
-	    private ExcelWorksheet GetWorksheet(string sheetName)
-	    {
-		    return Workbook.Worksheets.FirstOrDefault(s => s.Name.ToLower() == sheetName.ToLower());
-	    }
 
 	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet sheet, ISheetSpecification sheetSpecification)
 	    {
@@ -187,6 +173,17 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
+		#region Utility Methods
+		private void ValidateWorkbook()
+		{
+			if (Workbook == null)
+			{
+				throw new InvalidOperationException(
+					"You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
+			}
+		}
+
+
 	    private static Dictionary<int, string> CreateColumnLookup(out int startrow, ExcelWorksheet sheet, List<string> columnNames)
 	    {
 		    startrow = -1;
@@ -221,6 +218,19 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		    }
 
 		    return columnLookup;
+	    }
+
+		private ExcelWorksheet GetWorksheet(string sheetName)
+		{
+			return Workbook.Worksheets.FirstOrDefault(s => s.Name.ToLower() == sheetName.ToLower());
+		}
+
+		#endregion
+
+	    public void Dispose()
+	    {
+		    _excelPackage.Dispose();
+		    _excelPackage = null;
 	    }
 	}
 }

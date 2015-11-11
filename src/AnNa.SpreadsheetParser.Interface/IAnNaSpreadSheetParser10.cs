@@ -5,7 +5,7 @@ using AnNa.SpreadsheetParser.Interface.Sheets;
 
 namespace AnNa.SpreadsheetParser.Interface
 {
-	public interface IAnNaSpreadSheetParser10
+	public interface IAnNaSpreadSheetParser10 : IDisposable
 	{
 
 		/// <summary>
