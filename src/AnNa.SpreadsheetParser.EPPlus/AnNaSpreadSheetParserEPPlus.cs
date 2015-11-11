@@ -101,8 +101,10 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
 			var dataStartRow = startrow + 2;
+		    var cells = worksheet.Cells.Where(
+			    c => c.End.Column <= worksheet.Dimension.End.Column && c.End.Row <= worksheet.Dimension.End.Row).ToList();
 
-			foreach (var cell in worksheet.Cells)
+			foreach (var cell in cells)
 			{
 				var listIdx = cell.Start.Row - dataStartRow;
 
@@ -154,23 +156,21 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 			var dataStartRow = startrow + 2;
 
-			foreach (var cell in worksheet.Cells)
+			int i = 0;
+			foreach (var entry in contents)
 			{
-				var listIdx = cell.Start.Row - dataStartRow;
-
-				// Check that we are at a valid data row
-				if (cell.Start.Row >= dataStartRow && columnLookup.ContainsKey(cell.Start.Column) && listIdx < contents.Count)
+				foreach (var col in entry.Keys.Where(k => sheet.ColumnNames.Contains(k)))
 				{
-					// Disregard rows beyond the maximum number of rows
-					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)
+					var key = columnLookup.FirstOrDefault(x => x.Value == col).Key;
+					var cell = worksheet.Cells[dataStartRow + i, key];
+                    if (cell != null)
 					{
-						continue;
+						cell.Value = entry[col];
 					}
-
-					var columnName = columnLookup[cell.Start.Column];
-					cell.Value = contents[listIdx][columnName];
 				}
+				i++;
 			}
+
 		}
 
 		#region Utility Methods

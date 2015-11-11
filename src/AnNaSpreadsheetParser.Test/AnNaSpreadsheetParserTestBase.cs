@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
@@ -12,8 +14,17 @@ namespace AnNaSpreadSheetParserTest
 
 		protected virtual void GetParser<T>() where T: class, IAnNaSpreadSheetParser10, new()
 		{
-			parser = new T();
-			parser.OpenFile("./../../AnNaTestSheet.xlsx");
+			if (parser == null)
+			{
+				parser = new T();
+				parser.OpenFile("./../../AnNaTestSheet.xlsx");
+			}
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			parser.Dispose();
 		}
 
 		[TestMethod]
@@ -181,5 +192,26 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(sheets.Count > 0);
 		}
 
+		[TestMethod]
+		public void AddEntryToCrewList()
+		{
+			var crewListSheet = new CrewListSheet();
+			var crewList = parser.GetSheetBulkData(crewListSheet);
+
+			Assert.IsTrue(crewList.Count == 2);
+
+			var entry = new Dictionary<string, string>();
+			entry[CrewListSheet.Columns.Family_Name] = "Andersen";
+			entry[CrewListSheet.Columns.Given_Name] = "Per";
+			entry[CrewListSheet.Columns.Date_Of_Birth] = "12.12.1970 13:00";
+
+			crewList.Add(entry);
+
+			parser.SetSheetBulkData(crewListSheet, crewList);
+			crewList = parser.GetSheetBulkData(crewListSheet);
+			Assert.IsTrue(crewList.Count == 3);
+
+			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
+		}
 	}
 }

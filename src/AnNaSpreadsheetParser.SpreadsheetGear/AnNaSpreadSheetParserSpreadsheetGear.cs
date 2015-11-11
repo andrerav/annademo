@@ -174,36 +174,28 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		private void SetData(IWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
 		{
 			// Find all the known columns and map them to spreadsheet columns
-			var columnNames = sheet.ColumnNames;
-
 			int startrow;
+			var columnNames = sheet.ColumnNames;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
-
 			var dataStartRow = startrow + 2;
 
-			foreach (IRange cell in worksheet.UsedRange)
+			int i = 0;
+			foreach (var entry in contents)
 			{
-				var listIdx = cell.Row - dataStartRow;
-
-				// Check that we are at a valid data row
-				if (cell.Row >= dataStartRow && columnLookup.ContainsKey(cell.Column) && listIdx < contents.Count)
+				foreach (var col in entry.Keys.Where(k => sheet.ColumnNames.Contains(k)))
 				{
-					// Disregard rows beyond the maximum number of rows
-					if (sheet.MaximumNumberOfRows > 0 && listIdx >= sheet.MaximumNumberOfRows)
+					var key = columnLookup.FirstOrDefault(x => x.Value == col).Key;
+					var cell = worksheet.Cells[dataStartRow + i, key];
+					if (cell != null)
 					{
-						continue;
+						cell.Value = entry[col];
 					}
-
-					var columnName = columnLookup[cell.Column];
-					cell.Value = contents[listIdx][columnName];
 				}
+				i++;
 			}
 		}
 
 		#region Utility methods
-
-
-
 		/// <summary>
 		/// Unprotected workbook and all sheets using the given password
 		/// </summary>
