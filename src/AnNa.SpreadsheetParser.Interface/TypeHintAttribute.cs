@@ -14,7 +14,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		public TypeHintAttribute(Type typeHint)
 		{
-			this._typeHint = typeHint;
+			_typeHint = typeHint;
 		}
 
 		public Type TypeHint

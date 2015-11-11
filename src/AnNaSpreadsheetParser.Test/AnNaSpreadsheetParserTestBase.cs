@@ -139,5 +139,42 @@ namespace AnNaSpreadSheetParserTest
 				}
 			}
 		}
+
+		[TestMethod]
+		public void SetValuesTest1()
+		{
+			var newValue = "Test1";
+			var address = "A1";
+			parser.SetValueAt(new CrewListSheetSpecification(), address, newValue);
+			Assert.IsTrue(parser.GetValueAt(new CrewListSheetSpecification(), address) == newValue, "Values not equal");
+		}
+
+		[TestMethod]
+		public void GetAndSetLast10CallsList()
+		{
+			var securityPortCallsSheetSpecification = new SecurityPortCallsSheetSpecification();
+			var contents = parser.GetSheetContents(securityPortCallsSheetSpecification);
+			Assert.IsTrue(contents.Any());
+			parser.SetSheetContents(securityPortCallsSheetSpecification, contents);
+		}
+
+		[TestMethod]
+		public void SaveToStreamTest1()
+		{
+			var securityPortCallsSheetSpecification = new SecurityPortCallsSheetSpecification();
+			var contents = parser.GetSheetContents(securityPortCallsSheetSpecification);
+			Assert.IsTrue(contents.Any());
+			parser.SetSheetContents(securityPortCallsSheetSpecification, contents);
+			var stream = parser.SaveToStream();
+			Assert.IsTrue(stream.Length > 0);
+		}
+
+		[TestMethod]
+		public void CountSheetNames()
+		{
+			var sheets = parser.SheetNames;
+			Assert.IsTrue(sheets.Count > 0);
+		}
+
 	}
 }

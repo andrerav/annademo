@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
@@ -29,6 +30,32 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
+		public void SaveToFile(string path = null)
+		{
+			if (path == null)
+			{
+				_workbook.Save();
+			}
+			else
+			{
+				_workbook.SaveAs(path,FileFormat.OpenXMLWorkbook);
+			}
+		}
+
+		public Stream SaveToStream()
+		{
+			return _workbook.SaveToStream(FileFormat.OpenXMLWorkbook);
+		}
+
+		public List<string> SheetNames
+		{
+			get
+			{
+				ValidateWorkbook();
+				return Workbook.Worksheets.Cast<IWorksheet>().Select(s => s.Name).ToList();
+			}
+		}
+
 		public bool IsAnNaSpreadsheet()
 		{
 			if (Workbook != null)
@@ -47,26 +74,18 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return false;
 		}
 
-		/// <summary>
-		/// Enumerate workbook sheets and return contents
-		/// </summary>
-		/// <param name="sheetName"></param>
-		/// <returns></returns>
 		public List<Dictionary<string, string>> GetSheetContents(ISheetSpecification sheetSpecification)
 		{
-			if (Workbook == null)
-			{
-				throw new InvalidOperationException("You must use OpenFile() to open a spreadsheet before you can retrieve any contents");
-			}
-			foreach (IWorksheet sheet in Workbook.Sheets)
-			{
-				if (sheet.Name.ToLower() == sheetSpecification.SheetName.ToLower())
-				{
-					return RetrieveData(sheet, sheetSpecification);
-				}
-			}
+			ValidateWorkbook();
+			var sheet = GetWorksheet(sheetSpecification.SheetName);
+			return sheet != null ? RetrieveData(sheet, sheetSpecification) : new List<Dictionary<string, string>>();
+		}
 
-			return new List<Dictionary<string, string>>();
+		public void SetSheetContents(ISheetSpecification sheetSpecification, List<Dictionary<string, string>> contents)
+		{
+			ValidateWorkbook();
+			var sheet = GetWorksheet(sheetSpecification.SheetName);
+			SetData(sheet, sheetSpecification, contents);
 		}
 
 		private void ValidateWorkbook()
@@ -86,15 +105,28 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		public string GetValueAt(string sheetName, string cellAddress)
 		{
 			ValidateWorkbook();
-			foreach (IWorksheet sheet in Workbook.Worksheets)
-			{
-				if (sheet.Name.ToLower() == sheetName.ToString().ToLower())
-				{
-					return sheet.Cells[cellAddress].Value.ToString();
-				}
-			}
+			var sheet = GetWorksheet(sheetName);
+			return sheet?.Cells[cellAddress].Value.ToString();
+		}
 
-			return null;
+		public void SetValueAt<T>(ISheetSpecification sheetSpecification, string cellAddress, T value)
+		{
+			SetValueAt(sheetSpecification.SheetName, cellAddress, value);
+		}
+
+		public void SetValueAt<T>(string sheetName, string cellAddress, T value)
+		{
+			ValidateWorkbook();
+			var sheet = GetWorksheet(sheetName);
+			if (sheet != null)
+			{
+				sheet.Cells[cellAddress].Value = value;
+			}
+		}
+
+		private IWorksheet GetWorksheet(string name)
+		{
+			return Workbook.Worksheets.Cast<IWorksheet>().FirstOrDefault(sheet => sheet.Name.ToLower() == name.ToLower());
 		}
 
 		/// <summary>
@@ -106,39 +138,8 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		private List<Dictionary<string, string>> RetrieveData(IWorksheet sheet, ISheetSpecification sheetSpecification)
 		{
 			var result = new List<Dictionary<string, string>>();
-			var columnLookup = new Dictionary<int, string>();
 			int startrow = -1;
-
-			// Find all the known AnNa columns and map them to spreadsheet columns
-			foreach (var columnName in sheetSpecification.ColumnNames)
-			{
-				var cell = sheet.UsedRange.Find(columnName, null,FindLookIn.Values, LookAt.Whole, SearchOrder.ByColumns, SearchDirection.Next, matchCase:true);
-
-				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
-				if (cell == null)
-				{
-					//throw new ColumnNotFoundException(string.Format("Unable to find column {0} in sheet {1}", columnName,
-					//	sheetSpecification.Sheet.ToString()));
-
-					// Skip this column
-					continue;
-				}
-
-				// Save the starting point for the data
-				if (startrow == -1)
-				{
-					startrow = cell.Row;
-				}
-				else
-				{
-					if (startrow != cell.Row)
-					{
-						throw new InvalidColumnPositionException("All columns must be placed on the same row");
-					}
-				}
-
-				columnLookup[cell.Column] = columnName;
-			}
+			var columnLookup = CreateColumnLookup(out startrow, sheet, sheetSpecification.ColumnNames);
 
 			var dataStartRow = startrow + 2;
 
@@ -183,6 +184,34 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return result;
 		}
 
+		private void SetData(IWorksheet sheet, ISheetSpecification sheetSpecification, List<Dictionary<string, string>> contents)
+		{
+			// Find all the known columns and map them to spreadsheet columns
+			var columnNames = sheetSpecification.ColumnNames;
+
+			int startrow;
+			var columnLookup = CreateColumnLookup(out startrow, sheet, columnNames);
+
+			var dataStartRow = startrow + 2;
+
+			foreach (IRange cell in sheet.UsedRange)
+			{
+				var listIdx = cell.Row - dataStartRow;
+
+				// Check that we are at a valid data row
+				if (cell.Row >= dataStartRow && columnLookup.ContainsKey(cell.Column))
+				{
+					// Disregard rows beyond the maximum number of rows
+					if (sheetSpecification.MaximumNumberOfRows > 0 && listIdx >= sheetSpecification.MaximumNumberOfRows)
+					{
+						continue;
+					}
+
+					var columnName = columnLookup[cell.Column];
+					cell.Value = contents[listIdx][columnName];
+				}
+			}
+		}
 
 
 		#region Utility methods
@@ -206,6 +235,40 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			workbook.Unprotect(password);
 			workbook.ProtectStructure = false;
 		}
-		#endregion // Utility methods
+
+		private Dictionary<int, string> CreateColumnLookup(out int startrow, IWorksheet sheet, List<string> columnNames)
+		{
+			startrow = -1;
+			var columnLookup = new Dictionary<int, string>();
+			foreach (var columnName in columnNames)
+			{
+				var cell = sheet.UsedRange.Find(columnName, null, FindLookIn.Values, LookAt.Whole, SearchOrder.ByColumns, SearchDirection.Next, matchCase: true);
+
+				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
+				if (cell == null)
+				{
+					// Skip this column
+					continue;
+				}
+
+				// Save the starting point for the data
+				if (startrow == -1)
+				{
+					startrow = cell.Row;
+				}
+				else
+				{
+					if (startrow != cell.Row)
+					{
+						throw new InvalidColumnPositionException("All columns must be placed on the same row");
+					}
+				}
+
+				columnLookup[cell.Column] = columnName;
+			}
+
+			return columnLookup;
+		}
 	}
+	#endregion // Utility methods
 }

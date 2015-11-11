@@ -48,8 +48,9 @@ namespace AnNaSpreadSheetDemo
 				var type = typeof (ISheetSpecification);
 				var types = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(s => s.GetTypes())
-					.Where(p => type.IsAssignableFrom(p)
-					            && p != typeof (ISheetSpecification));
+					.Where(p => !p.IsAbstract
+								&& type.IsAssignableFrom(p)
+					            && p != typeof (ISheetSpecification)).ToList();
 
 				var everything = new Dictionary<string, List<Dictionary<string, string>>>();
 				foreach (var t in types)
