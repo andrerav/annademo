@@ -24,7 +24,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = new ExcelPackage(new FileInfo(path), password);
 		}
 
-		public void SaveToFile(string path = null)
+		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)
 			{
@@ -32,6 +32,10 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 			else
 			{
+				if (createDirectoryIfNotExists)
+				{
+					Util.CreateDirectoryIfNotExists(path);
+				}
 				_excelPackage.SaveAs(new FileInfo(path));
 			}
 		}
@@ -170,7 +174,6 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				}
 				i++;
 			}
-
 		}
 
 		#region Utility Methods

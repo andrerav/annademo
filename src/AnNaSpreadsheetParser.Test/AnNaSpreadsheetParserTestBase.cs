@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
@@ -212,6 +213,15 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(crewList.Count == 3);
 
 			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
+		}
+
+		[TestMethod]
+		public void SaveToNewFileTest1()
+		{
+			var path = "./../../SaveToNewFileTest1/" + Guid.NewGuid().ToString() + ".xlsx";
+			parser.SaveToFile(path, true);
+			Assert.IsTrue(File.Exists(path));
+			File.Delete(path);
 		}
 	}
 }

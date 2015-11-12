@@ -31,7 +31,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
-		public void SaveToFile(string path = null)
+		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)
 			{
@@ -39,6 +39,10 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 			else
 			{
+				if (createDirectoryIfNotExists)
+				{
+					Util.CreateDirectoryIfNotExists(path);
+				}
 				_workbook.SaveAs(path,FileFormat.OpenXMLWorkbook);
 			}
 		}

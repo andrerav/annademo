@@ -67,7 +67,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// Save this spreadsheet to a specified path, or if no path is given to the file from which this spreadsheet was opened
 		/// </summary>
 		/// <param name="path"></param>
-		void SaveToFile(string path = null);
+		void SaveToFile(string path = null, bool createDirectoryIfNotExists = false);
 
 		/// <summary>
 		/// Save this spreadsheet to a stream.

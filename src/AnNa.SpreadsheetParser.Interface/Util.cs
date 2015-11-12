@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -31,6 +32,15 @@ namespace AnNa.SpreadsheetParser.Interface
 				outValue = inValue?.ToString();
 			}
 			return outValue;
+		}
+
+		public static void CreateDirectoryIfNotExists(string path)
+		{
+			var directoryName = new FileInfo(path).DirectoryName;
+			if (!File.Exists(directoryName))
+			{
+				Directory.CreateDirectory(directoryName);
+			}
 		}
 	}
 }
