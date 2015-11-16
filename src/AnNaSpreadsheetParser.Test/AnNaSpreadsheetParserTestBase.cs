@@ -215,6 +215,8 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
 		}
 
+
+
 		[TestMethod]
 		public void SaveToNewFileTest1()
 		{
@@ -222,6 +224,43 @@ namespace AnNaSpreadSheetParserTest
 			parser.SaveToFile(path, true);
 			Assert.IsTrue(File.Exists(path));
 			File.Delete(path);
+		}
+
+		[TestMethod]
+		public void Row1ShouldBeCopiedTest()
+		{
+			var crewListSheet = new CrewListSheet();
+			var crewList = parser.GetSheetBulkData(crewListSheet);
+
+			Assert.IsTrue(crewList.Count == 2);
+
+			var newEntry = new Dictionary<string, string>();
+			newEntry[CrewListSheet.Columns.Family_Name] = "Andersen";
+			newEntry[CrewListSheet.Columns.Given_Name] = "Per";
+			newEntry[CrewListSheet.Columns.Date_Of_Birth] = "12.12.1970 13:00";
+
+			crewList.Add(newEntry);
+			crewList.Add(newEntry);
+			crewList.Add(newEntry);
+			crewList.Add(newEntry);
+
+			parser.SetSheetBulkData(crewListSheet, crewList);
+
+			var newCrewList = parser.GetSheetBulkData(crewListSheet);
+			Assert.IsTrue(crewList.Count == newCrewList.Count);
+
+			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
+			var path = "./../../SaveToNewFileTest1/" + Guid.NewGuid().ToString() + ".xlsx";
+			parser.SaveToFile(path, true);
+
+			parser.OpenFile(path);
+			crewList = parser.GetSheetBulkData(crewListSheet);
+
+			Assert.IsTrue(crewList[5][CrewListSheet.Columns.Number_Of_Identity_Document] 
+							== crewList[0][CrewListSheet.Columns.Number_Of_Identity_Document]);
+			File.Delete(path);
+
+
 		}
 	}
 }

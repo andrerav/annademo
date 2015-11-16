@@ -164,13 +164,19 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			// This is a user convenience and not part of the standard.
 			if (contents.Any())
 			{
-				var columns = columnLookup.Keys;
-				var startColumn = columns.Min();
-				var endColumn = columns.Max();
-				var dataEndRow = dataStartRow + contents.Count - 1;
+				var rowOffset = 0;
+				foreach (var entry in contents)
+				{
 
-				worksheet.Cells[dataStartRow, startColumn, dataStartRow, endColumn]
-					.Copy(worksheet.Cells[dataStartRow, startColumn, dataEndRow, endColumn]);
+					var columns = columnLookup.Keys;
+					var startColumn = columns.Min();
+					var endColumn = columns.Max();
+
+					worksheet.Cells[dataStartRow, startColumn, dataStartRow, endColumn]
+						.Copy(worksheet.Cells[dataStartRow + rowOffset, startColumn]);
+
+					rowOffset++;
+				}
 			}
 
 			int i = 0;
