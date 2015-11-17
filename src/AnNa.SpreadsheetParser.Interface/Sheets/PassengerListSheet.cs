@@ -25,6 +25,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 					Columns.Nationality,
 					Columns.Date_Of_Birth,
 					Columns.Place_Of_Birth,
+					Columns.Nature_Of_Identity_Document,
 					Columns.Number_Of_Identity_Document,
 					Columns.Port_Of_Embarkation,
 					Columns.Port_Of_Disembarkation,
