@@ -16,7 +16,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 		public string SheetName { get { return "Ship_Stores"; } }
 		
-		public List<string> ColumnNames 
+		public virtual List<string> ColumnNames 
 		{ 
 			get
 			{ 

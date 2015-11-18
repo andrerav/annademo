@@ -35,7 +35,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 		public string SheetName { get { return "Dangerous_And_Poluting_Goods"; } }
 
-		public List<string> ColumnNames
+		public virtual List<string> ColumnNames
 		{
 			get
 			{

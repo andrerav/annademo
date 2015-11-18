@@ -19,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string SpecialOrAdditionalSecurityMeasuresTakenByTheShip = "Special_or_additional_security_measures_taken_by_the_ship";
 		}
 
-		public List<string> ColumnNames
+		public virtual List<string> ColumnNames
 		{
 			get
 			{

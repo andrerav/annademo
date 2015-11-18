@@ -19,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			public const string SecurityMeasuresAppliedInLieu = "Security_measures_applied_in_lieu";
 		}
 
-		public List<string> ColumnNames
+		public virtual List<string> ColumnNames
 		{
 			get
 			{

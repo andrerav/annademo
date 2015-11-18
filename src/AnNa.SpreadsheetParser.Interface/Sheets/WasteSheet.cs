@@ -21,7 +21,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		}
 
 		public string SheetName { get { return "Waste_And_Residues"; } }
-		public List<string> ColumnNames {
+		public virtual List<string> ColumnNames {
 			get
 			{
 				return new List<string>
