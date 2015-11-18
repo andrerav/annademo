@@ -57,6 +57,7 @@
     <Compile Include="Sheets\SecurityS2SActivitiesSheet.cs" />
     <Compile Include="Sheets\SecuritySheet.cs" />
     <Compile Include="Sheets\ShipStoresSheet.cs" />
+    <Compile Include="Sheets\StowawaySheet.cs" />
     <Compile Include="Sheets\WasteSheet.cs" />
     <Compile Include="TypeHintAttribute.cs" />
     <Compile Include="Util.cs" />

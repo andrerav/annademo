@@ -36,6 +36,12 @@ namespace AnNaSpreadSheetParserTest
 		}
 
 		[TestMethod]
+		public void ReadStowawayList()
+		{
+			Assert.IsTrue(parser.GetSheetBulkData(new StowawaySheet()).Any());
+		}
+
+		[TestMethod]
 		public void ReadCrewList()
 		{
 			Assert.IsTrue(parser.GetSheetBulkData(new CrewListSheet()).Any());
