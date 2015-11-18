@@ -13,7 +13,7 @@ namespace AnNaSpreadSheetParserTest
 	{
 		protected IAnNaSpreadSheetParser10 parser;
 
-		protected virtual void GetParser<T>() where T: class, IAnNaSpreadSheetParser10, new()
+		protected virtual void GetParser<T>() where T : class, IAnNaSpreadSheetParser10, new()
 		{
 			if (parser == null)
 			{
@@ -52,6 +52,7 @@ namespace AnNaSpreadSheetParserTest
 		{
 			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
 		}
+
 		[TestMethod]
 		public void ReadWasteList()
 		{
@@ -63,6 +64,7 @@ namespace AnNaSpreadSheetParserTest
 		{
 			Assert.IsTrue(parser.GetSheetBulkData(new SecurityPortCallsSheet()).Any());
 		}
+
 		[TestMethod]
 		public void ReadS2SList()
 		{
@@ -185,7 +187,8 @@ namespace AnNaSpreadSheetParserTest
 			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
 
 			contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
-			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] == newValue);
+			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] ==
+			              newValue);
 		}
 
 		[TestMethod]
@@ -269,10 +272,21 @@ namespace AnNaSpreadSheetParserTest
 			parser.OpenFile(path);
 			crewList = parser.GetSheetBulkData(crewListSheet);
 
-			Assert.IsTrue(crewList[5][CrewListSheet.Columns.Number_Of_Identity_Document] 
-							== crewList[0][CrewListSheet.Columns.Number_Of_Identity_Document]);
+			Assert.IsTrue(crewList[5][CrewListSheet.Columns.Number_Of_Identity_Document]
+			              == crewList[0][CrewListSheet.Columns.Number_Of_Identity_Document]);
 			File.Delete(path);
 
+
+		}
+
+		[TestMethod]
+		public void OpenFromStreamTest()
+		{
+			var stream = parser.SaveToStream();
+			parser.OpenFile(stream);
+			Assert.IsTrue(parser.GetSheetBulkData(new CrewListSheet()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
+			Assert.IsTrue(parser.GetSheetBulkData(new WasteSheet()).Any());
 
 		}
 	}

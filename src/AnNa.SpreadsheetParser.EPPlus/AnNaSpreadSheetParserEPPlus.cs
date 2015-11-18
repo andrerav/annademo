@@ -24,6 +24,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = new ExcelPackage(new FileInfo(path), password);
 		}
 
+	    public void OpenFile(Stream stream, string password = null)
+	    {
+			_excelPackage = new ExcelPackage(stream, password);
+		}
+
 		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)

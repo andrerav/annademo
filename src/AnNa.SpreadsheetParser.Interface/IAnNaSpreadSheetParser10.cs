@@ -16,6 +16,13 @@ namespace AnNa.SpreadsheetParser.Interface
 		void OpenFile(string path, string password = null);
 
 		/// <summary>
+		/// Open a XLSX file from a specific path.
+		/// </summary>
+		/// <param name="stream">Path to XSLX file</param>
+		/// <param name="password">Password if spreadsheet is encryptet/protected</param>
+		void OpenFile(Stream stream, string password = null);
+
+		/// <summary>
 		/// Retrieve the bulk data from a specific sheet
 		/// </summary>
 		/// <param name="sheet"></param>

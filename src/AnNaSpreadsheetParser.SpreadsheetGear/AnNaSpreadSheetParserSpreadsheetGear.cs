@@ -31,6 +31,17 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
+		public void OpenFile(Stream stream, string password = null)
+		{
+			_workbook = Factory.GetWorkbookSet().Workbooks.OpenFromStream(stream);
+
+			if (password != null)
+			{
+				UnprotectSpreadsheet(password, _workbook);
+			}
+
+		}
+
 		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)
