@@ -28,6 +28,13 @@ namespace AnNaSpreadSheetParserTest
 			parser.Dispose();
 		}
 
+
+		[TestMethod]
+		public void ReadCruiseList()
+		{
+			Assert.IsTrue(parser.GetSheetBulkData(new CruiseSheet()).Any());
+		}
+
 		[TestMethod]
 		public void ReadCrewList()
 		{
