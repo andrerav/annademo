@@ -167,22 +167,22 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 			// Copy the formatting of the first row to every row that will contain data
 			// This is a user convenience and not part of the standard.
-			if (contents.Any())
-			{
-				var rowOffset = 0;
-				foreach (var entry in contents)
-				{
+			//if (contents.Any())
+			//{
+			//	var rowOffset = 0;
+			//	foreach (var entry in contents)
+			//	{
 
-					var columns = columnLookup.Keys;
-					var startColumn = columns.Min();
-					var endColumn = columns.Max();
+			//		var columns = columnLookup.Keys;
+			//		var startColumn = columns.Min();
+			//		var endColumn = columns.Max();
 
-					worksheet.Cells[dataStartRow, startColumn, dataStartRow, endColumn]
-						.Copy(worksheet.Cells[dataStartRow + rowOffset, startColumn]);
+			//		worksheet.Cells[dataStartRow, startColumn, dataStartRow, endColumn]
+			//			.Copy(worksheet.Cells[dataStartRow + rowOffset, startColumn]);
 
-					rowOffset++;
-				}
-			}
+			//		rowOffset++;
+			//	}
+			//}
 
 			int i = 0;
 			foreach (var entry in contents)
