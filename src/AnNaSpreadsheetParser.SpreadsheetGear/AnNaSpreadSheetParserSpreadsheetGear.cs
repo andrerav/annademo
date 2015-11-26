@@ -113,7 +113,31 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheetName);
-			return worksheet?.Cells[cellAddress].Value.ToString();
+			return worksheet?.Cells[cellAddress]?.Value?.ToString();
+		}
+
+		public T GetValueAt<T>(ISheet sheet, string cellAddress)
+		{
+			return GetValueAt<T>(sheet.SheetName, cellAddress);
+		}
+
+		public T GetValueAt<T>(string sheetName, string cellAddress)
+		{
+			ValidateWorkbook();
+			var worksheet = GetWorksheet(sheetName);
+			var value = worksheet?.Cells[cellAddress]?.Value;
+
+			object convertedValue;
+			Util.ApplyTypeHint<T>(value, out convertedValue);
+
+			if (convertedValue is T)
+			{
+				return (T)convertedValue;
+			}
+			else
+			{
+				return default(T);
+			}
 		}
 
 		public void SetValueAt<T>(ISheet sheet, string cellAddress, T value)
@@ -177,7 +201,8 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 					var columnName = columnLookup[cell.Column];
 					var inValue = cell.Value;
 					var typeHint = columnName.GetTypeHint(sheet);
-					var outValue = Util.ApplyTypeHint(typeHint, inValue);
+					object convertedValue;
+					var outValue = Util.ApplyTypeHint(typeHint, inValue, out convertedValue);
 
 					result[listIdx][columnLookup[cell.Column]] = outValue;
 				}

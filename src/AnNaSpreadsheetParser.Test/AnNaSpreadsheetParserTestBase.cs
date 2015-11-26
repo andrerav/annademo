@@ -25,7 +25,7 @@ namespace AnNaSpreadSheetParserTest
 		[TestCleanup]
 		public void Cleanup()
 		{
-			parser.Dispose();
+			//parser.Dispose();
 		}
 
 
@@ -81,6 +81,25 @@ namespace AnNaSpreadSheetParserTest
 		public void ReadDPGList()
 		{
 			Assert.IsTrue(parser.GetSheetBulkData(new DpgSheet()).Any());
+		}
+
+
+		[TestMethod]
+		public void ApplicationOfDateTimeTypeHint()
+		{
+			var data = parser.GetSheetBulkData(new PassengerListSheet());
+			foreach (var row in data)
+			{
+				var dob1 = row[PassengerListSheet.Columns.Date_Of_Birth];
+				if (!string.IsNullOrWhiteSpace(dob1))
+				{
+					object dobConverted;
+					var typeHintedDob = Util.ApplyTypeHint<DateTime>(dob1, out dobConverted);
+					Assert.IsTrue(dobConverted is DateTime);
+					Assert.IsTrue(typeHintedDob == dobConverted.ToString());
+					Assert.IsTrue((DateTime)dobConverted > DateTime.MinValue);
+				}
+			}
 		}
 
 		[TestMethod]
@@ -288,6 +307,16 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
 			Assert.IsTrue(parser.GetSheetBulkData(new WasteSheet()).Any());
 
+		}
+
+		[TestMethod]
+		public void SerializeTest1()
+		{
+			var crewlistSheet = new CrewListSheet();
+			System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(crewlistSheet.GetType());
+			StringWriter sw = new StringWriter();
+			x.Serialize(sw, crewlistSheet);
+			Assert.IsTrue(sw.ToString().Length > 0);
 		}
 	}
 }

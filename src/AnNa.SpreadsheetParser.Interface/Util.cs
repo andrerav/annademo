@@ -12,27 +12,68 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Accepts a type and a string value and attempts to do a proper type conversion
 		/// </summary>
-		/// <param name="typeHint"></param>
 		/// <param name="inValue"></param>
-		/// <returns></returns>
-		public static string ApplyTypeHint(Type typeHint, object inValue)
+		/// <returns>A simple ToString() representation of the converted value, or the input value if conversion was not possible or necessary</returns>
+		public static string ApplyTypeHint(Type typeHint, object inValue, out object convertedValue)
 		{
-			string outValue = null;
-			if (typeHint != null && inValue != null)
+			object outValue = null;
+			if (inValue != null)
 			{
 				// Type hint: DateTime
-				if (typeHint == typeof(DateTime) && inValue is double)
+				if (typeHint == typeof(DateTime))
 				{
-					outValue = DateTime.FromOADate((double)inValue).ToString();
+					if (inValue is double)
+					{
+						outValue = DateTime.FromOADate((double)inValue);
+					}
+					else
+					{
+						double tmp;
+						if (double.TryParse(inValue.ToString(), out tmp))
+						{
+							outValue = DateTime.FromOADate(tmp);
+						}
+						else
+						{
+							if (inValue is DateTime)
+							{
+								outValue = inValue;
+							}
+							else
+							{
+								DateTime dtmp;
+								if (DateTime.TryParse(inValue.ToString(), out dtmp))
+								{
+									outValue = dtmp;
+								}
+							}
+						}
+					}
 				}
 			}
+			else
+			{
+				convertedValue = null;
+				return null;
+			}
+
+			convertedValue = outValue;
 
 			if (outValue == null)
 			{
-				outValue = inValue?.ToString();
+				return inValue.ToString();
 			}
-			return outValue;
+			else
+			{
+				return outValue.ToString();
+			}
 		}
+
+		public static string ApplyTypeHint<T>(object inValue, out object convertedValue)
+		{
+			return ApplyTypeHint(typeof(T), inValue, out convertedValue);
+		}
+
 
 		public static void CreateDirectoryIfNotExists(string path)
 		{

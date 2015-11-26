@@ -87,7 +87,31 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			return worksheet?.Cells[cellAddress].Text;
 		}
 
-	    public void SetValueAt<T>(ISheet sheet, string cellAddress, T value)
+		public T GetValueAt<T>(ISheet sheet, string cellAddress)
+		{
+			return GetValueAt<T>(sheet.SheetName, cellAddress);
+		}
+
+		public T GetValueAt<T>(string sheetName, string cellAddress)
+		{
+			ValidateWorkbook();
+			var worksheet = GetWorksheet(sheetName);
+			var value = worksheet?.Cells[cellAddress]?.Value;
+
+			object convertedValue;
+			Util.ApplyTypeHint<T>(value, out convertedValue);
+
+			if (convertedValue is T)
+			{
+				return (T)convertedValue;
+			}
+			else
+			{
+				return default(T);
+			}
+		}
+
+		public void SetValueAt<T>(ISheet sheet, string cellAddress, T value)
 	    {
 			SetValueAt(sheet.SheetName, cellAddress, value);
 	    }
@@ -146,7 +170,8 @@ namespace AnNa.SpreadSheetParser.EPPlus
 					var columnName = columnLookup[cell.Start.Column];
 					var inValue = cell.Value;
 					var typeHint = columnName.GetTypeHint(sheet);
-					var outValue = Util.ApplyTypeHint(typeHint, inValue);
+					object convertedValue;
+					var outValue = Util.ApplyTypeHint(typeHint, inValue, out convertedValue);
 
 					result[listIdx][columnName] = outValue;
 				}

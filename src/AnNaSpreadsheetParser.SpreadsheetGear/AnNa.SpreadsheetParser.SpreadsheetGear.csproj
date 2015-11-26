@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AnNa.SpreadsheetParser.SpreadsheetGear</RootNamespace>
-    <AssemblyName>AnNaSpreadsheetParserSpreadsheetGear</AssemblyName>
+    <AssemblyName>AnNa.SpreadsheetParser.SpreadsheetGear</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

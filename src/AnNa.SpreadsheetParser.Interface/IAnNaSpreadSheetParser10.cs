@@ -53,6 +53,24 @@ namespace AnNa.SpreadsheetParser.Interface
 		string GetValueAt(string sheet, string cellAddress);
 
 		/// <summary>
+		/// Get a value from a specific cell in a specific sheet. Cells are addressed in the form "A1", "B3" etc. 
+		/// </summary>
+		/// <typeparam name="T">Type hint to apply to the retrieved value</typeparam>
+		/// <param name="sheet"></param>
+		/// <param name="cellAddress"></param>
+		/// <returns></returns>
+		T GetValueAt<T>(ISheet sheet, string cellAddress);
+
+		/// <summary>
+		/// Get a value from a specific cell in a specific sheet. Cells are addressed in the form "A1", "B3" etc. 
+		/// </summary>
+		/// <typeparam name="T">Type hint to apply to the retrieved value</typeparam>
+		/// <param name="sheetName"></param>
+		/// <param name="cellAddress"></param>
+		/// <returns></returns>
+		T GetValueAt<T>(string sheetName, string cellAddress);
+
+		/// <summary>
 		/// Overload
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
