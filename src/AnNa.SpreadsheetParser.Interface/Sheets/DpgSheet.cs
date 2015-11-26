@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
+	[Serializable]
 	public class DpgSheet : ISheetWithBulkData
 	{
-		[Serializable]
 		public class Columns: ISheetColumns
 		{
 			public const string DGClassification = "DG_classification";
