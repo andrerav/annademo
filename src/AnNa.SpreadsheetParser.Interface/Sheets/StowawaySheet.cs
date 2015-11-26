@@ -5,6 +5,7 @@ using System.Text;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
+	[Serializable]
 	public class StowawaySheet : AbstractCrewPaxListSheet
 	{
 

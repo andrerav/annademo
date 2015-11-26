@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
+	[Serializable]
 	public abstract class AbstractCrewPaxListSheet : ISheetWithBulkData
 	{
 		public class CommonColumns: ISheetColumns

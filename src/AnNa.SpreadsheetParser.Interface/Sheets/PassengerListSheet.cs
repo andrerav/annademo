@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
+	[Serializable]
 	public class PassengerListSheet : AbstractCrewPaxListSheet
 	{
 		public class Columns : CommonColumns

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
+	[Serializable]
 	public class SecurityPortCallsSheet : SecuritySheet, ISheetWithBulkData
 	{
 		public class Columns:ISheetColumns
