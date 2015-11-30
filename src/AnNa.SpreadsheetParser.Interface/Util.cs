@@ -83,5 +83,35 @@ namespace AnNa.SpreadsheetParser.Interface
 				Directory.CreateDirectory(directoryName);
 			}
 		}
+
+		public static void RemoveEmptyRows(List<Dictionary<string, string>> result)
+		{
+			var tmp = result.ToList();
+			tmp.Reverse();
+			int i = tmp.Count() - 1;
+			foreach (var row in tmp)
+			{
+				bool rowHasData = false;
+				foreach (var key in row.Keys)
+				{
+					if (key.ToLower() == "number" || key == "__RowIndex")
+					{
+						continue;
+					}
+					if (!string.IsNullOrWhiteSpace(row[key]))
+					{
+						rowHasData = true;
+						break;
+					}
+				}
+
+				if (!rowHasData)
+				{
+					result.RemoveAt(i);
+				}
+
+				i--;
+			}
+		}
 	}
 }

@@ -6,6 +6,7 @@ using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using SpreadsheetGear;
 using ISheet = AnNa.SpreadsheetParser.Interface.Sheets.ISheet;
+using System.Globalization;
 
 namespace AnNa.SpreadsheetParser.SpreadsheetGear
 {
@@ -14,6 +15,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 		protected const string Version = "1.0";
 		private IWorkbook _workbook;
+		private CultureInfo _cultureInfo = new CultureInfo(CultureInfo.CurrentCulture.LCID);
 
 		public IWorkbook Workbook
 		{
@@ -23,7 +25,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 		public void OpenFile(string path, string password = null)
 		{
-			_workbook = Factory.GetWorkbook(path);
+			_workbook = Factory.GetWorkbook(path, _cultureInfo);
 
 			if (password != null)
 			{
@@ -33,8 +35,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 		public void OpenFile(Stream stream, string password = null)
 		{
-			_workbook = Factory.GetWorkbookSet().Workbooks.OpenFromStream(stream);
-
+			_workbook = Factory.GetWorkbookSet(_cultureInfo).Workbooks.OpenFromStream(stream);
 			if (password != null)
 			{
 				UnprotectSpreadsheet(password, _workbook);
@@ -123,12 +124,24 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 		public T GetValueAt<T>(string sheetName, string cellAddress)
 		{
+			string dummyRawString;
+			return GetValueAt<T>(sheetName, cellAddress, out dummyRawString);
+		}
+
+
+		public T GetValueAt<T>(ISheet sheet, string cellAddress, out string rawString)
+		{
+			return GetValueAt<T>(sheet.SheetName, cellAddress, out rawString);
+        }
+
+		public T GetValueAt<T>(string sheetName, string cellAddress, out string rawString)
+		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheetName);
-			var value = worksheet?.Cells[cellAddress]?.Value;
-
+			var rawValue = worksheet?.Cells[cellAddress]?.Value;
+			rawString = rawValue.ToString();
 			object convertedValue;
-			Util.ApplyTypeHint<T>(value, out convertedValue);
+			Util.ApplyTypeHint<T>(rawValue, out convertedValue);
 
 			if (convertedValue is T)
 			{
@@ -207,7 +220,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 					result[listIdx][columnLookup[cell.Column]] = outValue;
 				}
 			}
-
+			Util.RemoveEmptyRows(result);
 			return result;
 		}
 

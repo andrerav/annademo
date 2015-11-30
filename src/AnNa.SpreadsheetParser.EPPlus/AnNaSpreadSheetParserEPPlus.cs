@@ -94,12 +94,24 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 		public T GetValueAt<T>(string sheetName, string cellAddress)
 		{
+			string dummyRawString;
+			return GetValueAt<T>(sheetName, cellAddress, out dummyRawString);
+		}
+
+
+		public T GetValueAt<T>(ISheet sheet, string cellAddress, out string rawString)
+		{
+			return GetValueAt<T>(sheet.SheetName, cellAddress, out rawString);
+		}
+
+		public T GetValueAt<T>(string sheetName, string cellAddress, out string rawString)
+		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheetName);
-			var value = worksheet?.Cells[cellAddress]?.Value;
-
+			var rawValue = worksheet?.Cells[cellAddress]?.Value;
+			rawString = rawValue.ToString();
 			object convertedValue;
-			Util.ApplyTypeHint<T>(value, out convertedValue);
+			Util.ApplyTypeHint<T>(rawValue, out convertedValue);
 
 			if (convertedValue is T)
 			{
@@ -176,6 +188,9 @@ namespace AnNa.SpreadSheetParser.EPPlus
 					result[listIdx][columnName] = outValue;
 				}
 			}
+
+			Util.RemoveEmptyRows(result);
+
 			return result;
 		}
 

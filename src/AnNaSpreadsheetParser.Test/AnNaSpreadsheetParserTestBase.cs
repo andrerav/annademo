@@ -106,36 +106,36 @@ namespace AnNaSpreadSheetParserTest
 		public void ReadDPGColumns()
 		{
 			var sheetContents = parser.GetSheetBulkData(new DpgSheet());
-			var headerRow = 5;
+			var row = sheetContents.First();
 
 			// Dangerous and Polluting Cargo
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.DGClassification));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.ImoHazardClass));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.UnNumber));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TransportUnitId));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TextualReference));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.StowagePosition));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.GrossQuantity));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.DGClassification));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.ImoHazardClass));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.UnNumber));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TransportUnitId));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TextualReference));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.StowagePosition));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.GrossQuantity));
 
 			// Conditional Information
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.NetQuantity));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.Flashpoint));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.MARPOLPollutionCode));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PortOfLoading));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PortOfDischarge));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.TransportDocumentId));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.NumberOfPackages));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PackageType));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.PackingGroup));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.SubsidiaryRisks));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.INFShipClass));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.MarksAndNumbers));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.EmergencyMeasures));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.AdditionalInformation));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.NetQuantity));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.Flashpoint));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.MARPOLPollutionCode));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PortOfLoading));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PortOfDischarge));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TransportDocumentId));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.NumberOfPackages));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PackageType));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PackingGroup));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.SubsidiaryRisks));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.INFShipClass));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.MarksAndNumbers));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.EmergencyMeasures));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.AdditionalInformation));
 
 			// Supplemental Information
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.RadioactivityLevel));
-			Assert.IsTrue(sheetContents[headerRow].ContainsKey(DpgSheet.Columns.Criticality));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.RadioactivityLevel));
+			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.Criticality));
 		}
 
 		[TestMethod]
