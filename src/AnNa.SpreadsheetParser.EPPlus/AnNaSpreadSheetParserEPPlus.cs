@@ -127,7 +127,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheetName);
 			var rawValue = worksheet?.Cells[cellAddress]?.Value;
-			rawString = rawValue.ToString();
+			rawString = rawValue != null ? rawValue.ToString() : string.Empty;
 			object convertedValue;
 			Util.ApplyTypeHint<T>(rawValue, out convertedValue);
 
