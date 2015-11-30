@@ -91,18 +91,18 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return false;
 		}
 
-		public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet)
+		public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2)
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
-			return worksheet != null ? RetrieveData(worksheet, sheet) : new List<Dictionary<string, string>>();
+			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 		}
 
-		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
+		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2)
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
-			SetData(worksheet, sheet, contents);
+			SetData(worksheet, sheet, contents, offset);
 		}
 
 		public string GetValueAt(ISheet sheet, string cellAddress)
@@ -174,13 +174,13 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		/// <param name="worksheet"></param>
 		/// <param name="sheetName"></param>
 		/// <returns></returns>
-		private List<Dictionary<string, string>> RetrieveData(IWorksheet worksheet, ISheetWithBulkData sheet)
+		private List<Dictionary<string, string>> RetrieveData(IWorksheet worksheet, ISheetWithBulkData sheet, int offset)
 		{
 			var result = new List<Dictionary<string, string>>();
 			int startrow = -1;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, sheet.ColumnNames);
 
-			var dataStartRow = startrow + 2;
+			var dataStartRow = startrow + offset;
 
 			foreach (IRange cell in worksheet.UsedRange)
 			{
@@ -224,13 +224,13 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return result;
 		}
 
-		private void SetData(IWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
+		private void SetData(IWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset)
 		{
 			// Find all the known columns and map them to spreadsheet columns
 			int startrow;
 			var columnNames = sheet.ColumnNames;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
-			var dataStartRow = startrow + 2;
+			var dataStartRow = startrow + offset;
 
 			// Copy the formatting of the first row to every row that will contain data
 			// This is a user convenience and not part of the standard.

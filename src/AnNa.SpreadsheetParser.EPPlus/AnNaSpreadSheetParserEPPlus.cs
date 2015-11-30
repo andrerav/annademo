@@ -61,18 +61,18 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		    }
 	    }
 
-	    public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet)
+	    public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2)
 	    {
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
-			return worksheet != null ? RetrieveData(worksheet, sheet) : new List<Dictionary<string, string>>();
+			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 	    }
 
-		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
+		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2)
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
-			SetData(worksheet, sheet, contents);
+			SetData(worksheet, sheet, contents, offset);
 		}
 
 	    public string GetValueAt(ISheet specification, string cellAddress)
@@ -138,14 +138,14 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet worksheet, ISheetWithBulkData sheet)
+	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, int offset)
 	    {
 			var result = new List<Dictionary<string, string>>();
 		    var columnNames = sheet.ColumnNames;
 			int startrow;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
-			var dataStartRow = startrow + 2;
+			var dataStartRow = startrow + offset;
 		    var cells = worksheet.Cells.Where(
 			    c => c.End.Column <= worksheet.Dimension.End.Column && c.End.Row <= worksheet.Dimension.End.Row).ToList();
 
@@ -195,7 +195,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 
-		private void SetData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents)
+		private void SetData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset)
 		{
 			// Find all the known columns and map them to spreadsheet columns
 			var columnNames = sheet.ColumnNames;
@@ -203,7 +203,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			int startrow;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
-			var dataStartRow = startrow + 2;
+			var dataStartRow = startrow + offset;
 
 			// Copy the formatting of the first row to every row that will contain data
 			// This is a user convenience and not part of the standard.

@@ -27,14 +27,14 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// </summary>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet);
+		List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2);
 
 		/// <summary>
 		/// Write bulk data to a specific sheet
 		/// </summary>
 		/// <param name="sheet"></param>
 		/// <param name="contents"></param>
-		void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents);
+		void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2);
 
 		/// <summary>
 		/// Overload
