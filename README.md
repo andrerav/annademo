@@ -7,3 +7,5 @@ This project provides a working implementation for parsing the contents of a sta
 
 ## NuGet Packages
 [AnNa.SpreadsheetParser.EPPlus](https://www.nuget.org/packages/AnNa.SpreadsheetParser.EPPlus/)
+
+[AnNa.SpreadsheetParser.SpreadsheetGear](https://www.nuget.org/packages/AnNa.SpreadsheetParser.SpreadsheetGear/) (requires a licensed version of SpreadsheetGear 2012)
