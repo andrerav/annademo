@@ -29,6 +29,24 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = new ExcelPackage(stream, password);
 		}
 
+		public bool IsAnNaSpreadsheet()
+		{
+			if (Workbook != null)
+			{
+				var versionSheet = Workbook.Worksheets["Version"];
+				if (versionSheet != null)
+				{
+					var versionCellValue = versionSheet.Cells["B3"].Value;
+					if (versionCellValue.ToString().StartsWith("1.0"))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)
@@ -297,5 +315,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		    _excelPackage.Dispose();
 		    _excelPackage = null;
 	    }
+
+
 	}
 }

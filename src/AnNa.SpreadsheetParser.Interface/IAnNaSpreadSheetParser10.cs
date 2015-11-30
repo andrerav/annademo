@@ -23,6 +23,12 @@ namespace AnNa.SpreadsheetParser.Interface
 		void OpenFile(Stream stream, string password = null);
 
 		/// <summary>
+		/// Returns true if this sheet has been recognized as an AnNa spreadsheet
+		/// </summary>
+		/// <returns></returns>
+		bool IsAnNaSpreadsheet();
+
+		/// <summary>
 		/// Retrieve the bulk data from a specific sheet
 		/// </summary>
 		/// <param name="sheet"></param>
