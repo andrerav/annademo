@@ -206,7 +206,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 						}
 
 						// Set row index and column index (NOTE: rows in SSG are zeroindexed, thus the +1)
-						dict["__RowIndex"] = cell.Row+1.ToString();
+						dict["__RowIndex"] = (cell.Row+1).ToString();
 
 						result.Insert(listIdx, dict);
 					}
