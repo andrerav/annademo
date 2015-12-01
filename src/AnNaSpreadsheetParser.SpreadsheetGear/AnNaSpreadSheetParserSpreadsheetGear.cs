@@ -55,13 +55,13 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				{
 					Util.CreateDirectoryIfNotExists(path);
 				}
-				_workbook.SaveAs(path,FileFormat.OpenXMLWorkbook);
+				_workbook.SaveAs(path,FileFormat.OpenXMLWorkbookMacroEnabled);
 			}
 		}
 
 		public Stream SaveToStream()
 		{
-			return _workbook.SaveToStream(FileFormat.OpenXMLWorkbook);
+			return _workbook.SaveToStream(FileFormat.OpenXMLWorkbookMacroEnabled);
 		}
 
 		public List<string> SheetNames
