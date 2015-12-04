@@ -96,7 +96,7 @@ namespace AnNaSpreadSheetParserTest
 					object dobConverted;
 					var typeHintedDob = Util.ApplyTypeHint<DateTime>(dob1, out dobConverted);
 					Assert.IsTrue(dobConverted is DateTime);
-					Assert.IsTrue(typeHintedDob == dobConverted.ToString());
+					Assert.IsTrue(typeHintedDob.ToString() == dobConverted.ToString());
 					Assert.IsTrue((DateTime)dobConverted > DateTime.MinValue);
 				}
 			}
@@ -207,7 +207,7 @@ namespace AnNaSpreadSheetParserTest
 
 			contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
 			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] ==
-			              newValue);
+						  newValue);
 		}
 
 		[TestMethod]
@@ -233,8 +233,8 @@ namespace AnNaSpreadSheetParserTest
 		{
 			var crewListSheet = new CrewListSheet();
 			var crewList = parser.GetSheetBulkData(crewListSheet);
-
-			Assert.IsTrue(crewList.Count == 2);
+			var previousCount = crewList.Count;
+            Assert.IsTrue(previousCount > 0);
 
 			var entry = new Dictionary<string, string>();
 			entry[CrewListSheet.Columns.Family_Name] = "Andersen";
@@ -245,7 +245,7 @@ namespace AnNaSpreadSheetParserTest
 
 			parser.SetSheetBulkData(crewListSheet, crewList);
 			crewList = parser.GetSheetBulkData(crewListSheet);
-			Assert.IsTrue(crewList.Count == 3);
+			Assert.IsTrue(crewList.Count == previousCount + 1);
 
 			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
 		}
