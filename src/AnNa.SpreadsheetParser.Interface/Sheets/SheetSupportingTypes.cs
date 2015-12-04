@@ -50,6 +50,12 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	[Serializable]
 	public class SyntaxError
 	{
+
+		/// <summary>
+		/// The cell in which this syntax error was found
+		/// </summary>
+		public string CellAddress;
+
 		/// <summary>
 		/// The original hinted type which could not be parsed
 		/// </summary>

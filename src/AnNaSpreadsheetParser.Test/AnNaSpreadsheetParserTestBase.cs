@@ -83,6 +83,13 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(parser.GetSheetBulkData(new DpgSheet()).Any());
 		}
 
+		[TestMethod]
+		public void ReadArrivalOrDepartureList()
+		{
+			var rows = parser.GetSheetBulkData(new AnNa.SpreadsheetParser.Interface.Sheets.Typed.ArrivalOrDepartureSheet()).Rows;
+			Assert.IsTrue(rows.Any());
+		}
+
 
 		[TestMethod]
 		public void ApplicationOfDateTimeTypeHint()
@@ -310,13 +317,19 @@ namespace AnNaSpreadSheetParserTest
 		}
 
 		[TestMethod]
-		public void SerializeTest1()
+		public void SerializeTest()
 		{
 			var crewlistSheet = new CrewListSheet();
 			System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(crewlistSheet.GetType());
 			StringWriter sw = new StringWriter();
 			x.Serialize(sw, crewlistSheet);
 			Assert.IsTrue(sw.ToString().Length > 0);
+		}
+
+		[TestMethod]
+		public void SheetNamesTest()
+		{
+			Assert.IsTrue(parser.SheetNames.Count > 0);
 		}
 	}
 }

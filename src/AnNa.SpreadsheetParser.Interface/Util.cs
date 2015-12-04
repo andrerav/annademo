@@ -79,7 +79,7 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 				}
 
-				if (typeHint == typeof(double) || typeHint == typeof(double?))
+				else if (typeHint == typeof(double) || typeHint == typeof(double?))
 				{
 					if (inValue is double)
 					{
@@ -105,9 +105,34 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 				}
 
-				if (typeHint == typeof(string))
+				else if (typeHint == typeof(string))
 				{
 					outValue = inValue.ToString();
+				}
+
+				else // Type hint not explicitly understood, attempt generic type conversion
+				{
+					try {
+						if (typeHint.IsGenericType && typeHint.GetGenericTypeDefinition() == typeof(Nullable<>))
+						{
+							if (inValue != null && String.IsNullOrWhiteSpace(inValue.ToString()))
+							{
+								outValue = null;
+							}
+							else
+							{
+								outValue = Convert.ChangeType(inValue, typeHint.GetGenericArguments().First());
+							}
+						}
+						else
+						{
+							outValue = Convert.ChangeType(inValue, typeHint);
+						}
+					}
+					catch
+					{
+						syntaxError = CreateSyntaxError(typeHint, inValue);
+					}
 				}
 			}
 			else
@@ -259,7 +284,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			accessor[instance, fieldName] = inValue;
 		}
 
-		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows) where T : SheetRow
+		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows, string cellAddress) where T : SheetRow
 		{
 			var listIdx = rowIndex - dataStartRowIndex;
 
@@ -294,6 +319,7 @@ namespace AnNa.SpreadsheetParser.Interface
 					var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out syntaxError);
 					if (syntaxError != null)
 					{
+						syntaxError.CellAddress = cellAddress;
 						syntaxError.DataField = column;
 						row.SyntaxErrorContainer.AddSyntaxError(syntaxError);
 					}
@@ -316,6 +342,7 @@ namespace AnNa.SpreadsheetParser.Interface
 				var outValue = Util.ApplyTypeHint(field.FieldType, value, out convertedValue, out syntaxError);
 				if (syntaxError != null)
 				{
+					syntaxError.CellAddress = field.CellAddress;
 					sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
 				}
 				Util.SetObjectFieldValue(sheet.GetType(), field.FieldName, sheet, convertedValue ?? outValue);
