@@ -11,21 +11,21 @@ using OfficeOpenXml;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
-    public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10
+	public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10
 	{
 
 		protected const string Version = "1.0";
-	    private ExcelPackage _excelPackage;
+		private ExcelPackage _excelPackage;
 
-	    protected ExcelWorkbook Workbook => _excelPackage.Workbook;
+		protected ExcelWorkbook Workbook => _excelPackage.Workbook;
 
-	    public void OpenFile(string path, string password = null)
-	    {
+		public void OpenFile(string path, string password = null)
+		{
 			_excelPackage = new ExcelPackage(new FileInfo(path), password);
 		}
 
-	    public void OpenFile(Stream stream, string password = null)
-	    {
+		public void OpenFile(Stream stream, string password = null)
+		{
 			_excelPackage = new ExcelPackage(stream, password);
 		}
 
@@ -70,21 +70,28 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			return stream;
 		}
 
-	    public List<string> SheetNames
-	    {
-		    get
-		    {
+		public List<string> SheetNames
+		{
+			get
+			{
 				ValidateWorkbook();
-			    return Workbook.Worksheets.Select(s => s.Name).ToList();
-		    }
-	    }
+				return Workbook.Worksheets.Select(s => s.Name).ToList();
+			}
+		}
 
-	    public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2)
-	    {
+		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		{
+			ValidateWorkbook();
+			var worksheet = GetWorksheet(sheet.SheetName);
+			return worksheet != null ? RetrieveData(worksheet, sheet) : null;
+		}
+
+		public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2)
+		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
 			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
-	    }
+		}
 
 		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2)
 		{
@@ -93,10 +100,10 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			SetData(worksheet, sheet, contents, offset);
 		}
 
-	    public string GetValueAt(ISheet specification, string cellAddress)
-	    {
-		    return GetValueAt(specification.SheetName, cellAddress);
-	    }
+		public string GetValueAt(ISheet specification, string cellAddress)
+		{
+			return GetValueAt(specification.SheetName, cellAddress);
+		}
 
 		public string GetValueAt(string sheetName, string cellAddress)
 		{
@@ -142,9 +149,9 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 		public void SetValueAt<T>(ISheet sheet, string cellAddress, T value)
-	    {
+		{
 			SetValueAt(sheet.SheetName, cellAddress, value);
-	    }
+		}
 
 		public void SetValueAt<T>(string sheetName, string cellAddress, T value)
 		{
@@ -156,16 +163,46 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-	    private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, int offset)
-	    {
+		private ITypedSheetWithBulkData<T> RetrieveData<T>(ExcelWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		{
+			var result = new List<T>();
+			int startrow = -1;
+			List<SheetColumn> columnNames = Util.GetColumns(sheet);
+
+			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames);
+
+			var dataStartRowIndex = startrow + sheet.RowOffset;
+
+			var cells = worksheet.Cells.Where(c => c.End.Column <= worksheet.Dimension.End.Column && c.End.Row <= worksheet.Dimension.End.Row).ToList();
+
+			foreach (var cell in cells)
+			{
+				var rowIndex = cell.Start.Row;
+				var columnIndex = cell.Start.Column;
+
+				// NOTE: rows in SSG are zeroindexed, thus the +1
+				var displayRowIndex = rowIndex + 1;
+				var cellValue = cell.Value;
+				var maximumNumberOfRows = sheet.MaximumNumberOfRows;
+				Util.MapCell(result, columnLookup, dataStartRowIndex, rowIndex, columnIndex, displayRowIndex, cellValue, maximumNumberOfRows);
+
+			}
+			sheet.Rows = result;
+			// Map fields
+			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+			return sheet;
+		}
+
+		private List<Dictionary<string, string>> RetrieveData(ExcelWorksheet worksheet, ISheetWithBulkData sheet, int offset)
+		{
 			var result = new List<Dictionary<string, string>>();
-		    var columnNames = sheet.ColumnNames;
+			var columnNames = sheet.ColumnNames;
 			int startrow;
 			var columnLookup = CreateColumnLookup(out startrow, worksheet, columnNames);
 
 			var dataStartRow = startrow + offset;
-		    var cells = worksheet.Cells.Where(
-			    c => c.End.Column <= worksheet.Dimension.End.Column && c.End.Row <= worksheet.Dimension.End.Row).ToList();
+			var cells = worksheet.Cells.Where(
+				c => c.End.Column <= worksheet.Dimension.End.Column && c.End.Row <= worksheet.Dimension.End.Row).ToList();
 
 			foreach (var cell in cells)
 			{
@@ -195,15 +232,12 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 						result.Insert(listIdx, dict);
 					}
-
-
 					var columnName = columnLookup[cell.Start.Column];
 					var inValue = cell.Value;
 					var typeHint = columnName.GetTypeHint(sheet);
 					object convertedValue;
 					var outValue = Util.ApplyTypeHint(typeHint, inValue, out convertedValue);
-
-					result[listIdx][columnName] = outValue;
+					result[listIdx][columnName] = outValue?.ToString();
 				}
 			}
 
@@ -249,7 +283,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				{
 					var key = columnLookup.FirstOrDefault(x => x.Value == col).Key;
 					var cell = worksheet.Cells[dataStartRow + i, key];
-                    if (cell != null)
+					if (cell != null)
 					{
 						cell.Value = entry[col];
 					}
@@ -269,39 +303,74 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 
-	    private static Dictionary<int, string> CreateColumnLookup(out int startrow, ExcelWorksheet worksheet, List<string> columnNames)
-	    {
-		    startrow = -1;
+		private static Dictionary<int, string> CreateColumnLookup(out int startrow, ExcelWorksheet worksheet, List<string> columnNames)
+		{
+			startrow = -1;
 			var columnLookup = new Dictionary<int, string>();
 			foreach (var columnName in columnNames)
-		    {
-			    var cell = worksheet.Cells.FirstOrDefault(c => c.Value != null && c.Value.ToString() == columnName);
+			{
+				var cell = worksheet.Cells.FirstOrDefault(c => c.Value != null && c.Value.ToString() == columnName);
 
-			    // If the column was not found, then throw exception since this spreadsheet is probably not following the standard
-			    if (cell == null)
-			    {
-				    // Skip this column
-				    continue;
-			    }
+				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
+				if (cell == null)
+				{
+					// Skip this column
+					continue;
+				}
 
-			    // Save the starting point for the data
-			    if (startrow == -1)
-			    {
-				    startrow = cell.Start.Row;
-			    }
-			    else
-			    {
-				    if (startrow != cell.Start.Row)
-				    {
-					    throw new InvalidColumnPositionException("All columns must be placed on the same row");
-				    }
-			    }
+				// Save the starting point for the data
+				if (startrow == -1)
+				{
+					startrow = cell.Start.Row;
+				}
+				else
+				{
+					if (startrow != cell.Start.Row)
+					{
+						throw new InvalidColumnPositionException("All columns must be placed on the same row");
+					}
+				}
 
-			    columnLookup[cell.Start.Column] = columnName;
-		    }
+				columnLookup[cell.Start.Column] = columnName;
+			}
 
-		    return columnLookup;
-	    }
+			return columnLookup;
+		}
+
+		private Dictionary<int, SheetColumn> CreateColumnLookup2(out int startrow, ExcelWorksheet worksheet, List<SheetColumn> columns)
+		{
+			startrow = -1;
+			var columnLookup = new Dictionary<int, SheetColumn>();
+			foreach (var column in columns)
+			{
+				var cell = worksheet.Cells.FirstOrDefault(c => c.Value != null && c.Value.ToString() == column.ColumnName);
+
+				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
+				if (cell == null)
+				{
+					// Skip this column
+					continue;
+				}
+
+				// Save the starting point for the data
+				if (startrow == -1)
+				{
+					startrow = cell.Start.Row;
+				}
+				else
+				{
+					if (startrow != cell.Start.Row)
+					{
+						throw new InvalidColumnPositionException("All columns must be placed on the same row");
+					}
+				}
+
+				columnLookup[cell.Start.Column] = column;
+			}
+
+			return columnLookup;
+		}
+
 
 		private ExcelWorksheet GetWorksheet(string sheetName)
 		{
@@ -310,11 +379,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 		#endregion
 
-	    public void Dispose()
-	    {
-		    _excelPackage.Dispose();
-		    _excelPackage = null;
-	    }
+		public void Dispose()
+		{
+			_excelPackage.Dispose();
+			_excelPackage = null;
+		}
 
 
 	}

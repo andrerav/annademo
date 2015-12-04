@@ -98,6 +98,13 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 		}
 
+		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		{
+			ValidateWorkbook();
+			var worksheet = GetWorksheet(sheet.SheetName);
+			return worksheet != null ? RetrieveData(worksheet, sheet) : null;
+		}
+
 		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2)
 		{
 			ValidateWorkbook();
@@ -168,6 +175,37 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
+
+
+		private ITypedSheetWithBulkData<T> RetrieveData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		{
+			var result = new List<T>();
+			int startrow = -1;
+			List<SheetColumn> columnNames = Util.GetColumns(sheet);
+
+			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames);
+
+			var dataStartRowIndex = startrow + sheet.RowOffset;
+
+			foreach (IRange cell in worksheet.UsedRange)
+			{
+				var rowIndex = cell.Row;
+				var columnIndex = cell.Column;
+
+				// NOTE: rows in SSG are zeroindexed, thus the +1
+				var displayRowIndex = rowIndex + 1;
+				var cellValue = cell.Value;
+				var maximumNumberOfRows = sheet.MaximumNumberOfRows;
+				Util.MapCell(result, columnLookup, dataStartRowIndex, rowIndex, columnIndex, displayRowIndex, cellValue, maximumNumberOfRows);
+
+			}
+			sheet.Rows = result;
+			// Map fields
+			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+			return sheet;
+		}
+
+
 		/// <summary>
 		/// Retrieve data in a given worksheet
 		/// </summary>
@@ -216,8 +254,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 					var typeHint = columnName.GetTypeHint(sheet);
 					object convertedValue;
 					var outValue = Util.ApplyTypeHint(typeHint, inValue, out convertedValue);
-
-					result[listIdx][columnLookup[cell.Column]] = outValue;
+					result[listIdx][columnLookup[cell.Column]] = outValue?.ToString();
 				}
 			}
 			Util.RemoveEmptyRows(result);
@@ -288,6 +325,40 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 			workbook.Unprotect(password);
 			workbook.ProtectStructure = false;
+		}
+
+		private Dictionary<int, SheetColumn> CreateColumnLookup2(out int startrow, IWorksheet worksheet, List<SheetColumn> columns)
+		{
+			startrow = -1;
+			var columnLookup = new Dictionary<int, SheetColumn>();
+			foreach (var column in columns)
+			{
+				var cell = worksheet.UsedRange.Find(column.ColumnName, null, FindLookIn.Values, LookAt.Whole, SearchOrder.ByColumns, SearchDirection.Next, matchCase: true);
+
+				// If the column was not found, then throw exception since this spreadsheet is probably not following the standard
+				if (cell == null)
+				{
+					// Skip this column
+					continue;
+				}
+
+				// Save the starting point for the data
+				if (startrow == -1)
+				{
+					startrow = cell.Row;
+				}
+				else
+				{
+					if (startrow != cell.Row)
+					{
+						throw new InvalidColumnPositionException("All columns must be placed on the same row");
+					}
+				}
+
+				columnLookup[cell.Column] = column;
+			}
+
+			return columnLookup;
 		}
 
 		private Dictionary<int, string> CreateColumnLookup(out int startrow, IWorksheet worksheet, List<string> columnNames)
