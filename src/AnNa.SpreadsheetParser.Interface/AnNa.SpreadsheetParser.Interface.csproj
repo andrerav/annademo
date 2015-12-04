@@ -51,6 +51,7 @@
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="FieldAttribute.cs" />
     <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
+    <Compile Include="Sheets\Typed\ArrivalOrDeparture.cs" />
     <Compile Include="Sheets\Typed\WasteSheet.cs" />
     <Compile Include="Sheets\CrewListSheet.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
