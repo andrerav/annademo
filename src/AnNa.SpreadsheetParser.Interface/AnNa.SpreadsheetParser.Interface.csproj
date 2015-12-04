@@ -51,7 +51,7 @@
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="FieldAttribute.cs" />
     <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
-    <Compile Include="Sheets\TypedWasteSheet.cs" />
+    <Compile Include="Sheets\Typed\WasteSheet.cs" />
     <Compile Include="Sheets\CrewListSheet.cs" />
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
     <Compile Include="Sheets\CruiseSheet.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="Sheets\SecuritySheet.cs" />
     <Compile Include="Sheets\ShipStoresSheet.cs" />
     <Compile Include="Sheets\StowawaySheet.cs" />
-    <Compile Include="Sheets\TypedPersonOnBoardSheets.cs" />
+    <Compile Include="Sheets\Typed\PersonOnBoardSheets.cs" />
     <Compile Include="Sheets\WasteSheet.cs" />
     <Compile Include="TypeHintAttribute.cs" />
     <Compile Include="Util.cs" />
