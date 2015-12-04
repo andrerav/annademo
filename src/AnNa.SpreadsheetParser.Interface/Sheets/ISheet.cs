@@ -14,4 +14,12 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		List<string> ColumnNames { get; }
 		int MaximumNumberOfRows { get; }
 	}
+
+	public interface ITypedSheetWithBulkData<T> : ISheet where T : SheetRow
+	{
+		SyntaxErrorContainer SyntaxErrorContainer { get; }
+		List<T> Rows { get; set; }
+		int MaximumNumberOfRows { get; }
+		int RowOffset { get; }
+	}
 }

@@ -36,6 +36,14 @@ namespace AnNa.SpreadsheetParser.Interface
 		List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2);
 
 		/// <summary>
+		/// Retrieve the bulk data from a specific sheet in a type safe manner
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="sheet"></param>
+		/// <returns></returns>
+		ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow;
+
+		/// <summary>
 		/// Write bulk data to a specific sheet
 		/// </summary>
 		/// <param name="sheet"></param>
