@@ -79,7 +79,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T :class, ISheetRow
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -163,7 +163,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-		private ITypedSheetWithBulkData<T> RetrieveData<T>(ExcelWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		private ITypedSheetWithBulkData<T> RetrieveData<T>(ExcelWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
 		{
 			var result = new List<T>();
 			int startrow = -1;

@@ -15,7 +15,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		int MaximumNumberOfRows { get; }
 	}
 
-	public interface ITypedSheetWithBulkData<T> : ISheet where T : SheetRow
+	public interface ITypedSheetWithBulkData<T> : ISheet where T : ISheetRow
 	{
 		SyntaxErrorContainer SyntaxErrorContainer { get; }
 		List<T> Rows { get; set; }

@@ -41,7 +41,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <typeparam name="T"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow;
+		ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow;
 
 		/// <summary>
 		/// Write bulk data to a specific sheet

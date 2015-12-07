@@ -83,12 +83,7 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(parser.GetSheetBulkData(new DpgSheet()).Any());
 		}
 
-		[TestMethod]
-		public void ReadArrivalOrDepartureList()
-		{
-			var rows = parser.GetSheetBulkData(new AnNa.SpreadsheetParser.Interface.Sheets.Typed.ArrivalOrDepartureSheet()).Rows;
-			Assert.IsTrue(rows.Any());
-		}
+
 
 
 		[TestMethod]
@@ -241,7 +236,7 @@ namespace AnNaSpreadSheetParserTest
 			var crewListSheet = new CrewListSheet();
 			var crewList = parser.GetSheetBulkData(crewListSheet);
 			var previousCount = crewList.Count;
-            Assert.IsTrue(previousCount > 0);
+			Assert.IsTrue(previousCount > 0);
 
 			var entry = new Dictionary<string, string>();
 			entry[CrewListSheet.Columns.Family_Name] = "Andersen";
@@ -347,6 +342,21 @@ namespace AnNaSpreadSheetParserTest
 			Assert.IsTrue(Util.IsIgnorableValue(v1, column));
 			Assert.IsTrue(Util.IsIgnorableValue(v2, column));
 			Assert.IsFalse(Util.IsIgnorableValue(Guid.NewGuid().ToString(), column));
+		}
+
+
+		[TestMethod]
+		public void RowEmptinessTest()
+		{
+			var row = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListRow();
+			Assert.IsTrue(Util.IsEmpty(row, Util.GetColumns(row)));
+		}
+
+		[TestMethod]
+		public void ReadArrivalOrDepartureList()
+		{
+			var rows = parser.GetSheetBulkData(new AnNa.SpreadsheetParser.Interface.Sheets.Typed.ArrivalOrDepartureSheet()).Rows;
+			Assert.IsTrue(rows.Any());
 		}
 	}
 }

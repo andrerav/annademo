@@ -3,15 +3,22 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
-	[Serializable]
-	public abstract class SheetRow
+	public interface ISheetRow
 	{
-		public int RowIndex { get; set; }
-		public SyntaxErrorContainer SyntaxErrorContainer = new SyntaxErrorContainer();
+		int RowIndex { get; set; }
+		SyntaxErrorContainer SyntaxErrorContainer { get; }
 	}
 
 	[Serializable]
-	public abstract class AbstractSheet<T> : ITypedSheetWithBulkData<T> where T : SheetRow
+	public class SheetRow : ISheetRow
+	{
+		public int RowIndex { get; set; }
+		public SyntaxErrorContainer SyntaxErrorContainer => new SyntaxErrorContainer();
+	}
+
+
+	[Serializable]
+	public abstract class AbstractSheet<T> : ITypedSheetWithBulkData<T> where T : class, ISheetRow
 	{
 		public SyntaxErrorContainer SyntaxErrorContainer => new SyntaxErrorContainer();
 		public int MaximumNumberOfRows { get { return -1; } }

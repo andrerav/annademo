@@ -98,7 +98,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 		}
 
-		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -177,7 +177,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 
 
-		private ITypedSheetWithBulkData<T> RetrieveData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		private ITypedSheetWithBulkData<T> RetrieveData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
 		{
 			var result = new List<T>();
 			int startrow = -1;

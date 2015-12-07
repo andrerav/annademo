@@ -209,7 +209,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <typeparam name="T"></typeparam>
 		/// <param name="result"></param>
 		/// <param name="columns"></param>
-		public static void RemoveEmptyRows<T>(List<T> result, List<SheetColumn> columns) where T : SheetRow
+		public static void RemoveEmptyRows<T>(List<T> result, List<SheetColumn> columns) where T : class, ISheetRow
 		{
 			result.RemoveAll(row => IsEmpty(row, columns));
 		}
@@ -221,14 +221,14 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="row"></param>
 		/// <param name="columns"></param>
 		/// <returns></returns>
-		private static bool IsEmpty<T>(T row, List<SheetColumn> columns) where T : SheetRow
+		public static bool IsEmpty<T>(T row, List<SheetColumn> columns) where T : ISheetRow
 		{
 			var accessor = ObjectAccessor.Create(row);
 
 			foreach (var column in columns.Where(c => !c.Ignorable))
 			{
 				var value = accessor[column.FieldName];
-				if (value != GetDefault(column.FieldType))
+				if (value != null && !value.Equals(GetDefault(column.FieldType)))
 				{
 					return false;
 				}
@@ -242,17 +242,27 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <typeparam name="T"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		public static List<SheetColumn> GetColumns<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		public static List<SheetColumn> GetColumns<T>(ITypedSheetWithBulkData<T> sheet) where T : ISheetRow
+		{
+
+			return GetColumns(typeof(T));
+
+		}
+
+		public static List<SheetColumn> GetColumns(SheetRow row)
+		{
+			return GetColumns(row.GetType());
+		}
+
+		public static List<SheetColumn> GetColumns(Type rowType)
 		{
 			var result = new List<SheetColumn>();
-
-			var rowType = typeof(T);
 
 			var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 			MemberInfo[] members = rowType.GetFields(bindingFlags).Cast<MemberInfo>()
 				.Concat(rowType.GetProperties(bindingFlags)).ToArray();
 
-			foreach(var member in members)
+			foreach (var member in members)
 			{
 				var columnAttr = member.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault() as ColumnAttribute;
 				if (columnAttr != null)
@@ -277,7 +287,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <typeparam name="T"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		public static List<SheetField> GetFields<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
+		public static List<SheetField> GetFields<T>(ITypedSheetWithBulkData<T> sheet) where T : ISheetRow
 		{
 			var result = new List<SheetField>();
 
@@ -310,7 +320,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="row"></param>
 		/// <param name="column"></param>
 		/// <param name="inValue"></param>
-		public static void SetRowValue<T>(T row, string columnName, object inValue) where T : SheetRow
+		public static void SetRowValue<T>(T row, string columnName, object inValue) where T : ISheetRow
 		{
 			if (inValue != null)
 			{
@@ -346,7 +356,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="cellValue"></param>
 		/// <param name="maximumNumberOfRows"></param>
 		/// <param name="cellAddress"></param>
-		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows, string cellAddress) where T : SheetRow
+		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows, string cellAddress) where T : class, ISheetRow
 		{
 			var listIdx = rowIndex - dataStartRowIndex;
 
@@ -403,7 +413,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			}
 		}
 
-		public static void MapFields<T>(ITypedSheetWithBulkData<T> sheet, Func<SheetField, string> getValue) where T : SheetRow
+		public static void MapFields<T>(ITypedSheetWithBulkData<T> sheet, Func<SheetField, string> getValue) where T : ISheetRow
 		{
 			var fields = Util.GetFields(sheet);
 			foreach (var field in fields)
