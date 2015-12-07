@@ -203,6 +203,45 @@ namespace AnNa.SpreadsheetParser.Interface
 			}
 		}
 
+		/// <summary>
+		/// Removes empty rows, ie. rows that does not have any values in non-ignored columns
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="result"></param>
+		/// <param name="columns"></param>
+		public static void RemoveEmptyRows<T>(List<T> result, List<SheetColumn> columns) where T : SheetRow
+		{
+			result.RemoveAll(row => IsEmpty(row, columns));
+		}
+
+		/// <summary>
+		/// Returns true if the given row does not have any values in non-ignored columns
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="row"></param>
+		/// <param name="columns"></param>
+		/// <returns></returns>
+		private static bool IsEmpty<T>(T row, List<SheetColumn> columns) where T : SheetRow
+		{
+			var accessor = ObjectAccessor.Create(row);
+
+			foreach (var column in columns.Where(c => !c.Ignorable))
+			{
+				var value = accessor[column.FieldName];
+				if (value != GetDefault(column.FieldType))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Retrieve a list of column definitions from a given sheet
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="sheet"></param>
+		/// <returns></returns>
 		public static List<SheetColumn> GetColumns<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
 		{
 			var result = new List<SheetColumn>();
@@ -220,6 +259,8 @@ namespace AnNa.SpreadsheetParser.Interface
 				{
 					var column = new SheetColumn();
 					column.ColumnName = columnAttr.Column;
+					column.Ignorable = columnAttr.Ignorable;
+					column.IgnoreableValues = columnAttr.IgnorableValues;
 					column.FieldName = member.Name;
 					column.FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType;
 					result.Add(column);
@@ -229,6 +270,13 @@ namespace AnNa.SpreadsheetParser.Interface
 			return result;
 		}
 
+
+		/// <summary>
+		/// Retrieve a list of form fields from a given sheet
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="sheet"></param>
+		/// <returns></returns>
 		public static List<SheetField> GetFields<T>(ITypedSheetWithBulkData<T> sheet) where T : SheetRow
 		{
 			var result = new List<SheetField>();
@@ -284,6 +332,20 @@ namespace AnNa.SpreadsheetParser.Interface
 			accessor[instance, fieldName] = inValue;
 		}
 
+
+		/// <summary>
+		/// Map a specific cell value to the corresponding row and column
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="result"></param>
+		/// <param name="columnLookup"></param>
+		/// <param name="dataStartRowIndex"></param>
+		/// <param name="rowIndex"></param>
+		/// <param name="columnIndex"></param>
+		/// <param name="displayRowIndex"></param>
+		/// <param name="cellValue"></param>
+		/// <param name="maximumNumberOfRows"></param>
+		/// <param name="cellAddress"></param>
 		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows, string cellAddress) where T : SheetRow
 		{
 			var listIdx = rowIndex - dataStartRowIndex;
@@ -298,8 +360,15 @@ namespace AnNa.SpreadsheetParser.Interface
 				}
 				else
 				{
-					T row = null;
+					var column = columnLookup[columnIndex];
 
+					if (IsIgnorableValue(cellValue, column))
+					{
+						return;
+                    }
+
+
+					T row = null;
 					if (result.ElementAtOrDefault(listIdx) == null)
 					{
 						row = Activator.CreateInstance<T>();
@@ -312,11 +381,14 @@ namespace AnNa.SpreadsheetParser.Interface
 						row = result[listIdx];
 					}
 
-					var column = columnLookup[(int)columnIndex];
 					var inValue = cellValue;
 					object convertedValue;
 					SyntaxError syntaxError;
+
+
+					// Apply type hinting which will do the appropriate type conversion
 					var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out syntaxError);
+
 					if (syntaxError != null)
 					{
 						syntaxError.CellAddress = cellAddress;
@@ -339,6 +411,12 @@ namespace AnNa.SpreadsheetParser.Interface
 				object convertedValue;
 				SyntaxError syntaxError;
 				var value = getValue(field);
+
+				if (IsIgnorableValue(value, field))
+				{
+					continue;
+				}
+
 				var outValue = Util.ApplyTypeHint(field.FieldType, value, out convertedValue, out syntaxError);
 				if (syntaxError != null)
 				{
@@ -347,6 +425,45 @@ namespace AnNa.SpreadsheetParser.Interface
 				}
 				Util.SetObjectFieldValue(sheet.GetType(), field.FieldName, sheet, convertedValue ?? outValue);
 			}
+		}
+
+		public static bool IsIgnorableValue(object cellValue, SheetDataField column)
+		{
+			return cellValue != null && column.IgnoreableValues != null && column.IgnoreableValues.Contains(cellValue.ToString());
+		}
+
+		public static object GetDefault(this Type type)
+		{
+			// If no Type was supplied, if the Type was a reference type, or if the Type was a System.Void, return null
+			if (type == null || !type.IsValueType || type == typeof(void))
+				return null;
+
+			// If the supplied Type has generic parameters, its default value cannot be determined
+			if (type.ContainsGenericParameters)
+				throw new ArgumentException(
+					"{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe supplied value type <" + type +
+					"> contains generic parameters, so the default value cannot be retrieved");
+
+			// If the Type is a primitive type, or if it is another publicly-visible value type (i.e. struct/enum), return a 
+			//  default instance of the value type
+			if (type.IsPrimitive || !type.IsNotPublic)
+			{
+				try
+				{
+					return Activator.CreateInstance(type);
+				}
+				catch (Exception e)
+				{
+					throw new ArgumentException(
+						"{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe Activator.CreateInstance method could not " +
+						"create a default instance of the supplied value type <" + type +
+						"> (Inner Exception message: \"" + e.Message + "\")", e);
+				}
+			}
+
+			// Fail with exception
+			throw new ArgumentException("{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe supplied value type <" + type +
+				"> is not a publicly-visible type, so the default value cannot be retrieved");
 		}
 	}
 }

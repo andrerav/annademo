@@ -89,6 +89,13 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// A friendly name which is recognizable to an end user (typically retrieved from the GUI)
 		/// </summary>
 		public string FriendlyName;
+
+
+		/// <summary>
+		/// Values that can be safely ignored when parsing the spreadsheet
+		/// </summary>
+		public string[] IgnoreableValues { get; set; }
+
 	}
 
 	[Serializable]
@@ -98,6 +105,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// Column name used in the spreadsheet
 		/// </summary>
 		public string ColumnName;
+
+		/// <summary>
+		/// True if this column is an index column or similar and can safely be ignored when testing the row for emptiness
+		/// </summary>
+		public bool Ignorable;
 	}
 
 	[Serializable]

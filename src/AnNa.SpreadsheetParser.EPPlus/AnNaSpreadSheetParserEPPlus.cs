@@ -186,6 +186,9 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				var maximumNumberOfRows = sheet.MaximumNumberOfRows;
 				Util.MapCell(result, columnLookup, dataStartRowIndex, rowIndex, columnIndex, displayRowIndex, cellValue, maximumNumberOfRows, cell.Address);
 			}
+
+			Util.RemoveEmptyRows(result, columnNames);
+
 			sheet.Rows = result;
 			// Map fields
 			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));

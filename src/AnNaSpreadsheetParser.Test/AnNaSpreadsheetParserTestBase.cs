@@ -331,5 +331,22 @@ namespace AnNaSpreadSheetParserTest
 		{
 			Assert.IsTrue(parser.SheetNames.Count > 0);
 		}
+
+		[TestMethod]
+		public void IgnoreableRowValueTest()
+		{
+
+			var column = new SheetColumn();
+			column.ColumnName = "Test1";
+			column.FieldName = "Test1";
+			column.FieldType = typeof(string);
+			const string v1 = "ABC123";
+			const string v2 = "DEF456";
+			column.IgnoreableValues = new string[] { v1, v2 };
+
+			Assert.IsTrue(Util.IsIgnorableValue(v1, column));
+			Assert.IsTrue(Util.IsIgnorableValue(v2, column));
+			Assert.IsFalse(Util.IsIgnorableValue(Guid.NewGuid().ToString(), column));
+		}
 	}
 }
