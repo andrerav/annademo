@@ -51,6 +51,13 @@ namespace AnNa.SpreadsheetParser.Interface
 		void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2);
 
 		/// <summary>
+		/// Write bulk data to a specific sheet in a type safe manner
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="sheet"></param>
+		void SetSheetData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow;
+
+		/// <summary>
 		/// Overload
 		/// </summary>
 		/// <param name="sheet"></param>

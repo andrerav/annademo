@@ -224,6 +224,17 @@ namespace AnNaSpreadSheetParserTest
 		}
 
 		[TestMethod]
+		public void SaveToStreamTypeSafeTest1()
+		{
+			var crewSheet = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListSheet();
+			var contents = parser.GetSheetBulkData(crewSheet);
+			Assert.IsTrue(contents.Rows.Any());
+			parser.SetSheetData(crewSheet);
+			var stream = parser.SaveToStream();
+			Assert.IsTrue(stream.Length > 0);
+		}
+
+		[TestMethod]
 		public void CountSheetNames()
 		{
 			var sheets = parser.SheetNames;

@@ -342,7 +342,6 @@ namespace AnNa.SpreadsheetParser.Interface
 			accessor[instance, fieldName] = inValue;
 		}
 
-
 		/// <summary>
 		/// Map a specific cell value to the corresponding row and column
 		/// </summary>
@@ -375,7 +374,7 @@ namespace AnNa.SpreadsheetParser.Interface
 					if (IsIgnorableValue(cellValue, column))
 					{
 						return;
-                    }
+					}
 
 
 					T row = null;
@@ -475,5 +474,26 @@ namespace AnNa.SpreadsheetParser.Interface
 			throw new ArgumentException("{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe supplied value type <" + type +
 				"> is not a publicly-visible type, so the default value cannot be retrieved");
 		}
+	}
+
+	public class TypeAccessorHelper
+	{
+		TypeAccessor _accessor;
+
+		public TypeAccessorHelper(Type t)
+		{
+			_accessor = TypeAccessor.Create(t);
+		}
+
+		public void Set(object instance, string fieldName, object value)
+		{
+			_accessor[instance, fieldName] = value;
+		}
+
+		public object Get(object instance, string fieldName)
+		{
+			return _accessor[instance, fieldName];
+		}
+
 	}
 }

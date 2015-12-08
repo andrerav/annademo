@@ -112,6 +112,13 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			SetData(worksheet, sheet, contents, offset);
 		}
 
+		public void SetSheetData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		{
+			ValidateWorkbook();
+			var worksheet = GetWorksheet(sheet.SheetName);
+			SetData(worksheet, sheet);
+		}
+
 		public string GetValueAt(ISheet sheet, string cellAddress)
 		{
 			return GetValueAt(sheet.SheetName, cellAddress);
@@ -306,6 +313,43 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				}
 				i++;
 			}
+		}
+
+		private void SetData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T :class, ISheetRow
+		{
+			// Find all the known columns and map them to spreadsheet columns
+			int startrow;
+			var columns = Util.GetColumns(sheet);
+			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columns);
+			var dataStartRow = startrow + sheet.RowOffset;
+
+			var rowAccessHelper = new TypeAccessorHelper(typeof(T));
+
+			// Set bulk data
+			int i = 0;
+			foreach (var row in sheet.Rows)
+			{
+				foreach (var column in columns)
+				{
+					var key = columnLookup.FirstOrDefault(x => x.Value == column).Key;
+					var cell = worksheet.Cells[dataStartRow + i, key];
+
+					if (cell != null)
+					{
+						cell.Value = rowAccessHelper.Get(row, column.FieldName);
+					}
+				}
+				i++;
+			}
+
+			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
+
+			// Set field data
+			var fields = Util.GetFields<T>(sheet);
+			foreach(var field in fields)
+			{
+				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
+            }
 		}
 
 		#region Utility methods
