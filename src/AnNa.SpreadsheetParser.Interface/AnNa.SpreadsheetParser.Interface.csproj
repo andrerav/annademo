@@ -49,8 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ColumnAttribute.cs" />
+    <Compile Include="Attributes\DeprecatedAttribute.cs" />
     <Compile Include="Attributes\FieldAttribute.cs" />
+    <Compile Include="Attributes\RemovedAttribute.cs" />
+    <Compile Include="Attributes\SheetVersionAttribute.cs" />
     <Compile Include="Attributes\TypeHintAttribute.cs" />
+    <Compile Include="Interfaces\ISheet.cs" />
+    <Compile Include="Interfaces\ISheetColumns.cs" />
+    <Compile Include="Interfaces\ISheetVersionChanges.cs" />
     <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
     <Compile Include="Sheets\Typed\ArrivalOrDeparture.cs" />
     <Compile Include="Sheets\Typed\WasteSheet.cs" />
@@ -58,8 +64,6 @@
     <Compile Include="IAnNaSpreadSheetParser10.cs" />
     <Compile Include="Sheets\CruiseSheet.cs" />
     <Compile Include="Sheets\DpgSheet.cs" />
-    <Compile Include="Sheets\ISheetColumns.cs" />
-    <Compile Include="Sheets\ISheet.cs" />
     <Compile Include="Sheets\SheetSupportingTypes.cs" />
     <Compile Include="Sheets\PassengerListSheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
