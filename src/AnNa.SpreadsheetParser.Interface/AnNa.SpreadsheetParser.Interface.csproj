@@ -48,8 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnAttribute.cs" />
-    <Compile Include="FieldAttribute.cs" />
+    <Compile Include="Attributes\ColumnAttribute.cs" />
+    <Compile Include="Attributes\FieldAttribute.cs" />
+    <Compile Include="Attributes\TypeHintAttribute.cs" />
     <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
     <Compile Include="Sheets\Typed\ArrivalOrDeparture.cs" />
     <Compile Include="Sheets\Typed\WasteSheet.cs" />
@@ -69,12 +70,12 @@
     <Compile Include="Sheets\StowawaySheet.cs" />
     <Compile Include="Sheets\Typed\PersonOnBoardSheets.cs" />
     <Compile Include="Sheets\WasteSheet.cs" />
-    <Compile Include="TypeHintAttribute.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
