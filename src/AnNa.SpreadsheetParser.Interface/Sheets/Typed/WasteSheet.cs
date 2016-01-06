@@ -47,4 +47,17 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			}
 		}
 	}
+
+	[Serializable]
+	public class WasheSheet11:WasteSheet
+	{
+		[Field("B4", FriendlyName = "Waste to be Delivered")]
+		public string WasteToBeDeliveredCell;
+
+		[Field("D4", FriendlyName = "Port of Last Delivery")]
+		public string PortOfLastDeliveryCell;
+
+		[Field("F4", FriendlyName = "Date of last Delivery")]
+		public DateTime DateOfLastDeliveryCell;
+	}
 }
