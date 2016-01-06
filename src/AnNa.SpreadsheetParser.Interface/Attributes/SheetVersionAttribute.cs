@@ -8,11 +8,12 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 	[AttributeUsage(AttributeTargets.Class)]
 	public class SheetVersionAttribute : Attribute
 	{
-		public Version Version { get; set; }
+		private Version _version;
+		public Version Version => _version;
 
-		public SheetVersionAttribute(Version version)
+		public SheetVersionAttribute(int major, int minor)
 		{
-			Version = version;
+			_version = new Version(major, minor);
 		}
 	}
 }

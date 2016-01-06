@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
@@ -37,18 +35,15 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
+	[SheetVersion(1, 0)]
+	[Deprecated]
 	public class WasteSheet : AbstractSheet<WasteSheetRow>
 	{
-		public override string SheetName
-		{
-			get
-			{
-				return "Waste_And_Residues";
-			}
-		}
+		public override string SheetName => "Waste_And_Residues";
 	}
 
 	[Serializable]
+	[SheetVersion(1, 1)]
 	public class WasheSheet11:WasteSheet
 	{
 		[Field("B4", FriendlyName = "Waste to be Delivered")]
