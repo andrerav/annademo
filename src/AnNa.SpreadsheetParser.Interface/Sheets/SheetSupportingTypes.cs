@@ -35,6 +35,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// </summary>
 		public List<SyntaxError> SyntaxErrors { get; private set; }
 
+		public SyntaxErrorContainer() { SyntaxErrors = new List<SyntaxError>(); }
+
 		/// <summary>
 		/// Add a syntax error to this container. Note that the DataField property must be set, otherwise an exception is thrown.
 		/// </summary>

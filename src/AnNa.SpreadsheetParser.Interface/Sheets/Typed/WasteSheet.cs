@@ -44,7 +44,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 
 	[Serializable]
 	[SheetVersion(1, 1)]
-	public class WasheSheet11:WasteSheet10
+	public class WasteSheet11:WasteSheet10
 	{
 		[Field("B4", FriendlyName = "Waste to be Delivered")]
 		public string WasteToBeDeliveredCell;

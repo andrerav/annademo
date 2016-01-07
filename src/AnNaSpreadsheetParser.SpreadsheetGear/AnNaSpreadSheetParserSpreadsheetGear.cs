@@ -471,7 +471,8 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				if (versionSheet != null)
 				{
 					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
-					var versionString = versionCellValue.Substring(0, versionCellValue.IndexOf('-'));
+					var separatorIndex = versionCellValue.IndexOf('-');
+					var versionString = separatorIndex > -1 ? versionCellValue.Substring(0, separatorIndex) : versionCellValue;
 
 					return Version.TryParse(versionString, out version);
 				}
