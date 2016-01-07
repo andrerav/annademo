@@ -145,6 +145,12 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// Returns a list of sheet names found in the opened spreadsheet
 		/// </summary>
 		List<string> SheetNames { get; }
+
+		/// <summary>
+		/// Returns the workbook version number as an out parameter. Method returns true if successful.
+		/// </summary>
+		/// <returns></returns>
+		bool TryGetWorkbookVersion(out Version version);
 	}
 
 	public class InvalidColumnPositionException : Exception
