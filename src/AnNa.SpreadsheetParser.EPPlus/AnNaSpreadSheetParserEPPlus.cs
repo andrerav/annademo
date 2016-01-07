@@ -13,8 +13,6 @@ namespace AnNa.SpreadSheetParser.EPPlus
 {
 	public class AnNaSpreadSheetParserEPPlus: IAnNaSpreadSheetParser10
 	{
-
-		protected const string Version = "1.0";
 		private ExcelPackage _excelPackage;
 
 		protected ExcelWorkbook Workbook => _excelPackage.Workbook;
@@ -429,6 +427,23 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = null;
 		}
 
+		public bool TryGetWorkbookVersion(out Version version)
+		{
+			version = null;
 
+			if (Workbook != null)
+			{
+				var versionSheet = Workbook.Worksheets["Version"];
+				if (versionSheet != null)
+				{
+					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
+					var versionString = versionCellValue.Substring(0, versionCellValue.IndexOf('-'));
+
+					return Version.TryParse(versionString, out version);
+				}
+			}
+
+			return false;
+		}
 	}
 }

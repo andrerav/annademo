@@ -13,7 +13,6 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 	public class AnNaSpreadSheetParserSpreadsheetGear : IAnNaSpreadSheetParser10 
 	{
 
-		protected const string Version = "1.0";
 		private IWorkbook _workbook;
 		private CultureInfo _cultureInfo = new CultureInfo(CultureInfo.CurrentCulture.LCID);
 
@@ -460,6 +459,25 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		{
 			_workbook?.Close();
 			_workbook = null;
+		}
+
+		public bool TryGetWorkbookVersion(out Version version)
+		{
+			version = null;
+
+			if (Workbook != null)
+			{
+				var versionSheet = Workbook.Worksheets["Version"];
+				if (versionSheet != null)
+				{
+					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
+					var versionString = versionCellValue.Substring(0, versionCellValue.IndexOf('-'));
+
+					return Version.TryParse(versionString, out version);
+				}
+			}
+
+			return false;
 		}
 	}
 }
