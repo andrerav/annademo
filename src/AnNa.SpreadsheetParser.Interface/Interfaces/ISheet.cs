@@ -10,6 +10,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 	public interface ITypedSheet : ISheet
 	{
+		SyntaxErrorContainer SyntaxErrorContainer { get; }
 	}
 
 
@@ -21,7 +22,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 	public interface ITypedSheetWithBulkData<T> : ITypedSheet where T : ISheetRow
 	{
-		SyntaxErrorContainer SyntaxErrorContainer { get; }
 		List<T> Rows { get; set; }
 		int MaximumNumberOfRows { get; }
 		int RowOffset { get; }

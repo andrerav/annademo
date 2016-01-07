@@ -21,8 +21,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	public abstract class AbstractSheet<T> : ITypedSheetWithBulkData<T> where T : class, ISheetRow
 	{
 		public SyntaxErrorContainer SyntaxErrorContainer => new SyntaxErrorContainer();
-		public int MaximumNumberOfRows { get { return -1; } }
-		public int RowOffset { get { return 2; } }
+		public virtual int MaximumNumberOfRows { get { return -1; } }
+		public virtual int RowOffset { get { return 2; } }
 		public List<T> Rows { get; set; }
 		public abstract string SheetName { get; }
 	}
