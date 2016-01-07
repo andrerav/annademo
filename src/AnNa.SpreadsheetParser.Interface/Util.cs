@@ -339,6 +339,11 @@ namespace AnNa.SpreadsheetParser.Interface
 		public static void SetObjectFieldValue(Type type, string fieldName, object instance, object inValue)
 		{
 			var accessor = TypeAccessor.Create(type);
+
+			//Can't assign null to value types
+			if (inValue == null && (type.IsValueType || Nullable.GetUnderlyingType(type) == null))
+				return;
+
 			accessor[instance, fieldName] = inValue;
 		}
 

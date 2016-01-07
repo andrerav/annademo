@@ -53,6 +53,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public string PortOfLastDeliveryCell;
 
 		[Field("F4", FriendlyName = "Date of last Delivery")]
-		public DateTime DateOfLastDeliveryCell;
+		public DateTime? DateOfLastDeliveryCell;
 	}
 }
