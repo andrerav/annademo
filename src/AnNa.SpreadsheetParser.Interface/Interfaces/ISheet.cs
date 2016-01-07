@@ -8,6 +8,10 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		string SheetName { get; }
 	}
 
+	public interface ITypedSheet : ISheet
+	{
+	}
+
 
 	public interface ISheetWithBulkData : ISheet
 	{
@@ -15,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		int MaximumNumberOfRows { get; }
 	}
 
-	public interface ITypedSheetWithBulkData<T> : ISheet where T : ISheetRow
+	public interface ITypedSheetWithBulkData<T> : ITypedSheet where T : ISheetRow
 	{
 		SyntaxErrorContainer SyntaxErrorContainer { get; }
 		List<T> Rows { get; set; }
