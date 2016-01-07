@@ -76,21 +76,21 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		[Column("Latitude_direction", FriendlyName = "Latitude Direction")]
 		public string Latitude_Direction;
 		[Column("Latitude_Degrees", FriendlyName = "Latitude Degrees")]
-		public int Latitude_Degrees;
+		public int? Latitude_Degrees;
 		[Column("Latitude_Minutes", FriendlyName = "Latitude Minutes")]
-		public int Latitude_Minutes;
+		public int? Latitude_Minutes;
 		[Column("Latitude_Seconds", FriendlyName = "Latitude Seconds")]
-		public int Latitude_Seconds;
+		public int? Latitude_Seconds;
 
 		// Longitude
 		[Column("Longtitude_Direction", FriendlyName = "Longitude Direction")]
 		public string Longitude_Direction;
 		[Column("Longtitude_Degrees", FriendlyName = "Longitude Degrees")]
-		public int Longitude_Degrees;
+		public int? Longitude_Degrees;
 		[Column("Longtitude_Minutes", FriendlyName = "Longitude Minutes")]
-		public int Longitude_Minutes;
+		public int? Longitude_Minutes;
 		[Column("Longtitude_Seconds", FriendlyName = "Longitude Seconds")]
-		public int Longitude_Seconds;
+		public int? Longitude_Seconds;
 
 		[Column("Ship_to_ship_activitty", FriendlyName = "Ship-to-Ship Activity")]
 		public string Ship_To_Ship_Activity;
@@ -108,6 +108,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 				return "Security";
 			}
 		}
+
+		public new int MaximumNumberOfRows { get { return 10; } }
 	}
 
 	[Serializable]
