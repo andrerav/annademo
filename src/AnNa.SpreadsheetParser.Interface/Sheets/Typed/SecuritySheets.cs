@@ -69,11 +69,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public DateTime? Date_From;
 		[Column("Date_to", FriendlyName = "Date To")]
 		public DateTime? Date_To;
-		[Column("*Location", FriendlyName = "Location")]
+		[Column("Location", FriendlyName = "Location")]
 		public string Location;
 
 		// Latitude
-		[Column("Latitude_direction", FriendlyName = "Latitude Direction")]
+		[Column("Latitude_Direction", FriendlyName = "Latitude Direction")]
 		public string Latitude_Direction;
 		[Column("Latitude_Degrees", FriendlyName = "Latitude Degrees")]
 		public int? Latitude_Degrees;
@@ -83,13 +83,13 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public int? Latitude_Seconds;
 
 		// Longitude
-		[Column("Longtitude_Direction", FriendlyName = "Longitude Direction")]
+		[Column("Longitude_Direction", FriendlyName = "Longitude Direction")]
 		public string Longitude_Direction;
-		[Column("Longtitude_Degrees", FriendlyName = "Longitude Degrees")]
+		[Column("Longitude_Degrees", FriendlyName = "Longitude Degrees")]
 		public int? Longitude_Degrees;
-		[Column("Longtitude_Minutes", FriendlyName = "Longitude Minutes")]
+		[Column("Longitude_Minutes", FriendlyName = "Longitude Minutes")]
 		public int? Longitude_Minutes;
-		[Column("Longtitude_Seconds", FriendlyName = "Longitude Seconds")]
+		[Column("Longitude_Seconds", FriendlyName = "Longitude Seconds")]
 		public int? Longitude_Seconds;
 
 		[Column("Ship_to_ship_activitty", FriendlyName = "Ship-to-Ship Activity")]
