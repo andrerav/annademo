@@ -31,7 +31,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Field("B11", "SSP Onboard")]
 			public virtual string SSP_Onboard { get; set; }
 
-			// CSO
+		// CSO
 			[Field("C11", "CSO Family Name")]
 			public virtual string CSO_Family_Name { get; set; }
 			[Field("D11", "CSO Given Name")]
@@ -42,8 +42,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string CSO_Email { get; set; }
 			[Field("M11", "CSO Company")]
 			public virtual string CSO_Company { get; set; }
-		}
-		
+	}
+
 	}
 
 	[Serializable]
@@ -55,7 +55,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override int MaximumNumberOfRows => 10;
 
 		public class SheetRowDefinition : SheetRow
-		{
+			{
 			[Column("Date_of_arrival", "Date Of Arrival")]
 			public virtual DateTime? Date_Of_Arrival { get; set; }
 			[Column("Date_of_departure", "Date Of Departure")]
@@ -74,11 +74,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	[Serializable]
 	[SheetVersion(SheetGroups.SecurityShipToShip, 1, 0, "AnNa")]
 	public class SecuritySheetS2SActivities10 : AbstractTypedSheet<SecuritySheetS2SActivities10.SheetRowDefinition, ISheetFields>
-	{
+		{
 		public override string SheetName => "Security";
 
 		public class SheetRowDefinition : SheetRow
-		{
+			{
 			[Column("Date_from", "Date From")]
 			public virtual DateTime? Date_From { get; set; }
 			[Column("Date_to", "Date To")]
