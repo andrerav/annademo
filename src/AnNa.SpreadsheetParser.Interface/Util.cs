@@ -1,4 +1,5 @@
-﻿using AnNa.SpreadsheetParser.Interface.Sheets;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using AnNa.SpreadsheetParser.Interface.Sheets;
 using FastMember;
 using System;
 using System.Collections.Generic;
@@ -141,16 +142,13 @@ namespace AnNa.SpreadsheetParser.Interface
 				return null;
 			}
 
+			//Special case for string: Avoids empty strings preventing clean up of empty rows
+			if (typeHint == typeof(string) && string.IsNullOrWhiteSpace(inValue.ToString()))
+				outValue = null;
+
 			convertedValue = outValue;
 
-			if (outValue == null)
-			{
-				return inValue;
-			}
-			else
-			{
-				return outValue;
-			}
+			return outValue;
 		}
 
 		private static SyntaxError CreateSyntaxError(Type typeHint, object inValue)
@@ -239,13 +237,16 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Retrieve a list of column definitions from a given sheet
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="R"></typeparam>
+		/// <typeparam name="F"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		public static List<SheetColumn> GetColumns<T>(ITypedSheetWithBulkData<T> sheet) where T : ISheetRow
+		public static List<SheetColumn> GetColumns<R, F>(ITypedSheet<R, F> sheet) 
+			where R : ISheetRow 
+			where F : ISheetFields
 		{
 
-			return GetColumns(typeof(T));
+			return GetColumns(typeof(R));
 
 		}
 
@@ -262,17 +263,22 @@ namespace AnNa.SpreadsheetParser.Interface
 			MemberInfo[] members = rowType.GetFields(bindingFlags).Cast<MemberInfo>()
 				.Concat(rowType.GetProperties(bindingFlags)).ToArray();
 
-			foreach (var member in members)
+			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(RemovedAttribute), false).Any()))
 			{
 				var columnAttr = member.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault() as ColumnAttribute;
 				if (columnAttr != null)
 				{
-					var column = new SheetColumn();
-					column.ColumnName = columnAttr.Column;
-					column.Ignorable = columnAttr.Ignorable;
-					column.IgnoreableValues = columnAttr.IgnorableValues;
-					column.FieldName = member.Name;
-					column.FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType;
+					var column = new SheetColumn()
+					{
+						ColumnName = columnAttr.Column,
+						Ignorable = columnAttr.Ignorable,
+						IgnoreableValues = columnAttr.IgnorableValues,
+						IsOptional = columnAttr.IsOptional,
+						FieldName = member.Name,
+						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
+						FriendlyName = columnAttr.FriendlyName
+					};
+					
 					result.Add(column);
 				}
 			}
@@ -284,28 +290,35 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Retrieve a list of form fields from a given sheet
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="R"></typeparam>
+		/// <typeparam name="F"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		public static List<SheetField> GetFields<T>(ITypedSheetWithBulkData<T> sheet) where T : ISheetRow
+		public static List<SheetField> GetFields<R, F>(ITypedSheet<R, F> sheet) 
+			where R : ISheetRow 
+			where F : ISheetFields
 		{
 			var result = new List<SheetField>();
-
-			var sheetType = sheet.GetType();
+			var sheetType = typeof(F);
 
 			var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 			MemberInfo[] members = sheetType.GetFields(bindingFlags).Cast<MemberInfo>()
 				.Concat(sheetType.GetProperties(bindingFlags)).ToArray();
 
-			foreach (var member in members)
+			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(RemovedAttribute), false).Any()))
 			{
 				var fieldAttr = member.GetCustomAttributes(typeof(FieldAttribute), true).FirstOrDefault() as FieldAttribute;
 				if (fieldAttr != null)
 				{
-					var field = new SheetField();
-					field.CellAddress = fieldAttr.CellAddress;
-					field.FieldName = member.Name;
-					field.FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType;
+					var field = new SheetField()
+					{
+						CellAddress = fieldAttr.CellAddress,
+						FieldName = member.Name,
+						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
+						FriendlyName = fieldAttr.FriendlyName,
+						IsOptional = fieldAttr.IsOptional
+					};
+					
 					result.Add(field);
 				}
 			}
@@ -320,28 +333,25 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="row"></param>
 		/// <param name="column"></param>
 		/// <param name="inValue"></param>
-		public static void SetRowValue<T>(T row, string columnName, object inValue) where T : ISheetRow
+		public static void SetRowValue<T>(T row, Type columnType,  string columnName, object inValue) where T : ISheetRow
 		{
-			if (inValue != null)
-			{
-				var obj = row as object;
-				SetObjectFieldValue(row.GetType(), columnName, obj, inValue);
-			}
+			var obj = row as object;
+			SetObjectFieldValue(row.GetType(), columnType, columnName, obj, inValue);
 		}
 
 		/// <summary>
 		/// Dynamically set a named property for a given type to a given value
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name="instanceType"></param>
 		/// <param name="fieldName"></param>
 		/// <param name="instance"></param>
 		/// <param name="inValue"></param>
-		public static void SetObjectFieldValue(Type type, string fieldName, object instance, object inValue)
+		public static void SetObjectFieldValue(Type instanceType, Type fieldType, string fieldName, object instance, object inValue)
 		{
-			var accessor = TypeAccessor.Create(type);
+			var accessor = TypeAccessor.Create(instanceType);
 
 			//Can't assign null to value types
-			if (inValue == null && (type.IsValueType || Nullable.GetUnderlyingType(type) == null))
+			if (inValue == null && (fieldType.IsValueType && Nullable.GetUnderlyingType(fieldType) == null))
 				return;
 
 			accessor[instance, fieldName] = inValue;
@@ -411,15 +421,19 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 					else
 					{
-						Util.SetRowValue(row, column.FieldName, convertedValue ?? outValue);
+						Util.SetRowValue(row, column.FieldType, column.FieldName, convertedValue ?? outValue);
 					}
 				}
 			}
 		}
 
-		public static void MapFields<T>(ITypedSheetWithBulkData<T> sheet, Func<SheetField, string> getValue) where T : ISheetRow
+		public static void MapFields<R, F>(ITypedSheet<R, F> sheet, Func<SheetField, string> getValue) where R : ISheetRow where F : ISheetFields
 		{
 			var fields = Util.GetFields(sheet);
+
+			if (fields.Any() && sheet.Fields == null)
+				sheet.Fields = (F)Activator.CreateInstance(typeof(F));
+
 			foreach (var field in fields)
 			{
 				object convertedValue;
@@ -437,7 +451,8 @@ namespace AnNa.SpreadsheetParser.Interface
 					syntaxError.CellAddress = field.CellAddress;
 					sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
 				}
-				Util.SetObjectFieldValue(sheet.GetType(), field.FieldName, sheet, convertedValue ?? outValue);
+
+				Util.SetObjectFieldValue(typeof(F), field.FieldType, field.FieldName, sheet.Fields, convertedValue ?? outValue);
 			}
 		}
 
@@ -479,6 +494,20 @@ namespace AnNa.SpreadsheetParser.Interface
 			throw new ArgumentException("{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe supplied value type <" + type +
 				"> is not a publicly-visible type, so the default value cannot be retrieved");
 		}
+
+
+		public static ITypedSheet<R1,F1> MapFrom<R1, R2, F1, F2>(this ITypedSheet<R1, F1> target, ITypedSheet<R2, F2> source) 
+			where R1: ISheetRow
+			where R2: ISheetRow, R1
+			where F1: ISheetFields
+			where F2: ISheetFields, F1
+		{
+			target.Fields = (F1)source.Fields;
+			target.Rows = source.Rows.Cast<R1>().ToList();
+
+			return target;
+		}
+
 	}
 
 	public class TypeAccessorHelper

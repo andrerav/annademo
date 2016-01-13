@@ -1,38 +1,44 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	public class ShipStoresSheetRow : SheetRow
+	[SheetVersion(SheetGroups.ShipStores, 1, 0, "AnNa")]
+	public class ShipStoresSheet10 : AbstractTypedSheet<ShipStoresSheet10.SheetRowDefinition, ISheetFields>
 	{
-		[Column("Name_Of_Article", FriendlyName = "Name Of Article")]
-		public string Name_Of_Article;
+		public override string SheetName => "Ship_Stores";
 
-		[Column("Quantity", FriendlyName = "Quantity")]
-		public decimal Quantity;
+		public class SheetRowDefinition : SheetRow
+		{
+			[Column("Name_Of_Article", "Name Of Article")]
+			public virtual string Name_Of_Article { get; set; }
 
-		[Column("Unit", FriendlyName = "Unit")]
-		public string Unit;
+			[Column("Quantity", "Quantity")]
+			public virtual decimal Quantity { get; set; }
 
-		[Column("Description", FriendlyName = "Description")]
-		public string Description;
+			[Column("Unit", "Unit")]
+			public virtual string Unit { get; set; }
 
-		[Column("Location_On_Board", FriendlyName = "Location On Board")]
-		public string Location_On_Board;
+			[Column("Location_On_Board", "Location On Board")]
+			public virtual string Location_On_Board { get; set; }
 
-		[Column("Official_Use", FriendlyName = "Official Use")]
-		public string Official_Use;
+			[Column("Official_Use", "Official Use")]
+			public virtual string Official_Use { get; set; }
+		}
 	}
 
 	[Serializable]
-	public class ShipStoresSheet : AbstractSheet<ShipStoresSheetRow>
+	[SheetVersion(SheetGroups.ShipStores, 1, 1, "AnNa")]
+	public class ShipStoresSheet11 : AbstractTypedSheet<ShipStoresSheet11.SheetRowDefinition, ISheetFields>
 	{
-		public override string SheetName
+		public override string SheetName => "Ship_Stores";
+
+		public class SheetRowDefinition : ShipStoresSheet10.SheetRowDefinition
 		{
-			get
-			{
-				return "Ship_Stores";
-			}
+			[Column("Description", "Description")]
+			public virtual string Description { get; set; }
 		}
 	}
 }

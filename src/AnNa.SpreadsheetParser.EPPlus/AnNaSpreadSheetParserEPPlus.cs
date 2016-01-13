@@ -77,7 +77,9 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T :class, ISheetRow
+		public ITypedSheet<R,F> GetSheetBulkData<R, F>(ITypedSheet<R,F> sheet) 
+			where R :class, ISheetRow 
+			where F :class, ISheetFields
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -98,7 +100,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			SetData(worksheet, sheet, contents, offset);
 		}
 
-		public void SetSheetData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		public void SetSheetData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -168,13 +170,20 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-		private ITypedSheetWithBulkData<T> RetrieveData<T>(ExcelWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		private ITypedSheet<R, F> RetrieveData<R, F>(ExcelWorksheet worksheet, ITypedSheet<R, F> sheet) 
+			where R : class, ISheetRow 
+			where F : class, ISheetFields
 		{
-			var result = new List<T>();
+			var result = new List<R>();
 			int startrow = -1;
 			List<SheetColumn> columnNames = Util.GetColumns(sheet);
 
 			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames);
+
+			foreach (var missingColumn in columnNames.Select(c => c?.ColumnName).Except(columnLookup.Select(c => c.Value?.ColumnName)))
+			{
+				sheet.AddToMissingColumns(missingColumn);
+			}
 
 			var dataStartRowIndex = startrow + sheet.RowOffset;
 
@@ -299,7 +308,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 		}
 
-		private void SetData<T>(ExcelWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		private void SetData<R, F>(ExcelWorksheet worksheet, ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields
 		{
 			// Find all the known columns and map them to spreadsheet columns
 			int startrow;
@@ -307,7 +316,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columns);
 			var dataStartRow = startrow + sheet.RowOffset;
 
-			var helper = new TypeAccessorHelper(typeof(T));
+			var helper = new TypeAccessorHelper(typeof(R));
 
 			// Set bulk data
 			int i = 0;
@@ -327,7 +336,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 			// Set field data
 			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
-			var fields = Util.GetFields<T>(sheet);
+			var fields = Util.GetFields(sheet);
 			foreach (var field in fields)
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
@@ -427,9 +436,10 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = null;
 		}
 
-		public bool TryGetWorkbookVersion(out Version version)
+		public bool TryGetWorkbookVersion(out Version version, out string authority)
 		{
 			version = null;
+			authority = "AnNa"; //Default to AnNa
 
 			if (Workbook != null)
 			{
@@ -438,7 +448,14 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				{
 					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
 					var separatorIndex = versionCellValue.IndexOf('-');
-					var versionString = separatorIndex > -1 ? versionCellValue.Substring(0, separatorIndex) : versionCellValue;
+
+					string versionString = versionCellValue;
+					if (separatorIndex > -1)
+					{
+						versionString = versionCellValue.Substring(0, separatorIndex);
+						authority = versionCellValue.Substring(separatorIndex + 1);
+					}
+					
 
 					return Version.TryParse(versionString, out version);
 				}

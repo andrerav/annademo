@@ -1,58 +1,71 @@
 ﻿using AnNa.SpreadsheetParser.Interface.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
+
 	[Serializable]
-	public class WasteSheetRow : SheetRow
-	{
-		[Column("Waste_Type", FriendlyName = "Waste Type")]
-		public string Waste_Type;
+	[SheetVersion(SheetGroups.Waste, 1, 0, "AnNa")]
+	[Deprecated]
+	public class WasteSheet10 : AbstractTypedSheet<WasteSheet10.SheetRowDefinition, ISheetFields>	{
+		public override string SheetName => "Waste_And_Residues";
 
-		[Column("Waste_Type_Code", FriendlyName = "Waste Type Code")]
-		public string Waste_Type_Code;
+		public class SheetRowDefinition : SheetRow
+		{
+			[Column("Waste_Type", "Waste Type")]
+			public virtual string Waste_Type { get; set; }
 
-		[Column("Waste_Type_Description", FriendlyName = "Waste Type Description")]
-		public string Waste_Type_Description;
+			[Column("Waste_Type_Code", "Waste Type Code")]
+			public virtual string Waste_Type_Code { get; set; }
 
-		[Column("Amount_To_Be_Delivered", FriendlyName = "Amount to be Delivered")]
-		public double? Amount_To_Be_Delivered;
+			[Column("Waste_Type_Description", "Waste Type Description")]
+			public virtual string Waste_Type_Description { get; set; }
 
-		[Column("Maximum_Dedicated_Storage_Capacity", FriendlyName = "Maximum Dedicated Storage Capacity")]
-		public double? Maximum_Dedicated_Storage_Capacity;
+			[Column("Amount_To_Be_Delivered", "Amount to be Delivered")]
+			public virtual double? Amount_To_Be_Delivered { get; set; }
 
-		[Column("Amount_Retained_On_Board", FriendlyName = "Amount Retained on Board")]
-		public double? Amount_Retained_On_Board;
+			[Column("Maximum_Dedicated_Storage_Capacity", "Maximum Dedicated Storage Capacity")]
+			public virtual double? Maximum_Dedicated_Storage_Capacity { get; set; }
 
-		[Column("Port_Of_Delivery_Of_Remaining_Waste", FriendlyName = "Port of Delivery of Remaining Waste")]
-		public string Port_Of_Delivery_Of_Remaining_Waste;
+			[Column("Amount_Retained_On_Board", "Amount Retained on Board")]
+			public virtual double? Amount_Retained_On_Board { get; set; }
 
-		[Column("Estimated_Amount_Of_Waste_To_Be_Generated", FriendlyName = "Estimated Amount of Waste to be Generated")]
-		public double? Estimated_Amount_Of_Waste_To_Be_Generated;
+			[Column("Port_Of_Delivery_Of_Remaining_Waste", "Port of Delivery of Remaining Waste")]
+			public virtual string Port_Of_Delivery_Of_Remaining_Waste { get; set; }
 
-		[Column("Date_Of_Delivery_Of_Remaining_Waste", FriendlyName = "Date of Delivery of Remaining Waste")]
-		public DateTime? Date_Of_Delivery_Of_Remaining_Waste;
+			[Column("Estimated_Amount_Of_Waste_To_Be_Generated", "Estimated Amount of Waste to be Generated")]
+			public virtual double? Estimated_Amount_Of_Waste_To_Be_Generated { get; set; }
+
+			[Column("Date_Of_Delivery_Of_Remaining_Waste", "Date of Delivery of Remaining Waste")]
+			public virtual DateTime? Date_Of_Delivery_Of_Remaining_Waste { get; set; }
+		}
 	}
 
 	[Serializable]
-	[SheetVersion(1, 0)]
-	[Deprecated]
-	public class WasteSheet10 : AbstractSheet<WasteSheetRow>
+	[SheetVersion(SheetGroups.Waste, 1, 1, "AnNa")]
+	public class WasteSheet11 : AbstractTypedSheet<WasteSheet11.SheetRowDefinition, WasteSheet11.SheetFieldDefinition>
 	{
 		public override string SheetName => "Waste_And_Residues";
-	}
+		public class SheetFieldDefinition : ISheetFields
+		{
+			[Field("B4", "Waste to be Delivered")]
+			public virtual string WasteToBeDeliveredCell { get; set; }
 
-	[Serializable]
-	[SheetVersion(1, 1)]
-	public class WasteSheet11:WasteSheet10
-	{
-		[Field("B4", FriendlyName = "Waste to be Delivered")]
-		public string WasteToBeDeliveredCell;
+			[Field("D4", "Port of Last Delivery")]
+			public virtual string PortOfLastDeliveryCell { get; set; }
 
-		[Field("D4", FriendlyName = "Port of Last Delivery")]
-		public string PortOfLastDeliveryCell;
+			[Field("F4", "Date of last Delivery")]
+			public virtual DateTime DateOfLastDeliveryCell { get; set; }
+		}
 
-		[Field("F4", FriendlyName = "Date of last Delivery")]
-		public DateTime? DateOfLastDeliveryCell;
+		public class SheetRowDefinition : WasteSheet10.SheetRowDefinition
+		{
+			[Removed]
+			public override string Waste_Type_Code
+			{
+				get; set;
+			}
+		}
 	}
 }

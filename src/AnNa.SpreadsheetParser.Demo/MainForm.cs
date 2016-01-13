@@ -69,7 +69,7 @@ namespace AnNaSpreadSheetDemo
 
 				bool isTyped = t.GetInterfaces().Any(x =>
 				  x.IsGenericType &&
-				  x.GetGenericTypeDefinition() == typeof(ITypedSheetWithBulkData<>));
+				  x.GetGenericTypeDefinition() == typeof(ITypedSheet<,>));
 
 				var instance = Activator.CreateInstance(t);
 				object contents = null;
@@ -79,9 +79,9 @@ namespace AnNaSpreadSheetDemo
 					MethodInfo generic = method.MakeGenericMethod(
 													t.GetInterfaces()
 													.Where(i => i.IsGenericType 
-														&& i.GetGenericTypeDefinition() == typeof(ITypedSheetWithBulkData<>))
+														&& i.GetGenericTypeDefinition() == typeof(ITypedSheet<,>))
 													.Single().GetGenericArguments()
-													.Single());
+													.ToArray());
 
 					contents = generic.Invoke(parser, new object[] { instance });
 				}

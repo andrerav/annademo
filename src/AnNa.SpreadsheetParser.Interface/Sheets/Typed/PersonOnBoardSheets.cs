@@ -1,88 +1,75 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	public class PersonOnBoardRow : SheetRow
+	public abstract class PersonOnBoardRow : SheetRow
 	{
-		[Column("Family_Name", FriendlyName = "Family name")]
-		public string Family_Name;
+		[Column("Family_Name", "Family name")]
+		public virtual string Family_Name { get; set; }
 
-		[Column("Given_Name", FriendlyName = "Given name(s)")]
-		public string Given_Name;
+		[Column("Given_Name", "Given name(s)")]
+		public virtual string Given_Name { get; set; }
 
 		[Column("Nationality")]
-		public string Nationality;
+		public virtual string Nationality { get; set; }
 
-		[Column("Date_Of_Birth")]
-		public DateTime? Date_Of_Birth;
+		[Column("Date_Of_Birth", "Date of Birth")]
+		public virtual DateTime? Date_Of_Birth { get; set; }
 
-		[Column("Place_Of_Birth")]
-		public string Place_Of_Birth;
+		[Column("Place_Of_Birth", "Place of Birth")]
+		public virtual string Place_Of_Birth { get; set; }
 
-		[Column("Nature_Of_Identity_Document")]
-		public string Nature_Of_Identity_Document;
+		[Column("Nature_Of_Identity_Document", "Nature of Idendity Document")]
+		public virtual string Nature_Of_Identity_Document { get; set; }
 
-		[Column("Number_Of_Identity_Document")]
-		public string Number_Of_Identity_Document;
+		[Column("Number_Of_Identity_Document", "Number of Identity Document")]
+		public virtual string Number_Of_Identity_Document { get; set; }
 
-		[Column("Visa_Residence_Permit_Number")]
-		public string Visa_Residence_Permit_Number;
+		[Column("Visa_Residence_Permit_Number", "Visa Residence Permit Number")]
+		public virtual string Visa_Residence_Permit_Number { get; set; }
 
 		[Column("Number", Ignorable = true)]
-		public string Number;
+		public virtual string Number { get; set; }
 	}
 
 	[Serializable]
-	public class CrewListRow : PersonOnBoardRow
+	[SheetVersion(SheetGroups.CrewList, 1, 0, "AnNa")]
+	public class CrewListSheet10 : AbstractTypedSheet<CrewListSheet10.SheetRowDefinition, ISheetFields>
 	{
+		public override string SheetName => "Crew_List";
 
-		[Column("Duty_Of_Crew")]
-		public string Duty_Of_Crew;
-
-		[Column("Gender")]
-		public string Gender;
-
-		[Column("Crew_Effects")]
-		public string Crew_Effects;
-	}
-
-	[Serializable]
-	public class PassengerListRow : PersonOnBoardRow
-	{
-		[Column("Port_Of_Embarkation")]
-		public string Port_Of_Embarkation;
-		[Column("Port_Of_Disembarkation")]
-		public string Port_Of_Disembarkation;
-		[Column("Transit")]
-		public string Transit;
-	}
-
-
-	[Serializable]
-	public class CrewListSheet : AbstractSheet<CrewListRow>
-	{
-		public override string SheetName
+		public class SheetRowDefinition : PersonOnBoardRow
 		{
-			get
-			{
-				return "Crew_List";
-			}
+			[Column("Duty_Of_Crew", "Duty of Crew")]
+			public virtual string Duty_Of_Crew { get; set; }
+
+			[Column("Gender")]
+			public virtual string Gender { get; set; }
+
+			[Column("Crew_Effects", "Crew Effects")]
+			public virtual string Crew_Effects { get; set; }
 		}
 	}
 
 	[Serializable]
-	public class PassengerListSheet : AbstractSheet<PassengerListRow>
+	[SheetVersion(SheetGroups.PaxList, 1, 0, "AnNa")]
+	public class PassengerListSheet10 : AbstractTypedSheet<PassengerListSheet10.SheetRowDefinition, ISheetFields>
 	{
-		public override string SheetName
+		public override string SheetName => "Pax_List";
+
+		public class SheetRowDefinition : PersonOnBoardRow
 		{
-			get
-			{
-				return "Pax_List";
-			}
+			[Column("Port_Of_Embarkation", "Port of Embarkation")]
+			public virtual string Port_Of_Embarkation { get; set; }
+
+			[Column("Port_Of_Disembarkation", "Port of Disembarkation")]
+			public virtual string Port_Of_Disembarkation { get; set; }
+
+			[Column("Transit")]
+			public virtual string Transit { get; set; }
 		}
 	}
 }

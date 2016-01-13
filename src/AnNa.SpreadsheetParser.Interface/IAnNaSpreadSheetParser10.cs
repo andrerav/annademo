@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using AnNa.SpreadsheetParser.Interface.Sheets;
+using System.Linq;
+using AnNa.SpreadsheetParser.Interface.Attributes;
 
 namespace AnNa.SpreadsheetParser.Interface
 {
@@ -38,10 +40,11 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Retrieve the bulk data from a specific sheet in a type safe manner
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="R"></typeparam>
+		/// <typeparam name="F"></typeparam>
 		/// <param name="sheet"></param>
 		/// <returns></returns>
-		ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow;
+		ITypedSheet<R, F> GetSheetBulkData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields;
 
 		/// <summary>
 		/// Write bulk data to a specific sheet
@@ -53,9 +56,10 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Write bulk data to a specific sheet in a type safe manner
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="R"></typeparam>
+		/// <typeparam name="F"></typeparam>
 		/// <param name="sheet"></param>
-		void SetSheetData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow;
+		void SetSheetData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields;
 
 		/// <summary>
 		/// Overload
@@ -147,11 +151,80 @@ namespace AnNa.SpreadsheetParser.Interface
 		List<string> SheetNames { get; }
 
 		/// <summary>
-		/// Returns the workbook version number as an out parameter. Method returns true if successful.
+		/// Returns the workbook version number and authority as out parameters. Method returns true if successful.
 		/// </summary>
 		/// <returns></returns>
-		bool TryGetWorkbookVersion(out Version version);
+		bool TryGetWorkbookVersion(out Version version, out string authority);
 	}
+
+	public static class ParserExtensions
+	{
+		public static Dictionary<Type, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, string path, out Version workbookVersion, out string authority)
+		{
+			var result = new Dictionary<Type, object>();
+			parser.OpenFile(path);
+
+			if (!parser.TryGetWorkbookVersion(out workbookVersion, out authority))
+				throw new InvalidWorkbookVersionException();
+
+			var _lambdaSafeAuthority = authority; //out or ref parameters not allowed in lambdas :\
+
+			var type = typeof(AbstractTypedSheet<,>);
+
+			var sheetDefinitionGroups = AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(s => s.GetTypes())
+				.Where(p => !p.IsAbstract
+							&& p.BaseType != null
+							&& p.BaseType.IsGenericType
+							&& p.BaseType.GetGenericTypeDefinition() == type
+							&& p.CustomAttributes.Any(ca => ca.AttributeType == typeof(SheetVersionAttribute)))
+				.Select(t =>
+				{
+					var versionParams = t.CustomAttributes.Single(ca => ca.AttributeType == typeof(SheetVersionAttribute)).ConstructorArguments.Select(ca => ca.Value);
+					var genericTypes = t.GetInterfaces()
+							.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ITypedSheet<,>))
+							.Single()
+							.GetGenericArguments();
+					return new
+					{
+						Type = t,
+						TypeParameters = genericTypes,
+						GroupingKey = versionParams.ElementAt(0),
+						Version = new Version((int)versionParams.ElementAt(1), (int)versionParams.ElementAt(2)),
+						Authority = versionParams.ElementAt(3).ToString()
+					};
+				})
+				.OrderByDescending(t => t.Authority == _lambdaSafeAuthority) //Prøv først å finne en kompatibel versjon blant authority-spesifikke definisjoner - fall tilbake på AnNa
+				.ThenByDescending(t => t.Version)
+				.GroupBy(g => g.GroupingKey)
+				.ToList();
+
+			var method = typeof(IAnNaSpreadSheetParser10).GetMethods().First(m => m.Name == nameof(IAnNaSpreadSheetParser10.GetSheetBulkData) && m.GetParameters().Count() == 1);
+			foreach (var group in sheetDefinitionGroups)
+			{
+				foreach (var sheetDefinition in group)
+				{
+					if (sheetDefinition.Version > workbookVersion || 
+						!(sheetDefinition.Authority == authority || sheetDefinition.Authority == "AnNa")) //Kun fallback til AnNa, ingen andre
+						continue;
+
+					object contents = null;
+
+					var instance = Activator.CreateInstance(sheetDefinition.Type);                               // ex. WasteSheet11
+					var genericMethod = method.MakeGenericMethod(sheetDefinition.TypeParameters.ToArray());      // GetSheetBulkData<WasteSheet11.SheetRowDefinition, WasteSheet11.SheetFieldDefinition>
+
+					contents = genericMethod.Invoke(parser, new object[] { instance });    // parser.GetSheetBulkData([WasteSheet11 instance])
+
+					result.Add(sheetDefinition.Type, contents);
+
+					break; //Hopp ut av indre-løkke etter parsing med første relevante sheet definisjon
+				}
+			}
+
+			return result;
+		}
+	}
+
 
 	public class InvalidColumnPositionException : Exception
 	{
@@ -167,5 +240,10 @@ namespace AnNa.SpreadsheetParser.Interface
 			: base(message)
 		{
 		}
+	}
+
+
+	public class InvalidWorkbookVersionException : Exception
+	{
 	}
 }

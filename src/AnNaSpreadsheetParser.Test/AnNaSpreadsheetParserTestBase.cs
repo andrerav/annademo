@@ -6,368 +6,165 @@ using System.Linq;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Reflection;
+using AnNa.SpreadsheetParser.Interface.Attributes;
+using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
+using System.Text.RegularExpressions;
 
 namespace AnNaSpreadSheetParserTest
 {
-	public class AnNaSpreadsheetParserTestBase
+	public abstract class AnNaSpreadsheetParserTestBase
 	{
+		protected abstract Version Version { get; }
+
 		protected IAnNaSpreadSheetParser10 parser;
 
-		protected virtual void GetParser<T>() where T : class, IAnNaSpreadSheetParser10, new()
+		/// <summary>
+		/// Creates an instance of the parser of type T. 
+		/// Initializes the parser with a sheet from the TestSheets directory matching the Version property.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		protected virtual void InitializeParser<T>() where T : class, IAnNaSpreadSheetParser10, new()
 		{
 			if (parser == null)
 			{
 				parser = new T();
-				parser.OpenFile("./../../AnNaTestSheet.xlsx");
+
+				var workbookVersions = Directory.GetFiles("./../../TestSheets", "*.xlsx", SearchOption.TopDirectoryOnly)
+					.Select(s=>
+					{
+						//Take the string between # and . in the file path then split it on -
+						var versionParams = Regex.Match(s, @"#([^.]*)\.").Groups[1].Value.Split('-').Select(c => int.Parse(c)).ToList(); ;
+
+						return new {
+							Path = s,
+							Version = new Version(versionParams[0], versionParams[1])
+						};
+					})
+					.OrderByDescending(sv=> sv.Version);
+
+				if (workbookVersions.All(sv => sv.Version != Version))
+					throw new Exception($"No test sheet for version {Version.ToString()} found");
+
+				foreach (var workbook in workbookVersions)
+				{
+					if (workbook.Version > Version)
+						continue;
+
+					parser.OpenFile(workbook.Path);
+				}
 			}
 		}
 
 		[TestCleanup]
 		public void Cleanup()
 		{
-			//parser.Dispose();
 		}
 
 
-		[TestMethod]
-		public void ReadCruiseList()
+		private void AssertSheetHasBulkData(string sheetGroup)
 		{
-			Assert.IsTrue(parser.GetSheetBulkData(new CruiseSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadStowawayList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new StowawaySheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadCrewList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new CrewListSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadPaxList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadWasteList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new WasteSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadLast10CallsList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new SecurityPortCallsSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadS2SList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new SecurityS2SActivitiesSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadShipStoresList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new ShipStoresSheet()).Any());
-		}
-
-		[TestMethod]
-		public void ReadDPGList()
-		{
-			Assert.IsTrue(parser.GetSheetBulkData(new DpgSheet()).Any());
-		}
-
-
-
-
-		[TestMethod]
-		public void ApplicationOfDateTimeTypeHint()
-		{
-			var data = parser.GetSheetBulkData(new PassengerListSheet());
-			foreach (var row in data)
-			{
-				var dob1 = row[PassengerListSheet.Columns.Date_Of_Birth];
-				if (!string.IsNullOrWhiteSpace(dob1))
+			var type = typeof(AbstractTypedSheet<,>);
+			var sheets = AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(s => s.GetTypes())
+				.Where(p =>
 				{
-					object dobConverted;
-					var typeHintedDob = Util.ApplyTypeHint<DateTime>(dob1, out dobConverted);
-					Assert.IsTrue(dobConverted is DateTime);
-					Assert.IsTrue(typeHintedDob.ToString() == dobConverted.ToString());
-					Assert.IsTrue((DateTime)dobConverted > DateTime.MinValue);
+					if (p.IsAbstract || p.BaseType == null
+							|| !p.BaseType.IsGenericType
+							|| p.BaseType.GetGenericTypeDefinition() != type)
+					{
+						return false;
+					}
+
+					var attr = p.GetCustomAttribute(typeof(SheetVersionAttribute)) as SheetVersionAttribute;
+					return attr != null && attr.GroupingKey == sheetGroup;
 				}
-			}
-		}
-
-		[TestMethod]
-		public void ReadDPGColumns()
-		{
-			var sheetContents = parser.GetSheetBulkData(new DpgSheet());
-			var row = sheetContents.First();
-
-			// Dangerous and Polluting Cargo
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.DGClassification));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.ImoHazardClass));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.UnNumber));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TransportUnitId));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TextualReference));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.StowagePosition));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.GrossQuantity));
-
-			// Conditional Information
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.NetQuantity));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.Flashpoint));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.MARPOLPollutionCode));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PortOfLoading));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PortOfDischarge));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.TransportDocumentId));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.NumberOfPackages));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PackageType));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.PackingGroup));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.SubsidiaryRisks));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.INFShipClass));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.MarksAndNumbers));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.EmergencyMeasures));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.AdditionalInformation));
-
-			// Supplemental Information
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.RadioactivityLevel));
-			Assert.IsTrue(row.ContainsKey(DpgSheet.Columns.Criticality));
-		}
-
-		[TestMethod]
-		public void GetVersionByGetValueAt()
-		{
-			var value = parser.GetValueAt(new CrewListSheet(), "A1");
-			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
-			Assert.IsTrue(value == "Version: 1.0");
-		}
-
-		[TestMethod]
-		public void GetVersionByGetValueAtString()
-		{
-			var value = parser.GetValueAt(new CrewListSheet().SheetName, "A1");
-			Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
-			Assert.IsTrue(value == "Version: 1.0");
-		}
-
-		[TestMethod]
-		public void ParseODDate1()
-		{
-			var items = parser.GetSheetBulkData(new SecurityPortCallsSheet());
-			foreach (var item in items)
-			{
-				var dateOfArrivalStr = item[SecurityPortCallsSheet.Columns.DateOfArrival];
-				var dateOfDepStr = item[SecurityPortCallsSheet.Columns.DateOfDeparture];
-
-				DateTime dateOfArrival = DateTime.Parse(dateOfArrivalStr);
-				DateTime dateOfDep = DateTime.Parse(dateOfDepStr);
-
-				Assert.IsTrue(dateOfArrival < dateOfDep);
-			}
-		}
-
-		[TestMethod]
-		public void ParseODDate2()
-		{
-			var items = parser.GetSheetBulkData(new CrewListSheet());
-			foreach (var item in items)
-			{
-				var dateOfBirthStr = item[AbstractCrewPaxListSheet.CommonColumns.Date_Of_Birth];
-
-				if (dateOfBirthStr != null)
+				).Select(p => new
 				{
-					DateTime dateOfBirth = DateTime.Parse(dateOfBirthStr);
-					Assert.IsTrue(dateOfBirth > DateTime.MinValue);
-				}
+					Type = p,
+					TypeParameters = p.GetInterfaces()
+							.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ITypedSheet<,>))
+							.Single()
+							.GetGenericArguments(),
+					Version = (p.GetCustomAttribute(typeof(SheetVersionAttribute)) as SheetVersionAttribute).Version
+				}).OrderByDescending(p=> p.Version);
+
+
+			var method = typeof(IAnNaSpreadSheetParser10).GetMethods().First(m => m.Name == nameof(IAnNaSpreadSheetParser10.GetSheetBulkData) && m.GetParameters().Count() == 1);
+			foreach (var item in sheets)
+			{
+				if (item.Version > Version)
+					continue;
+
+				var instance = Activator.CreateInstance(item.Type);      
+				var genericMethod = method.MakeGenericMethod(item.TypeParameters.ToArray());
+
+				genericMethod.Invoke(parser, new object[] { instance });
+
+				var rowProperty = item.Type.GetProperty(nameof(WasteSheet10.Rows), BindingFlags.Public | BindingFlags.Instance);
+
+				Assert.IsTrue((rowProperty.GetValue(instance) as IList).Count > 0);
+				return;
 			}
-		}
 
-		[TestMethod]
-		public void SetValuesTest1()
-		{
-			var newValue = "Test1";
-			var address = "A1";
-			parser.SetValueAt(new CrewListSheet(), address, newValue);
-			Assert.IsTrue(parser.GetValueAt(new CrewListSheet(), address) == newValue, "Values not equal");
-		}
-
-		[TestMethod]
-		public void GetAndSetLast10CallsList()
-		{
-			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
-			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
-			var newValue = "Testing";
-			contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] = newValue;
-			Assert.IsTrue(contents.Any());
-			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
-
-			contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
-			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] ==
-						  newValue);
-		}
-
-		[TestMethod]
-		public void SaveToStreamTest1()
-		{
-			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
-			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
-			Assert.IsTrue(contents.Any());
-			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
-			var stream = parser.SaveToStream();
-			Assert.IsTrue(stream.Length > 0);
-		}
-
-		[TestMethod]
-		public void SaveToStreamTypeSafeTest1()
-		{
-			var crewSheet = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListSheet();
-			var contents = parser.GetSheetBulkData(crewSheet);
-			Assert.IsTrue(contents.Rows.Any());
-			parser.SetSheetData(crewSheet);
-			var stream = parser.SaveToStream();
-			Assert.IsTrue(stream.Length > 0);
-		}
-
-		[TestMethod]
-		public void CountSheetNames()
-		{
-			var sheets = parser.SheetNames;
-			Assert.IsTrue(sheets.Count > 0);
-		}
-
-		[TestMethod]
-		public void AddEntryToCrewList()
-		{
-			var crewListSheet = new CrewListSheet();
-			var crewList = parser.GetSheetBulkData(crewListSheet);
-			var previousCount = crewList.Count;
-			Assert.IsTrue(previousCount > 0);
-
-			var entry = new Dictionary<string, string>();
-			entry[CrewListSheet.Columns.Family_Name] = "Andersen";
-			entry[CrewListSheet.Columns.Given_Name] = "Per";
-			entry[CrewListSheet.Columns.Date_Of_Birth] = "12.12.1970 13:00";
-
-			crewList.Add(entry);
-
-			parser.SetSheetBulkData(crewListSheet, crewList);
-			crewList = parser.GetSheetBulkData(crewListSheet);
-			Assert.IsTrue(crewList.Count == previousCount + 1);
-
-			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
-		}
-
-
-
-		[TestMethod]
-		public void SaveToNewFileTest1()
-		{
-			var path = "./../../SaveToNewFileTest1/" + Guid.NewGuid().ToString() + ".xlsx";
-			parser.SaveToFile(path, true);
-			Assert.IsTrue(File.Exists(path));
-			File.Delete(path);
-		}
-
-		[TestMethod]
-		public void Row1ShouldBeCopiedTest()
-		{
-			//var crewListSheet = new CrewListSheet();
-			//var crewList = parser.GetSheetBulkData(crewListSheet);
-
-			//Assert.IsTrue(crewList.Count == 2);
-
-			//var newEntry = new Dictionary<string, string>();
-			//newEntry[CrewListSheet.Columns.Family_Name] = "Andersen";
-			//newEntry[CrewListSheet.Columns.Given_Name] = "Per";
-			//newEntry[CrewListSheet.Columns.Date_Of_Birth] = "12.12.1970 13:00";
-
-			//crewList.Add(newEntry);
-			//crewList.Add(newEntry);
-			//crewList.Add(newEntry);
-			//crewList.Add(newEntry);
-
-			//parser.SetSheetBulkData(crewListSheet, crewList);
-
-			//var newCrewList = parser.GetSheetBulkData(crewListSheet);
-			//Assert.IsTrue(crewList.Count == newCrewList.Count);
-
-			//Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
-			//var path = "./../../SaveToNewFileTest1/" + Guid.NewGuid().ToString() + ".xlsx";
-			//parser.SaveToFile(path, true);
-
-			//parser.OpenFile(path);
-			//crewList = parser.GetSheetBulkData(crewListSheet);
-
-			//Assert.IsTrue(crewList[5][CrewListSheet.Columns.Number_Of_Identity_Document]
-			//              == crewList[0][CrewListSheet.Columns.Number_Of_Identity_Document]);
-			//File.Delete(path);
-
-
-		}
-
-		[TestMethod]
-		public void OpenFromStreamTest()
-		{
-			var stream = parser.SaveToStream();
-			parser.OpenFile(stream);
-			Assert.IsTrue(parser.GetSheetBulkData(new CrewListSheet()).Any());
-			Assert.IsTrue(parser.GetSheetBulkData(new PassengerListSheet()).Any());
-			Assert.IsTrue(parser.GetSheetBulkData(new WasteSheet()).Any());
-
-		}
-
-		[TestMethod]
-		public void SerializeTest()
-		{
-			var crewlistSheet = new CrewListSheet();
-			System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(crewlistSheet.GetType());
-			StringWriter sw = new StringWriter();
-			x.Serialize(sw, crewlistSheet);
-			Assert.IsTrue(sw.ToString().Length > 0);
-		}
-
-		[TestMethod]
-		public void SheetNamesTest()
-		{
-			Assert.IsTrue(parser.SheetNames.Count > 0);
-		}
-
-		[TestMethod]
-		public void IgnoreableRowValueTest()
-		{
-
-			var column = new SheetColumn();
-			column.ColumnName = "Test1";
-			column.FieldName = "Test1";
-			column.FieldType = typeof(string);
-			const string v1 = "ABC123";
-			const string v2 = "DEF456";
-			column.IgnoreableValues = new string[] { v1, v2 };
-
-			Assert.IsTrue(Util.IsIgnorableValue(v1, column));
-			Assert.IsTrue(Util.IsIgnorableValue(v2, column));
-			Assert.IsFalse(Util.IsIgnorableValue(Guid.NewGuid().ToString(), column));
+			Assert.Fail();
 		}
 
 
 		[TestMethod]
-		public void RowEmptinessTest()
+		public virtual void ReadCruiseList()
 		{
-			var row = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListRow();
-			Assert.IsTrue(Util.IsEmpty(row, Util.GetColumns(row)));
+			AssertSheetHasBulkData(SheetGroups.Cruise);
 		}
 
 		[TestMethod]
-		public void ReadArrivalOrDepartureList()
+		public virtual void ReadStowawayList()
 		{
-			var rows = parser.GetSheetBulkData(new AnNa.SpreadsheetParser.Interface.Sheets.Typed.ArrivalOrDepartureSheet()).Rows;
-			Assert.IsTrue(rows.Any());
+			AssertSheetHasBulkData(SheetGroups.Stowaway);
 		}
+
+		[TestMethod]
+		public virtual void ReadCrewList()
+		{
+			AssertSheetHasBulkData(SheetGroups.CrewList);
+		}
+
+		[TestMethod]
+		public virtual void ReadPaxList()
+		{
+			AssertSheetHasBulkData(SheetGroups.PaxList);
+		}
+
+		[TestMethod]
+		public virtual void ReadWasteList()
+		{
+			AssertSheetHasBulkData(SheetGroups.Waste);
+		}
+
+		[TestMethod]
+		public virtual void ReadLast10CallsList()
+		{
+			AssertSheetHasBulkData(SheetGroups.SecurityPortCalls);
+		}
+
+		[TestMethod]
+		public virtual void ReadS2SList()
+		{
+			AssertSheetHasBulkData(SheetGroups.SecurityShipToShip);
+		}
+
+		[TestMethod]
+		public virtual void ReadShipStoresList()
+		{
+			AssertSheetHasBulkData(SheetGroups.ShipStores);
+		}
+
+		[TestMethod]
+		public virtual void ReadDPGList()
+		{
+			AssertSheetHasBulkData(SheetGroups.Dpg);
+		}
+
+
 	}
 }

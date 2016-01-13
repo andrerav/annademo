@@ -1,45 +1,41 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	public class StowawaySheetRow : SheetRow
+	[SheetVersion(SheetGroups.Stowaway, 1, 0, "AnNa")]
+	public class StowawaySheet10 : AbstractTypedSheet<StowawaySheet10.SheetRowDefinition, ISheetFields>
 	{
-		[Column("Number", FriendlyName = "Number")]
-		public string Number;
-		[Column("Family_Name", FriendlyName = "Family Name")]
-		public string Family_Name;
-		[Column("Given_Name", FriendlyName = "Given Name")]
-		public string Given_Name;
+		public override string SheetName => "Stowaway_List";
 
-		// Supplemental information
-		[Column("Nationality", FriendlyName = "Nationality")]
-		public string Nationality;
-		[Column("Date_Of_Birth", FriendlyName = "Date Of Birth")]
-		public DateTime? Date_Of_Birth;
-		[Column("Place_Of_Birth", FriendlyName = "Place Of Birth")]
-		public string Place_Of_Birth;
-		[Column("Nature_Of_Identity_Document", FriendlyName = "Nature Of Identity Document")]
-		public string Nature_Of_Identity_Document;
-		[Column("Number_Of_Identity_Document", FriendlyName = "Number Of Identity Document")]
-		public string Number_Of_Identity_Document;
-		[Column("Port_Of_Embarkation", FriendlyName = "Port Of Embarkation")]
-		public string Port_Of_Embarkation;
-		[Column("Port_Of_Disembarkation", FriendlyName = "Port Of Disembarkation")]
-		public string Port_Of_Disembarkation;
-		[Column("Visa_Residence_Permit_Number", FriendlyName = "Visa/Residence Permit Number")]
-		public string Visa_Residence_Permit_Number;
-	}
-
-	[Serializable]
-	public class StowawaySheet : AbstractSheet<StowawaySheetRow>
-	{
-		public override string SheetName
+		public class SheetRowDefinition : SheetRow
 		{
-			get
-			{
-				return "Stowaway_List";
-			}
+			[Column("Number", "Number")]
+			public virtual string Number { get; set; }
+			[Column("Family_Name", "Family Name")]
+			public virtual string Family_Name { get; set; }
+			[Column("Given_Name", "Given Name")]
+			public virtual string Given_Name { get; set; }
+
+			// Supplemental information
+			[Column("Nationality", "Nationality")]
+			public virtual string Nationality { get; set; }
+			[Column("Date_Of_Birth", "Date Of Birth")]
+			public virtual DateTime? Date_Of_Birth { get; set; }
+			[Column("Place_Of_Birth", "Place Of Birth")]
+			public virtual string Place_Of_Birth { get; set; }
+			[Column("Nature_Of_Identity_Document", "Nature Of Identity Document")]
+			public virtual string Nature_Of_Identity_Document { get; set; }
+			[Column("Number_Of_Identity_Document", "Number Of Identity Document")]
+			public virtual string Number_Of_Identity_Document { get; set; }
+			[Column("Port_Of_Embarkation", "Port Of Embarkation")]
+			public virtual string Port_Of_Embarkation { get; set; }
+			[Column("Port_Of_Disembarkation", "Port Of Disembarkation")]
+			public virtual string Port_Of_Disembarkation { get; set; }
+			[Column("Visa_Residence_Permit_Number", "Visa/Residence Permit Number")]
+			public virtual string Visa_Residence_Permit_Number { get; set; }
 		}
 	}
 }

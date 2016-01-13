@@ -97,7 +97,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 		}
 
-		public ITypedSheetWithBulkData<T> GetSheetBulkData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		public ITypedSheet<R, F> GetSheetBulkData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F :class, ISheetFields
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -111,7 +111,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			SetData(worksheet, sheet, contents, offset);
 		}
 
-		public void SetSheetData<T>(ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		public void SetSheetData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields
 		{
 			ValidateWorkbook();
 			var worksheet = GetWorksheet(sheet.SheetName);
@@ -183,13 +183,18 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 
 
-		private ITypedSheetWithBulkData<T> RetrieveData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T : class, ISheetRow
+		private ITypedSheet<R, F> RetrieveData<R, F>(IWorksheet worksheet, ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : ISheetFields
 		{
-			var result = new List<T>();
+			var result = new List<R>();
 			int startrow = -1;
-			List<SheetColumn> columnNames = Util.GetColumns(sheet);
+			List<SheetColumn> columnNames = Util.GetColumns(sheet); //Columns from sheet definition
 
-			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames);
+			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames); //Columns from sheet definition found in worksheet
+
+			foreach (var missingColumn in columnNames.Select(c=> c?.ColumnName).Except(columnLookup.Select(c=> c.Value?.ColumnName)))
+			{
+				sheet.AddToMissingColumns(missingColumn);
+			}
 
 			var dataStartRowIndex = startrow + sheet.RowOffset;
 
@@ -314,7 +319,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			}
 		}
 
-		private void SetData<T>(IWorksheet worksheet, ITypedSheetWithBulkData<T> sheet) where T :class, ISheetRow
+		private void SetData<R, F>(IWorksheet worksheet, ITypedSheet<R, F> sheet) where R :class, ISheetRow where F :class, ISheetFields
 		{
 			// Find all the known columns and map them to spreadsheet columns
 			int startrow;
@@ -322,7 +327,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columns);
 			var dataStartRow = startrow + sheet.RowOffset;
 
-			var rowAccessHelper = new TypeAccessorHelper(typeof(T));
+			var rowAccessHelper = new TypeAccessorHelper(typeof(R));
 
 			// Set bulk data
 			int i = 0;
@@ -344,7 +349,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
 
 			// Set field data
-			var fields = Util.GetFields<T>(sheet);
+			var fields = Util.GetFields(sheet);
 			foreach(var field in fields)
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
@@ -461,9 +466,10 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			_workbook = null;
 		}
 
-		public bool TryGetWorkbookVersion(out Version version)
+		public bool TryGetWorkbookVersion(out Version version, out string authority)
 		{
 			version = null;
+			authority = "AnNa"; //Default to AnNa
 
 			if (Workbook != null)
 			{
@@ -472,7 +478,14 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				{
 					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
 					var separatorIndex = versionCellValue.IndexOf('-');
-					var versionString = separatorIndex > -1 ? versionCellValue.Substring(0, separatorIndex) : versionCellValue;
+
+					string versionString = versionCellValue;
+					if (separatorIndex > -1)
+					{
+						versionString = versionCellValue.Substring(0, separatorIndex);
+						authority = versionCellValue.Substring(separatorIndex + 1);
+					}
+
 
 					return Version.TryParse(versionString, out version);
 				}

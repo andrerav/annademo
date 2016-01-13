@@ -4,13 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AnNaSpreadSheetParserTest
 {
-	[TestClass]
-	public class AnNaSpreadSheetParserEPPlusTests: AnNaSpreadsheetParserTestBase
-	{
-		[TestInitialize]
-		public void TestInitialize()
-		{
-			base.GetParser<AnNaSpreadSheetParserEPPlus>();
-		}
-	}
+	//[TestClass]
+	//public class AnNaSpreadSheetParserEPPlusTests: AnNaSpreadsheetParserTestBase
+	//{
+	//	[TestInitialize]
+	//	public void TestInitialize()
+	//	{
+	//		base.GetParser<AnNaSpreadSheetParserEPPlus>();
+	//	}
+	//}
 }

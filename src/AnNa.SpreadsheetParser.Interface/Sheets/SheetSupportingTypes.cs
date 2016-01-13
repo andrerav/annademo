@@ -9,23 +9,52 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		SyntaxErrorContainer SyntaxErrorContainer { get; }
 	}
 
+	public interface ISheetFields { }
+
 	[Serializable]
 	public class SheetRow : ISheetRow
 	{
 		public int RowIndex { get; set; }
-		public SyntaxErrorContainer SyntaxErrorContainer => new SyntaxErrorContainer();
-	}
 
+		private SyntaxErrorContainer _syntaxError = new SyntaxErrorContainer();
+		public SyntaxErrorContainer SyntaxErrorContainer
+		{
+			get { return _syntaxError; }
+			internal set { _syntaxError = value; }
+		}
+	}
 
 	[Serializable]
-	public abstract class AbstractSheet<T> : ITypedSheetWithBulkData<T> where T : class, ISheetRow
+	public abstract class AbstractTypedSheet<R, F> : ITypedSheet<R, F> 
+		where R : class, ISheetRow
+		where F : class, ISheetFields
 	{
-		public SyntaxErrorContainer SyntaxErrorContainer => new SyntaxErrorContainer();
+		private List<string> _missingColumns = new List<string>();
+		private SyntaxErrorContainer _syntaxError = new SyntaxErrorContainer();
+		public SyntaxErrorContainer SyntaxErrorContainer
+		{
+			get { return _syntaxError; }
+			internal set { _syntaxError = value; }
+		}
+
+		public List<string> MissingColumns => _missingColumns;
+
+		public abstract string SheetName { get; }
 		public virtual int MaximumNumberOfRows { get { return -1; } }
 		public virtual int RowOffset { get { return 2; } }
-		public List<T> Rows { get; set; }
-		public abstract string SheetName { get; }
+
+		public F Fields { get; set; }
+		public List<R> Rows { get; set; }
+
+		public void AddToMissingColumns(string columnName)
+		{
+			if (_missingColumns.Contains(columnName))
+				return;
+
+			_missingColumns.Add(columnName);
+		}
 	}
+
 
 	[Serializable]
 	public class SyntaxErrorContainer
@@ -99,12 +128,15 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// </summary>
 		public string FriendlyName;
 
+		/// <summary>
+		/// Explicitly states that a column/field is optional (if true, no syntax error created for null values for valuetypes)
+		/// </summary>
+		public bool IsOptional { get; set; }
 
 		/// <summary>
 		/// Values that can be safely ignored when parsing the spreadsheet
 		/// </summary>
 		public string[] IgnoreableValues { get; set; }
-
 	}
 
 	[Serializable]

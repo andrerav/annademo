@@ -1,29 +1,26 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
-	[Serializable]
-	public class CruiseSheetRow : SheetRow
-	{
-		[Column("*Port", FriendlyName = "Port")]
-		public string Port;
-
-		[Column("*ETA_date", FriendlyName = "ETA Date")]
-		public string ETA_Date;
-
-		[Column("*ETA_time", FriendlyName = "ETA Time")]
-		public string ETA_Time;
-	}
 
 	[Serializable]
-	public class CruiseSheet : AbstractSheet<CruiseSheetRow>
+	[SheetVersion(SheetGroups.Cruise, 1, 0, "AnNa")]
+	public class CruiseSheet10 : AbstractTypedSheet<CruiseSheet10.SheetRowDefinition, ISheetFields>
 	{
-		public override string SheetName
+		public override string SheetName => "Cruise";
+
+		public class SheetRowDefinition : SheetRow
 		{
-			get
-			{
-				return "Cruise";
-			}
+			[Column("*Port", "Port")]
+			public virtual string Port { get; set; }
+
+			[Column("*ETA_date", "ETA Date")]
+			public virtual string ETA_Date { get; set; }
+
+			[Column("*ETA_time", "ETA Time")]
+			public virtual string ETA_Time { get; set; }
 		}
 	}
 }
