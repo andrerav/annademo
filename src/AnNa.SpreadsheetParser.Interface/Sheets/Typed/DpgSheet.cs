@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
-	
+
 
 	[Serializable]
 	[SheetVersion(SheetGroup.Dpg, 1, 0, SheetAuthority.AnNa)]
 	public class DpgSheet10 : AbstractTypedSheet<DpgSheet10.SheetRowDefinition, ISheetFields>
 	{
-		public override string SheetName => "Dangerous_And_Polluting_Goods";
+		public override string SheetName => "Dangerous_And_Poluting_Goods";
 
 		public class SheetRowDefinition : SheetRow
 		{
@@ -28,13 +28,10 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string Stowage_Position { get; set; }
 			[Column("Gross_Quantity", "Gross Quantity")]
 			public virtual decimal Gross_Quantity { get; set; }
-			[Column("Unit", "Unit")]
-			public virtual decimal Unit { get; set; }
-
 			// Conditional Information
 			[Column("Net_Quantity", "Net Quantity")]
 			public virtual string Net_Quantity { get; set; }
-			[Column("Flashpoint", "Flashpoint")]
+			[Column("Flashpoint")]
 			public virtual decimal Flashpoint { get; set; }
 			[Column("MARPOL_Pollution_Code", "MARPOL Pollution Code")]
 			public virtual string MARPOL_Pollution_Code { get; set; }
@@ -64,8 +61,21 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			// Supplemental information
 			[Column("Radioactivity_level", "Radioactivity Level")]
 			public virtual string Radioactivity_Level { get; set; }
-			[Column("Criticality", "Criticality")]
+			[Column("Criticality")]
 			public virtual string Criticality { get; set; }
+		}
+	}
+
+	[Serializable]
+	[SheetVersion(SheetGroup.Dpg, 1, 1, SheetAuthority.AnNa)]
+	public class DpgSheet11 : AbstractTypedSheet<DpgSheet11.SheetRowDefinition, ISheetFields>
+	{
+		public override string SheetName => "Dangerous_And_Polluting_Goods";
+
+		public class SheetRowDefinition : DpgSheet10.SheetRowDefinition
+		{
+			[Column("Unit")]
+			public virtual decimal Unit { get; set; }
 		}
 	}
 }

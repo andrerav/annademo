@@ -72,4 +72,20 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string Transit { get; set; }
 		}
 	}
+
+	[Serializable]
+	[SheetVersion(SheetGroup.PaxList, 1, 1, SheetAuthority.AnNa)]
+	public class PassengerListSheet11 : AbstractTypedSheet<PassengerListSheet11.SheetRowDefinition, ISheetFields>
+	{
+		public override string SheetName => "Pax_List";
+
+		public class SheetRowDefinition : PassengerListSheet10.SheetRowDefinition
+		{
+			[Column("Gender")]
+			public virtual string Gender { get; set; }
+		}
+	}
+
+
+
 }

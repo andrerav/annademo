@@ -61,7 +61,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 
 		public class SheetRowDefinition : WasteSheet10.SheetRowDefinition
 		{
-			[Removed]
+			[Obsolete]
 			public override string Waste_Type_Code
 			{
 				get; set;

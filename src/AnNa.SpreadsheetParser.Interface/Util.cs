@@ -264,7 +264,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			MemberInfo[] members = rowType.GetFields(bindingFlags).Cast<MemberInfo>()
 				.Concat(rowType.GetProperties(bindingFlags)).ToArray();
 
-			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(RemovedAttribute), false).Any()))
+			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(ObsoleteAttribute), false).Any()))
 			{
 				var columnAttr = member.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault() as ColumnAttribute;
 				if (columnAttr != null)
@@ -306,7 +306,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			MemberInfo[] members = sheetType.GetFields(bindingFlags).Cast<MemberInfo>()
 				.Concat(sheetType.GetProperties(bindingFlags)).ToArray();
 
-			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(RemovedAttribute), false).Any()))
+			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(ObsoleteAttribute), false).Any()))
 			{
 				var fieldAttr = member.GetCustomAttributes(typeof(FieldAttribute), true).FirstOrDefault() as FieldAttribute;
 				if (fieldAttr != null)
