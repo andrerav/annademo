@@ -9,7 +9,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 
 
 	[Serializable]
-	[SheetVersion(SheetGroups.ArrivalOrDeparture, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.ArrivalOrDeparture, 1, 0, SheetAuthority.AnNa)]
 	public class ArrivalOrDepartureSheet10 : AbstractTypedSheet<ArrivalOrDepartureSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Arrival_Or_Departure";

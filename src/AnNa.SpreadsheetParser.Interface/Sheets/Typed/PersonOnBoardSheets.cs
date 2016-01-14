@@ -36,7 +36,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.CrewList, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.CrewList, 1, 0, SheetAuthority.AnNa)]
 	public class CrewListSheet10 : AbstractTypedSheet<CrewListSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Crew_List";
@@ -55,7 +55,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.PaxList, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.PaxList, 1, 0, SheetAuthority.AnNa)]
 	public class PassengerListSheet10 : AbstractTypedSheet<PassengerListSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Pax_List";

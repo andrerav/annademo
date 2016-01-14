@@ -6,7 +6,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 
 	[Serializable]
-	[SheetVersion(SheetGroups.Cruise, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.Cruise, 1, 0, SheetAuthority.AnNa)]
 	public class CruiseSheet10 : AbstractTypedSheet<CruiseSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Cruise";

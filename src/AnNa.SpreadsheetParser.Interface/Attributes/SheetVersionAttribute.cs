@@ -5,23 +5,6 @@ using System.Text;
 
 namespace AnNa.SpreadsheetParser.Interface.Attributes
 {
-
-	public abstract class SheetGroups
-	{
-		public const string ArrivalOrDeparture = "ArrivalOrDeparture";
-		public const string CrewList = "CrewList";
-		public const string Cruise = "Cruise";
-		public const string Dpg = "Dpg";
-		public const string PaxList = "PaxList";
-		public const string Security = "Security";
-		public const string SecurityPortCalls = "SecurityPortCalls";
-		public const string SecurityShipToShip = "SecurityShipToShip";
-		public const string ShipStores = "ShipStores";
-		public const string Stowaway = "Stowaway";
-		public const string Waste = "Waste";
-	}
-
-
 	[AttributeUsage(AttributeTargets.Class)]
 	public class SheetVersionAttribute : Attribute
 	{

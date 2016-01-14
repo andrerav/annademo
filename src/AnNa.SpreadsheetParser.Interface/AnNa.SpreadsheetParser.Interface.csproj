@@ -55,11 +55,14 @@
     <Compile Include="Attributes\SheetAttribute.cs" />
     <Compile Include="Attributes\SheetVersionAttribute.cs" />
     <Compile Include="Attributes\TypeHintAttribute.cs" />
+    <Compile Include="Extensions\ParserExtensions.cs" />
+    <Compile Include="Extensions\ReflectionHelpers.cs" />
     <Compile Include="Interfaces\ISheet.cs" />
     <Compile Include="Interfaces\ISheetColumns.cs" />
     <Compile Include="Interfaces\ISheetVersionChanges.cs" />
     <Compile Include="Sheets\AbstractCrewPaxListSheet.cs" />
     <Compile Include="Sheets\Typed\ArrivalOrDeparture.cs" />
+    <Compile Include="Sheets\Typed\Constants.cs" />
     <Compile Include="Sheets\Typed\CruiseSheet.cs" />
     <Compile Include="Sheets\Typed\DpgSheet.cs" />
     <Compile Include="Sheets\Typed\SecuritySheets.cs" />

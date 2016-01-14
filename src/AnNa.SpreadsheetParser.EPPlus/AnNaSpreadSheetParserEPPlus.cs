@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using OfficeOpenXml;
+using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
@@ -439,7 +440,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		public bool TryGetWorkbookVersion(out Version version, out string authority)
 		{
 			version = null;
-			authority = "AnNa"; //Default to AnNa
+			authority = SheetAuthority.AnNa; //Default to AnNa
 
 			if (Workbook != null)
 			{

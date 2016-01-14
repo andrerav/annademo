@@ -114,55 +114,55 @@ namespace AnNaSpreadSheetParserTest
 		[TestMethod]
 		public virtual void ReadCruiseList()
 		{
-			AssertSheetHasBulkData(SheetGroups.Cruise);
+			AssertSheetHasBulkData(SheetGroup.Cruise);
 		}
 
 		[TestMethod]
 		public virtual void ReadStowawayList()
 		{
-			AssertSheetHasBulkData(SheetGroups.Stowaway);
+			AssertSheetHasBulkData(SheetGroup.Stowaway);
 		}
 
 		[TestMethod]
 		public virtual void ReadCrewList()
 		{
-			AssertSheetHasBulkData(SheetGroups.CrewList);
+			AssertSheetHasBulkData(SheetGroup.CrewList);
 		}
 
 		[TestMethod]
 		public virtual void ReadPaxList()
 		{
-			AssertSheetHasBulkData(SheetGroups.PaxList);
+			AssertSheetHasBulkData(SheetGroup.PaxList);
 		}
 
 		[TestMethod]
 		public virtual void ReadWasteList()
 		{
-			AssertSheetHasBulkData(SheetGroups.Waste);
+			AssertSheetHasBulkData(SheetGroup.Waste);
 		}
 
 		[TestMethod]
 		public virtual void ReadLast10CallsList()
 		{
-			AssertSheetHasBulkData(SheetGroups.SecurityPortCalls);
+			AssertSheetHasBulkData(SheetGroup.SecurityPortCalls);
 		}
 
 		[TestMethod]
 		public virtual void ReadS2SList()
 		{
-			AssertSheetHasBulkData(SheetGroups.SecurityShipToShip);
+			AssertSheetHasBulkData(SheetGroup.SecurityShipToShip);
 		}
 
 		[TestMethod]
 		public virtual void ReadShipStoresList()
 		{
-			AssertSheetHasBulkData(SheetGroups.ShipStores);
+			AssertSheetHasBulkData(SheetGroup.ShipStores);
 		}
 
 		[TestMethod]
 		public virtual void ReadDPGList()
 		{
-			AssertSheetHasBulkData(SheetGroups.Dpg);
+			AssertSheetHasBulkData(SheetGroup.Dpg);
 		}
 
 

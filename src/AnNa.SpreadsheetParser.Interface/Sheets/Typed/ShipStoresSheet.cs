@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	[SheetVersion(SheetGroups.ShipStores, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.ShipStores, 1, 0, SheetAuthority.AnNa)]
 	public class ShipStoresSheet10 : AbstractTypedSheet<ShipStoresSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Ship_Stores";
@@ -30,7 +30,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.ShipStores, 1, 1, "AnNa")]
+	[SheetVersion(SheetGroup.ShipStores, 1, 1, SheetAuthority.AnNa)]
 	public class ShipStoresSheet11 : AbstractTypedSheet<ShipStoresSheet11.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Ship_Stores";

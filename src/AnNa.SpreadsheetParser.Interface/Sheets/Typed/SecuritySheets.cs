@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	[SheetVersion(SheetGroups.Security, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.Security, 1, 0, SheetAuthority.AnNa)]
 	public class SecuritySheet10 : AbstractTypedSheet<ISheetRow, SecuritySheet10.SheetFieldDefinition>
 	{
 		public override string SheetName => "Security";
@@ -47,7 +47,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.SecurityPortCalls, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.SecurityPortCalls, 1, 0, SheetAuthority.AnNa)]
 	public class SecuritySheetLast10PortCalls10 : AbstractTypedSheet<SecuritySheetLast10PortCalls10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Security";
@@ -72,7 +72,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.SecurityShipToShip, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.SecurityShipToShip, 1, 0, SheetAuthority.AnNa)]
 	public class SecuritySheetS2SActivities10 : AbstractTypedSheet<SecuritySheetS2SActivities10.SheetRowDefinition, ISheetFields>
 		{
 		public override string SheetName => "Security";

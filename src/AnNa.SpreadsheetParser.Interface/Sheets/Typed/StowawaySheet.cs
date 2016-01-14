@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	[SheetVersion(SheetGroups.Stowaway, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.Stowaway, 1, 0, SheetAuthority.AnNa)]
 	public class StowawaySheet10 : AbstractTypedSheet<StowawaySheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Stowaway_List";

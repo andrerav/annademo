@@ -7,6 +7,7 @@ using AnNa.SpreadsheetParser.Interface.Sheets;
 using SpreadsheetGear;
 using ISheet = AnNa.SpreadsheetParser.Interface.Sheets.ISheet;
 using System.Globalization;
+using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
 
 namespace AnNa.SpreadsheetParser.SpreadsheetGear
 {
@@ -469,7 +470,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 		public bool TryGetWorkbookVersion(out Version version, out string authority)
 		{
 			version = null;
-			authority = "AnNa"; //Default to AnNa
+			authority = SheetAuthority.AnNa; //Default to AnNa
 
 			if (Workbook != null)
 			{

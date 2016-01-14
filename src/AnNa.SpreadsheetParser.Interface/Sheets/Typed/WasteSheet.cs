@@ -6,7 +6,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 
 	[Serializable]
-	[SheetVersion(SheetGroups.Waste, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.Waste, 1, 0, SheetAuthority.AnNa)]
 	[Deprecated]
 	public class WasteSheet10 : AbstractTypedSheet<WasteSheet10.SheetRowDefinition, ISheetFields>	{
 		public override string SheetName => "Waste_And_Residues";
@@ -43,7 +43,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	}
 
 	[Serializable]
-	[SheetVersion(SheetGroups.Waste, 1, 1, "AnNa")]
+	[SheetVersion(SheetGroup.Waste, 1, 1, SheetAuthority.AnNa)]
 	public class WasteSheet11 : AbstractTypedSheet<WasteSheet11.SheetRowDefinition, WasteSheet11.SheetFieldDefinition>
 	{
 		public override string SheetName => "Waste_And_Residues";

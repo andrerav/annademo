@@ -7,7 +7,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	
 
 	[Serializable]
-	[SheetVersion(SheetGroups.Dpg, 1, 0, "AnNa")]
+	[SheetVersion(SheetGroup.Dpg, 1, 0, SheetAuthority.AnNa)]
 	public class DpgSheet10 : AbstractTypedSheet<DpgSheet10.SheetRowDefinition, ISheetFields>
 	{
 		public override string SheetName => "Dangerous_And_Polluting_Goods";
