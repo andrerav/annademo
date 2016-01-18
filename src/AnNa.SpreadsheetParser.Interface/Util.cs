@@ -1,4 +1,5 @@
 ﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using AnNa.SpreadsheetParser.Interface.Extensions;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using FastMember;
 using System;
@@ -260,11 +261,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		{
 			var result = new List<SheetColumn>();
 
-			var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-			MemberInfo[] members = rowType.GetFields(bindingFlags).Cast<MemberInfo>()
-				.Concat(rowType.GetProperties(bindingFlags)).ToArray();
-
-			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(ObsoleteAttribute), false).Any()))
+			foreach (var member in ReflectionHelpers.GetAllNonObsoleteFieldsAndProperties(rowType))
 			{
 				var columnAttr = member.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault() as ColumnAttribute;
 				if (columnAttr != null)
@@ -300,13 +297,8 @@ namespace AnNa.SpreadsheetParser.Interface
 			where F : ISheetFields
 		{
 			var result = new List<SheetField>();
-			var sheetType = typeof(F);
 
-			var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-			MemberInfo[] members = sheetType.GetFields(bindingFlags).Cast<MemberInfo>()
-				.Concat(sheetType.GetProperties(bindingFlags)).ToArray();
-
-			foreach (var member in members.Where(m => !m.GetCustomAttributes(typeof(ObsoleteAttribute), false).Any()))
+			foreach (var member in ReflectionHelpers.GetAllNonObsoleteFieldsAndProperties(typeof(F)))
 			{
 				var fieldAttr = member.GetCustomAttributes(typeof(FieldAttribute), true).FirstOrDefault() as FieldAttribute;
 				if (fieldAttr != null)
@@ -317,10 +309,68 @@ namespace AnNa.SpreadsheetParser.Interface
 						FieldName = member.Name,
 						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
 						FriendlyName = fieldAttr.FriendlyName,
-						IsOptional = fieldAttr.IsOptional
+						IsOptional = fieldAttr.IsOptional,
+						IgnoreableValues = fieldAttr.IgnorableValues
 					};
 					
 					result.Add(field);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Retrieves a collection of field lists - one list for each property in a sheet definition with a ListMappingAttribute 
+		/// </summary>
+		/// <typeparam name="R"></typeparam>
+		/// <typeparam name="F"></typeparam>
+		/// <param name="sheet"></param>
+		/// <returns></returns>
+		public static List<List<SheetField>> GetListMaps<R, F>(ITypedSheet<R, F> sheet)
+			where R : ISheetRow
+			where F : ISheetFields
+		{
+			var result = new List<List<SheetField>>();
+
+			foreach (var member in ReflectionHelpers.GetAllNonObsoleteFieldsAndProperties(typeof(F)))
+			{
+				if (member.MemberType == MemberTypes.Field)
+				{
+					var fieldType = ((FieldInfo)member).FieldType;
+					if (!fieldType.IsGenericType || fieldType.GetGenericTypeDefinition() != typeof(List<>))
+						continue;
+				}
+
+				if(member.MemberType == MemberTypes.Property)
+				{
+					var fieldType = ((PropertyInfo)member).PropertyType;
+					if (!fieldType.IsGenericType || fieldType.GetGenericTypeDefinition() != typeof(List<>))
+						continue;
+				}
+
+				var listMappingAttr = member.GetCustomAttributes(typeof(ListMappingAttribute), true).FirstOrDefault() as ListMappingAttribute;
+				if(listMappingAttr != null)
+				{
+					var listMappingFields = new List<SheetField>();
+
+					foreach (var cell in listMappingAttr.CellAddresses)
+					{
+						var field = new SheetField
+						{
+							CellAddress = cell,
+							FieldName = member.Name,
+							FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
+							FriendlyName = listMappingAttr.FriendlyName,
+							IsOptional = listMappingAttr.IsOptional,
+							IgnoreableValues = listMappingAttr.IgnorableValues
+						};
+
+						listMappingFields.Add(field);
+					}
+
+					if (listMappingFields.Any())
+						result.Add(listMappingFields);
 				}
 			}
 
@@ -457,6 +507,48 @@ namespace AnNa.SpreadsheetParser.Interface
 			}
 		}
 
+		public static void MapLists<R, F>(ITypedSheet<R,F> sheet, Func<SheetField, string> getValue) where R : ISheetRow where F : ISheetFields
+		{
+			var lists = Util.GetListMaps(sheet);
+
+			if (lists.Any() && sheet.Fields == null)
+				sheet.Fields = (F)Activator.CreateInstance(typeof(F));
+
+			foreach (var list in lists)
+			{
+				var collectionType = list.First().FieldType; //e.g. List<string>
+
+				var fieldName = list.First().FieldName;
+				var fieldCollection = Activator.CreateInstance(collectionType);
+				var addMethod = collectionType.GetMethod(nameof(list.Add));
+
+				foreach (var field in list)
+				{
+					object convertedValue;
+					SyntaxError syntaxError;
+					var value = getValue(field);
+
+					if (IsIgnorableValue(value, field))
+					{
+						continue;
+					}
+
+					var outValue = Util.ApplyTypeHint(field.FieldType.GenericTypeArguments[0], value, out convertedValue, out syntaxError);
+					if (syntaxError != null)
+					{
+						syntaxError.CellAddress = field.CellAddress;
+						sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
+					}
+
+					addMethod.Invoke(fieldCollection, new object[] { convertedValue ?? outValue });
+				}
+
+				Util.SetObjectFieldValue(typeof(F), fieldCollection.GetType(), fieldName, sheet.Fields, fieldCollection);
+			}
+		}
+
+
+
 		public static bool IsIgnorableValue(object cellValue, SheetDataField column)
 		{
 			return cellValue != null && column.IgnoreableValues != null && column.IgnoreableValues.Contains(cellValue.ToString());
@@ -505,6 +597,8 @@ namespace AnNa.SpreadsheetParser.Interface
 		{
 			target.Fields = (F1)source.Fields;
 			target.Rows = source.Rows.Cast<R1>().ToList();
+
+			target.SyntaxErrorContainer = source.SyntaxErrorContainer;
 
 			return target;
 		}

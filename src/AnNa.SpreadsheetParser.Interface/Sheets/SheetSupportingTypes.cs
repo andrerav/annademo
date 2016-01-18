@@ -34,7 +34,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		public SyntaxErrorContainer SyntaxErrorContainer
 		{
 			get { return _syntaxError; }
-			internal set { _syntaxError = value; }
+			set { _syntaxError = value; }
 		}
 
 		public List<string> MissingColumns => _missingColumns;

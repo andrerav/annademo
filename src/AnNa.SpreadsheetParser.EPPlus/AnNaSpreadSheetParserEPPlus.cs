@@ -207,6 +207,8 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			sheet.Rows = result;
 			// Map fields
 			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+			Util.MapLists(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+
 			return sheet;
 		}
 

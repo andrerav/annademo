@@ -3,6 +3,7 @@ using AnNa.SpreadsheetParser.Interface.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +57,18 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 				.ThenByDescending(t => t.Version)
 				.GroupBy(g => g.GroupingKey)
 				.ToList();
+		}
+
+
+
+		public static MemberInfo[] GetAllNonObsoleteFieldsAndProperties(Type type)
+		{
+			var bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+
+			var members = type.GetFields(bindingFlags).Cast<MemberInfo>()
+				.Concat(type.GetProperties(bindingFlags)).ToArray();
+
+			return members.Where(m => !m.GetCustomAttributes(typeof(ObsoleteAttribute), false).Any()).ToArray();
 		}
 
 	}

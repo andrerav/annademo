@@ -214,8 +214,10 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			Util.RemoveEmptyRows(result, columnNames);
 
 			sheet.Rows = result;
-			// Map fields
+			
 			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+			Util.MapLists(sheet, (field) => GetValueAt(sheet, field.CellAddress));
+
 			return sheet;
 		}
 
@@ -350,7 +352,9 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
 
 			// Set field data
-			var fields = Util.GetFields(sheet);
+			var fields = Util.GetFields(sheet)
+				.Concat(Util.GetListMaps(sheet).SelectMany(lm => lm));
+
 			foreach(var field in fields)
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
