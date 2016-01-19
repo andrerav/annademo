@@ -14,6 +14,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Arrival_Or_Departure";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 		{
 			[Column("A_D", "Arrival Or Departure")]

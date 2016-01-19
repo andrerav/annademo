@@ -10,6 +10,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Stowaway_List";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 		{
 			[Column("Number", "Number")]

@@ -41,6 +41,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Crew_List";
 
+		[Serializable]
 		public class SheetRowDefinition : PersonOnBoardRow
 		{
 			[Column("Duty_Of_Crew", "Duty of Crew")]
@@ -60,6 +61,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Pax_List";
 
+		[Serializable]
 		public class SheetRowDefinition : PersonOnBoardRow
 		{
 			[Column("Port_Of_Embarkation", "Port of Embarkation")]
@@ -79,6 +81,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Pax_List";
 
+		[Serializable]
 		public class SheetRowDefinition : PassengerListSheet10.SheetRowDefinition
 		{
 			[Column("Gender")]

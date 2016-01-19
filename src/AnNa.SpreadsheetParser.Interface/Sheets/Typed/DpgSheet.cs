@@ -12,6 +12,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Dangerous_And_Poluting_Goods";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 		{
 			[Column("DG_classification", "Dangerous Goods Classification")]
@@ -72,6 +73,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Dangerous_And_Polluting_Goods";
 
+		[Serializable]
 		public class SheetRowDefinition : DpgSheet10.SheetRowDefinition
 		{
 			[Column("Unit")]

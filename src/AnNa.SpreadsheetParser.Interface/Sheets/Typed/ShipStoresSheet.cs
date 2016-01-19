@@ -10,6 +10,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Ship_Stores";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 		{
 			[Column("Name_Of_Article", "Name Of Article")]
@@ -35,6 +36,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Ship_Stores";
 
+		[Serializable]
 		public class SheetRowDefinition : ShipStoresSheet10.SheetRowDefinition
 		{
 			[Column("Description", "Description")]

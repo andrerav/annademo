@@ -12,6 +12,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Security";
 
+		[Serializable]
 		public class SheetFieldDefinition : ISheetFields
 		{
 			[Field("A8", "Valid ISSC")]
@@ -39,7 +40,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string CSO_Phone_24_7 { get; set; }
 			[Field("F11", "CSO Email")]
 			public virtual string CSO_Email { get; set; }
-	}
+		}
 
 	}
 
@@ -49,6 +50,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Security";
 
+		[Serializable]
 		public class SheetFieldDefinition : SecuritySheet10.SheetFieldDefinition
 		{
 			[Field("B8", "Administration or RSO")]
@@ -86,6 +88,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 
 		public override int MaximumNumberOfRows => 10;
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 			{
 			[Column("Date_of_arrival", "Date Of Arrival")]
@@ -111,6 +114,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		{
 		public override string SheetName => "Security";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 			{
 			[Column("Date_from", "Date From")]
@@ -138,6 +142,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Security";
 
+		[Serializable]
 		public class SheetRowDefinition : SecuritySheetS2SActivities10.SheetRowDefinition
 		{
 			[Obsolete("Use the Latitude_Direction, -Degrees, -Minutes and -Seconds propteries instead")]

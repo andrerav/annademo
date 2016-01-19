@@ -11,6 +11,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 	{
 		public override string SheetName => "Cruise";
 
+		[Serializable]
 		public class SheetRowDefinition : SheetRow
 		{
 			[Column("*Port", "Port")]
