@@ -596,7 +596,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			where F2: ISheetFields, F1
 		{
 			target.Fields = (F1)source.Fields;
-			target.Rows = source.Rows.Cast<R1>().ToList();
+			target.Rows = source.Rows?.Cast<R1>().ToList();
 
 			target.SyntaxErrorContainer = source.SyntaxErrorContainer;
 

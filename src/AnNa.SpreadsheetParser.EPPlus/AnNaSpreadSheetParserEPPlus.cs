@@ -73,7 +73,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		{
 			get
 			{
-				ValidateWorkbook();
+				ThrowExceptionIfNotInitialized();
 				return Workbook.Worksheets.Select(s => s.Name).ToList();
 			}
 		}
@@ -82,28 +82,28 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			where R :class, ISheetRow 
 			where F :class, ISheetFields
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheet.SheetName);
 			return worksheet != null ? RetrieveData(worksheet, sheet) : null;
 		}
 
 		public List<Dictionary<string, string>> GetSheetBulkData(ISheetWithBulkData sheet, int offset = 2)
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheet.SheetName);
 			return worksheet != null ? RetrieveData(worksheet, sheet, offset) : new List<Dictionary<string, string>>();
 		}
 
 		public void SetSheetBulkData(ISheetWithBulkData sheet, List<Dictionary<string, string>> contents, int offset = 2)
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheet.SheetName);
 			SetData(worksheet, sheet, contents, offset);
 		}
 
 		public void SetSheetData<R, F>(ITypedSheet<R, F> sheet) where R : class, ISheetRow where F : class, ISheetFields
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheet.SheetName);
 			SetData(worksheet, sheet);
 		}
@@ -115,7 +115,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 		public string GetValueAt(string sheetName, string cellAddress)
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheetName);
 			return worksheet?.Cells[cellAddress].Text;
 		}
@@ -139,7 +139,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 		public T GetValueAt<T>(string sheetName, string cellAddress, out string rawString)
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheetName);
 			var rawValue = worksheet?.Cells[cellAddress]?.Value;
 			rawString = rawValue != null ? rawValue.ToString() : string.Empty;
@@ -163,7 +163,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 		public void SetValueAt<T>(string sheetName, string cellAddress, T value)
 		{
-			ValidateWorkbook();
+			ThrowExceptionIfNotInitialized();
 			var worksheet = GetWorksheet(sheetName);
 			if (worksheet != null)
 			{
@@ -347,7 +347,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		}
 
 		#region Utility Methods
-		private void ValidateWorkbook()
+		public void ThrowExceptionIfNotInitialized()
 		{
 			if (Workbook == null)
 			{
@@ -466,5 +466,6 @@ namespace AnNa.SpreadSheetParser.EPPlus
 
 			return false;
 		}
+
 	}
 }

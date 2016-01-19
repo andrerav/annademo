@@ -156,6 +156,12 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// </summary>
 		/// <returns></returns>
 		bool TryGetWorkbookVersion(out Version version, out string authority);
+
+		/// <summary>
+		/// Throws an InvalidOperationException if parser is not initialized properly
+		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
+		void ThrowExceptionIfNotInitialized();
 	}
 
 	
