@@ -500,6 +500,7 @@ namespace AnNa.SpreadsheetParser.Interface
 				if (syntaxError != null)
 				{
 					syntaxError.CellAddress = field.CellAddress;
+					syntaxError.DataField = field;
 					sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
 				}
 
@@ -537,6 +538,7 @@ namespace AnNa.SpreadsheetParser.Interface
 					if (syntaxError != null)
 					{
 						syntaxError.CellAddress = field.CellAddress;
+						syntaxError.DataField = field;
 						sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
 					}
 
