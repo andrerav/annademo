@@ -19,7 +19,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		where R : ISheetRow 
 		where F : ISheetFields
 	{
-		SyntaxErrorContainer SyntaxErrorContainer { get; set; }
+		ErrorContainer ErrorContainer { get; set; }
 		
 		/// <summary>
 		/// A collection of names of missing columns (uploaded sheet compared to sheet definition)

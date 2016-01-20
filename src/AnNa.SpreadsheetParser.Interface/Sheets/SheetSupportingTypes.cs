@@ -6,7 +6,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	public interface ISheetRow
 	{
 		int RowIndex { get; set; }
-		SyntaxErrorContainer SyntaxErrorContainer { get; }
+		ErrorContainer ErrorContainer { get; }
 	}
 
 	public interface ISheetFields { }
@@ -16,11 +16,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	{
 		public int RowIndex { get; set; }
 
-		private SyntaxErrorContainer _syntaxError = new SyntaxErrorContainer();
-		public SyntaxErrorContainer SyntaxErrorContainer
+		private ErrorContainer _errorContainer = new ErrorContainer();
+		public ErrorContainer ErrorContainer
 		{
-			get { return _syntaxError; }
-			internal set { _syntaxError = value; }
+			get { return _errorContainer; }
+			internal set { _errorContainer = value; }
 		}
 	}
 
@@ -30,11 +30,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		where F : class, ISheetFields
 	{
 		private List<string> _missingColumns = new List<string>();
-		private SyntaxErrorContainer _syntaxError = new SyntaxErrorContainer();
-		public SyntaxErrorContainer SyntaxErrorContainer
+		private ErrorContainer _errorContainer = new ErrorContainer();
+		public ErrorContainer ErrorContainer
 		{
-			get { return _syntaxError; }
-			set { _syntaxError = value; }
+			get { return _errorContainer; }
+			set { _errorContainer = value; }
 		}
 
 		public List<string> MissingColumns => _missingColumns;
@@ -57,57 +57,72 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 
 	[Serializable]
-	public class SyntaxErrorContainer
+	public class ErrorContainer
 	{
 		/// <summary>
-		/// A list of syntax errors
+		/// A list of parse errors
 		/// </summary>
-		public List<SyntaxError> SyntaxErrors { get; private set; }
+		public List<IParseError> Errors { get; private set; }
 
-		public SyntaxErrorContainer() { SyntaxErrors = new List<SyntaxError>(); }
+		public ErrorContainer() { Errors = new List<IParseError>(); }
 
 		/// <summary>
 		/// Add a syntax error to this container. Note that the DataField property must be set, otherwise an exception is thrown.
 		/// </summary>
 		/// <param name="error"></param>
-		public void AddSyntaxError(SyntaxError error)
+		public void AddError(IParseError error)
 		{
 			if (error.DataField == null)
 			{
 				throw new ArgumentNullException(nameof(error.DataField));
 			}
 
-			if (SyntaxErrors == null)
+			if (Errors == null)
 			{
-				SyntaxErrors = new List<SyntaxError>();
+				Errors = new List<IParseError>();
 			}
-			SyntaxErrors.Add(error);
+
+			Errors.Add(error);
 		}
 	}
 
-	[Serializable]
-	public class SyntaxError
+	public interface IParseError
 	{
-
 		/// <summary>
 		/// The cell in which this syntax error was found
 		/// </summary>
-		public string CellAddress;
-
-		/// <summary>
-		/// The original hinted type which could not be parsed
-		/// </summary>
-		public Type TypeHint;
-
-		/// <summary>
-		/// The raw value from the spreadsheet
-		/// </summary>
-		public string RawValue;
+		string CellAddress { get; set; }
 
 		/// <summary>
 		/// The data field which contains erronous data
 		/// </summary>
-		public SheetDataField DataField;
+		SheetDataField DataField { get; set; }
+
+	}
+
+	public abstract class AbstractError : IParseError
+	{
+		public string CellAddress { get; set; }
+		public SheetDataField DataField { get; set; }
+	}
+
+	[Serializable]
+	public class RequiredFieldError : AbstractError
+	{
+	}
+
+	[Serializable]
+	public class SyntaxError : AbstractError
+	{
+		/// <summary>
+		/// The original hinted type which could not be parsed
+		/// </summary>
+		public Type TypeHint { get; set; }
+
+		/// <summary>
+		/// The raw value from the spreadsheet
+		/// </summary>
+		public string RawValue { get; set; }
 	}
 
 	[Serializable]

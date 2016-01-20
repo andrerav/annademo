@@ -17,13 +17,13 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		public static object ApplyTypeHint<T>(object inValue, out object convertedValue)
 		{
-			SyntaxError dummySyntaxError;
+			IParseError dummySyntaxError;
 			return ApplyTypeHint(typeof(T), inValue, out convertedValue, out dummySyntaxError);
 		}
 
 		public static object ApplyTypeHint(Type typeHint, object inValue, out object convertedValue)
 		{
-			SyntaxError dummySyntaxError;
+			IParseError dummySyntaxError;
 			return ApplyTypeHint(typeHint, inValue, out convertedValue, out dummySyntaxError);
 		}
 
@@ -32,9 +32,9 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// </summary>
 		/// <param name="inValue"></param>
 		/// <returns>A simple ToString() representation of the converted value, or the input value if conversion was not possible or necessary</returns>
-		public static object ApplyTypeHint(Type typeHint, object inValue, out object convertedValue, out SyntaxError syntaxError)
+		public static object ApplyTypeHint(Type typeHint, object inValue, out object convertedValue, out IParseError error, bool fieldIsOptional = true)
 		{
-			syntaxError = null; 
+			error = null; 
 			object outValue = null;
 			if (inValue != null)
 			{
@@ -74,7 +74,7 @@ namespace AnNa.SpreadsheetParser.Interface
 										|| (typeHint == typeof(DateTime?) && (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
 										)
 									{
-										syntaxError = CreateSyntaxError(typeHint, inValue);
+										error = CreateSyntaxError(typeHint, inValue);
 									}
 								}
 							}
@@ -100,10 +100,8 @@ namespace AnNa.SpreadsheetParser.Interface
 							if (typeHint != typeof(double?) && (inValue == null
 							|| !string.IsNullOrWhiteSpace(inValue.ToString())))
 							{
-								syntaxError = CreateSyntaxError(typeHint, inValue);
+								error = CreateSyntaxError(typeHint, inValue);
 							}
-
-							outValue = default(double);
 						}
 					}
 				}
@@ -134,7 +132,7 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 					catch
 					{
-						syntaxError = CreateSyntaxError(typeHint, inValue);
+						error = CreateSyntaxError(typeHint, inValue);
 					}
 				}
 			}
@@ -150,6 +148,9 @@ namespace AnNa.SpreadsheetParser.Interface
 
 			convertedValue = outValue;
 
+			if (!fieldIsOptional && outValue == null)
+				error = new RequiredFieldError();
+
 			return outValue;
 		}
 
@@ -160,9 +161,6 @@ namespace AnNa.SpreadsheetParser.Interface
 			syntaxError.RawValue = inValue.ToString();
 			return syntaxError;
 		}
-
-
-
 
 		public static void CreateDirectoryIfNotExists(string path)
 		{
@@ -458,17 +456,18 @@ namespace AnNa.SpreadsheetParser.Interface
 
 					var inValue = cellValue;
 					object convertedValue;
-					SyntaxError syntaxError;
+					IParseError error;
 
 
 					// Apply type hinting which will do the appropriate type conversion
-					var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out syntaxError);
+					var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out error, column.IsOptional);
 
-					if (syntaxError != null)
+					if (error != null)
 					{
-						syntaxError.CellAddress = cellAddress;
-						syntaxError.DataField = column;
-						row.SyntaxErrorContainer.AddSyntaxError(syntaxError);
+						error.CellAddress = cellAddress;
+						error.DataField = column;
+
+						row.ErrorContainer.AddError(error);
 					}
 					else
 					{
@@ -488,7 +487,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			foreach (var field in fields)
 			{
 				object convertedValue;
-				SyntaxError syntaxError;
+				IParseError error;
 				var value = getValue(field);
 
 				if (IsIgnorableValue(value, field))
@@ -496,12 +495,12 @@ namespace AnNa.SpreadsheetParser.Interface
 					continue;
 				}
 
-				var outValue = Util.ApplyTypeHint(field.FieldType, value, out convertedValue, out syntaxError);
-				if (syntaxError != null)
+				var outValue = Util.ApplyTypeHint(field.FieldType, value, out convertedValue, out error, field.IsOptional);
+				if (error != null)
 				{
-					syntaxError.CellAddress = field.CellAddress;
-					syntaxError.DataField = field;
-					sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
+					error.CellAddress = field.CellAddress;
+					error.DataField = field;
+					sheet.ErrorContainer.AddError(error);
 				}
 
 				Util.SetObjectFieldValue(typeof(F), field.FieldType, field.FieldName, sheet.Fields, convertedValue ?? outValue);
@@ -526,7 +525,7 @@ namespace AnNa.SpreadsheetParser.Interface
 				foreach (var field in list)
 				{
 					object convertedValue;
-					SyntaxError syntaxError;
+					IParseError error;
 					var value = getValue(field);
 
 					if (IsIgnorableValue(value, field))
@@ -534,12 +533,12 @@ namespace AnNa.SpreadsheetParser.Interface
 						continue;
 					}
 
-					var outValue = Util.ApplyTypeHint(field.FieldType.GenericTypeArguments[0], value, out convertedValue, out syntaxError);
-					if (syntaxError != null)
+					var outValue = Util.ApplyTypeHint(field.FieldType.GenericTypeArguments[0], value, out convertedValue, out error, field.IsOptional);
+					if (error != null)
 					{
-						syntaxError.CellAddress = field.CellAddress;
-						syntaxError.DataField = field;
-						sheet.SyntaxErrorContainer.AddSyntaxError(syntaxError);
+						error.CellAddress = field.CellAddress;
+						error.DataField = field;
+						sheet.ErrorContainer.AddError(error);
 					}
 
 					addMethod.Invoke(fieldCollection, new object[] { convertedValue ?? outValue });
@@ -600,7 +599,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			target.Fields = (F1)source.Fields;
 			target.Rows = source.Rows?.Cast<R1>().ToList();
 
-			target.SyntaxErrorContainer = source.SyntaxErrorContainer;
+			target.ErrorContainer = source.ErrorContainer;
 
 			return target;
 		}
