@@ -9,14 +9,11 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 
 	public static class ParserExtensions
 	{
-		public static Dictionary<Type, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, out Version workbookVersion, out string authority)
+		public static Dictionary<Type, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, Version workbookVersion, string authority)
 		{
 			var result = new Dictionary<Type, object>();
 
 			parser.ThrowExceptionIfNotInitialized();
-
-			if (!parser.TryGetWorkbookVersion(out workbookVersion, out authority))
-				throw new InvalidWorkbookVersionException();
 
 			var sheetDefinitionGroups = ReflectionHelpers.GetSheetDefinitionsOrderedByAuthority(authority);
 
