@@ -100,6 +100,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 	}
 
+	[Serializable]
 	public abstract class AbstractError : IParseError
 	{
 		public string CellAddress { get; set; }

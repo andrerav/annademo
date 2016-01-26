@@ -338,11 +338,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			}
 
 			// Set field data
-			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
+			var sheetAccessHelper = new TypeAccessorHelper(typeof(F));
 			var fields = Util.GetFields(sheet);
 			foreach (var field in fields)
 			{
-				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
+				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
 			}
 		}
 

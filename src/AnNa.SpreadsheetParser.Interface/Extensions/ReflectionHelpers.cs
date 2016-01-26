@@ -1,5 +1,6 @@
 ﻿using AnNa.SpreadsheetParser.Interface.Attributes;
 using AnNa.SpreadsheetParser.Interface.Sheets;
+using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 			public string GroupingKey { get; set; }
 			public Version Version { get; set; }
 			public string Authority { get; set; }
+
+			public string SheetName { get; set; }
 		}
 
 
@@ -44,13 +47,21 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 							.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ITypedSheet<,>))
 							.Single()
 							.GetGenericArguments();
+
+					//This is not ideal
+					var instance = Activator.CreateInstance(t);
+
+					var sheetNameProperty = t.GetProperty(nameof(WasteSheet10.SheetName), BindingFlags.Public | BindingFlags.Instance);
+					var sheetName = sheetNameProperty.GetValue(instance).ToString();
+
 					return new SheetDefinitionMetaData
 					{
 						Type = t,
 						TypeParameters = genericTypes,
 						GroupingKey = versionParams.ElementAt(0).ToString(),
 						Version = new Version((int)versionParams.ElementAt(1), (int)versionParams.ElementAt(2)),
-						Authority = versionParams.ElementAt(3).ToString()
+						Authority = versionParams.ElementAt(3).ToString(),
+						SheetName = sheetName
 					};
 				})
 				.OrderByDescending(t => t.Authority == authority) //Favor authority-specific sheet definitions
@@ -58,8 +69,6 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 				.GroupBy(g => g.GroupingKey)
 				.ToList();
 		}
-
-
 
 		public static MemberInfo[] GetAllNonObsoleteFieldsAndProperties(Type type)
 		{

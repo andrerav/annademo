@@ -349,7 +349,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 				i++;
 			}
 
-			var sheetAccessHelper = new TypeAccessorHelper(sheet.GetType());
+			var sheetAccessHelper = new TypeAccessorHelper(typeof(F));
 
 			// Set field data
 			var fields = Util.GetFields(sheet)
@@ -357,7 +357,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 			foreach(var field in fields)
 			{
-				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet, field.FieldName);
+				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
             }
 		}
 

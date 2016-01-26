@@ -9,9 +9,9 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 
 	public static class ParserExtensions
 	{
-		public static Dictionary<Type, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, Version workbookVersion, string authority)
+		public static Dictionary<ReflectionHelpers.SheetDefinitionMetaData, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, Version workbookVersion, string authority)
 		{
-			var result = new Dictionary<Type, object>();
+			var result = new Dictionary<ReflectionHelpers.SheetDefinitionMetaData, object>();
 
 			parser.ThrowExceptionIfNotInitialized();
 
@@ -22,29 +22,26 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 			var method = typeof(IAnNaSpreadSheetParser10).GetMethods().First(m => m.Name == nameof(IAnNaSpreadSheetParser10.GetSheetBulkData) && m.GetParameters().Count() == 1);
 			foreach (var group in sheetDefinitionGroups)
 			{
-				foreach (var sheetDefinition in group)
+				foreach (var sheetMetaData in group)
 				{
-					if (sheetDefinition.Version > workbookVersion ||
-						!(sheetDefinition.Authority == authority || sheetDefinition.Authority == SheetAuthority.AnNa)) //Fallback to AnNa definitions
+					if (sheetMetaData.Version > workbookVersion ||
+						!(sheetMetaData.Authority == authority || sheetMetaData.Authority == SheetAuthority.AnNa)) //Fallback to AnNa definitions
 						continue;
 
 					object contents = null;
 
-					var instance = Activator.CreateInstance(sheetDefinition.Type);                               // ex. WasteSheet11
-
-					var sheetNameProperty = sheetDefinition.Type.GetProperty(nameof(WasteSheet10.SheetName), BindingFlags.Public | BindingFlags.Instance);
-					var sheetName = sheetNameProperty.GetValue(instance).ToString();
-
 					//Check if workbook contains sheet
-					if (sheetNames.All(s => s.ToLowerInvariant() != sheetName.ToLowerInvariant()))
+					if (sheetNames.All(s => s.ToLowerInvariant() != sheetMetaData.SheetName.ToLowerInvariant()))
 						continue;
 
-					var genericMethod = method.MakeGenericMethod(sheetDefinition.TypeParameters.ToArray());      // GetSheetBulkData<WasteSheet11.SheetRowDefinition, WasteSheet11.SheetFieldDefinition>
+					var instance = Activator.CreateInstance(sheetMetaData.Type);                               // ex. WasteSheet11
+
+					var genericMethod = method.MakeGenericMethod(sheetMetaData.TypeParameters.ToArray());      // GetSheetBulkData<WasteSheet11.SheetRowDefinition, WasteSheet11.SheetFieldDefinition>
 
 					contents = genericMethod.Invoke(parser, new object[] { instance });    // parser.GetSheetBulkData([WasteSheet11 instance])
 
 
-					result.Add(sheetDefinition.Type, contents);
+					result.Add(sheetMetaData, contents);
 
 					break; //Break inner lopp after parsing with first compatible sheet definition
 				}
