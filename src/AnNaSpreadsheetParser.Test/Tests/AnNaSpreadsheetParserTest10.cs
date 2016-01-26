@@ -64,6 +64,7 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 			}
 		}
 
+		[Ignore]
 		[TestMethod]
 		public void ReadDPGColumns()
 		{
@@ -160,16 +161,15 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 		[TestMethod]
 		public void GetAndSetLast10CallsList()
 		{
-			var securityPortCallsSheetSpecification = new SecurityPortCallsSheet();
+			var securityPortCallsSheetSpecification = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.SecuritySheetLast10PortCalls10();
 			var contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
 			var newValue = "Testing";
-			contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] = newValue;
-			Assert.IsTrue(contents.Any());
-			parser.SetSheetBulkData(securityPortCallsSheetSpecification, contents);
+			Assert.IsTrue(contents.Rows.Any());
+			contents.Rows.First().Special_Or_Additional_Security_Measures = newValue;
+			parser.SetSheetData(contents);
 
 			contents = parser.GetSheetBulkData(securityPortCallsSheetSpecification);
-			Assert.IsTrue(contents[0][SecurityPortCallsSheet.Columns.SpecialOrAdditionalSecurityMeasuresTakenByTheShip] ==
-						  newValue);
+			Assert.IsTrue(contents.Rows.First().Special_Or_Additional_Security_Measures == newValue);
 		}
 
 		[TestMethod]
@@ -204,23 +204,22 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 		[TestMethod]
 		public void AddEntryToCrewList()
 		{
-			var crewListSheet = new CrewListSheet();
+			var crewListSheet = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListSheet10();
 			var crewList = parser.GetSheetBulkData(crewListSheet);
-			var previousCount = crewList.Count;
+			var previousCount = crewList.Rows.Count;
 			Assert.IsTrue(previousCount > 0);
 
-			var entry = new Dictionary<string, string>();
-			entry[CrewListSheet.Columns.Family_Name] = "Andersen";
-			entry[CrewListSheet.Columns.Given_Name] = "Per";
-			entry[CrewListSheet.Columns.Date_Of_Birth] = "12.12.1970 13:00";
-
-			crewList.Add(entry);
-
-			parser.SetSheetBulkData(crewListSheet, crewList);
+			crewList.Rows.Add(new Interface.Sheets.Typed.CrewListSheet10.SheetRowDefinition
+			{
+				Family_Name = "Andersen",
+				Given_Name = "Per",
+				Date_Of_Birth = DateTime.Now.AddYears(-30)
+			});
+			parser.SetSheetData(crewListSheet);
 			crewList = parser.GetSheetBulkData(crewListSheet);
-			Assert.IsTrue(crewList.Count == previousCount + 1);
+			Assert.IsTrue(crewList.Rows.Count == previousCount + 1);
 
-			Assert.IsTrue(crewList.Last()[CrewListSheet.Columns.Family_Name] == "Andersen");
+			Assert.IsTrue(crewList.Rows.Last().Family_Name == "Andersen");
 		}
 
 
