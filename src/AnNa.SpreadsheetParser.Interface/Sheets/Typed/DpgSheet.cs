@@ -77,7 +77,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public class SheetRowDefinition : DpgSheet10.SheetRowDefinition
 		{
 			[Column("Unit")]
-			public virtual decimal Unit { get; set; }
+			public virtual string Unit { get; set; }
 		}
 	}
 }
