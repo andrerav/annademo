@@ -150,6 +150,11 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		public bool IsOptional { get; set; }
 
 		/// <summary>
+		/// True if this column is an index column or similar and can safely be ignored when testing the row for emptiness
+		/// </summary>
+		public bool Ignorable;
+
+		/// <summary>
 		/// Values that can be safely ignored when parsing the spreadsheet
 		/// </summary>
 		public string[] IgnoreableValues { get; set; }
@@ -162,11 +167,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// Column name used in the spreadsheet
 		/// </summary>
 		public string ColumnName;
-
-		/// <summary>
-		/// True if this column is an index column or similar and can safely be ignored when testing the row for emptiness
-		/// </summary>
-		public bool Ignorable;
 	}
 
 	[Serializable]

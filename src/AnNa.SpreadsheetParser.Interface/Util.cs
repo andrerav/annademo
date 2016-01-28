@@ -308,6 +308,7 @@ namespace AnNa.SpreadsheetParser.Interface
 						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
 						FriendlyName = fieldAttr.FriendlyName,
 						IsOptional = fieldAttr.IsOptional,
+						Ignorable = fieldAttr.Ignorable,
 						IgnoreableValues = fieldAttr.IgnorableValues
 					};
 					

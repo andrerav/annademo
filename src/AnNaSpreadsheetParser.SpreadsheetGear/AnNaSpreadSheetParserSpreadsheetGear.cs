@@ -336,7 +336,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			int i = 0;
 			foreach (var row in sheet.Rows)
 			{
-				foreach (var column in columns)
+				foreach (var column in columns.Where(col => !col.Ignorable))
 				{
 					var key = columnLookup.FirstOrDefault(x => x.Value == column).Key;
 					var cell = worksheet.Cells[dataStartRow + i, key];
@@ -355,7 +355,7 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			var fields = Util.GetFields(sheet)
 				.Concat(Util.GetListMaps(sheet).SelectMany(lm => lm));
 
-			foreach(var field in fields)
+			foreach(var field in fields.Where(fld => !fld.Ignorable))
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
             }

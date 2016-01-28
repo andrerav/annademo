@@ -325,7 +325,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			int i = 0;
 			foreach (var row in sheet.Rows)
 			{
-				foreach (var column in columns)
+				foreach (var column in columns.Where(c => !c.Ignorable))
 				{
 					var key = columnLookup.FirstOrDefault(x => x.Value == column).Key;
 					var cell = worksheet.Cells[dataStartRow + i, key];
@@ -340,7 +340,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			// Set field data
 			var sheetAccessHelper = new TypeAccessorHelper(typeof(F));
 			var fields = Util.GetFields(sheet);
-			foreach (var field in fields)
+			foreach (var field in fields.Where(fld => !fld.Ignorable))
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
 			}

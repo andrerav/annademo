@@ -12,6 +12,9 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 		public string FriendlyName => _friendlyName;
 
 		public bool IsOptional { get; set; }
+
+		public bool Ignorable { get; set; }
+
 		public string[] IgnorableValues { get; set; }
 
 		public SheetAttribute(string friendlyName)
@@ -27,17 +30,13 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 	{
 		private string _column;
 		public string Column => _column;
-
-		public bool Ignorable { get; set; }
-
-
+		
 		public ColumnAttribute(string column) : this(column, column) { }
 		
 		public ColumnAttribute(string column, string friendlyName) : base(friendlyName)
 		{
 			_column = column;
 		}
-
 	}
 
 	/// <summary>
@@ -49,10 +48,11 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 		private string _cellAddress;
 		public string CellAddress => _cellAddress;
 
-		public FieldAttribute (string cellAddress) : this(cellAddress, cellAddress) { }
-		public FieldAttribute(string cellAddress, string friendlyName) : base(friendlyName)
+		public FieldAttribute (string cellAddress) : this(cellAddress, cellAddress, false) { }
+		public FieldAttribute(string cellAddress, string friendlyName, bool ignorable = false) : base(friendlyName)
 		{
 			_cellAddress = cellAddress;
+			Ignorable = ignorable;
 		}
 	}
 
