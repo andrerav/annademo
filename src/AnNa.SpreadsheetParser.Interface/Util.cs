@@ -67,15 +67,8 @@ namespace AnNa.SpreadsheetParser.Interface
 								}
 								else
 								{
-									// If the type isn't nullable and the value is not null then add a syntax error
-									if ((typeHint != typeof(DateTime?) && (inValue == null 
-										|| !string.IsNullOrWhiteSpace(inValue.ToString())))
-										
-										|| (typeHint == typeof(DateTime?) && (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
-										)
-									{
+									if ((typeHint != typeof(DateTime?) && inValue == null) || (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
 										error = CreateSyntaxError(typeHint, inValue);
-									}
 								}
 							}
 						}
@@ -97,11 +90,8 @@ namespace AnNa.SpreadsheetParser.Interface
 						}
 						else
 						{
-							if (typeHint != typeof(double?) && (inValue == null
-							|| !string.IsNullOrWhiteSpace(inValue.ToString())))
-							{
+							if ((typeHint != typeof(double?) && inValue == null) || (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
 								error = CreateSyntaxError(typeHint, inValue);
-							}
 						}
 					}
 				}
