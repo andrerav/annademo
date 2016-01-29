@@ -148,7 +148,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 			convertedValue = outValue;
 
-			if (!fieldIsOptional && outValue == null)
+			if (error == null && !fieldIsOptional && outValue == null) //Error not already set and field is non-optional
 				error = new RequiredFieldError();
 
 			return outValue;
