@@ -500,20 +500,20 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		public static void MapLists<R, F>(ITypedSheet<R,F> sheet, Func<SheetField, string> getValue) where R : ISheetRow where F : ISheetFields
 		{
-			var lists = Util.GetListMaps(sheet);
+			var listMaps = Util.GetListMaps(sheet);
 
-			if (lists.Any() && sheet.Fields == null)
+			if (listMaps.Any() && sheet.Fields == null)
 				sheet.Fields = (F)Activator.CreateInstance(typeof(F));
 
-			foreach (var list in lists)
+			foreach (var listMap in listMaps)
 			{
-				var collectionType = list.First().FieldType; //e.g. List<string>
+				var collectionType = listMap.First().FieldType; //e.g. List<string>
 
-				var fieldName = list.First().FieldName;
+				var fieldName = listMap.First().FieldName;
 				var fieldCollection = Activator.CreateInstance(collectionType);
-				var addMethod = collectionType.GetMethod(nameof(list.Add));
+				var addMethod = collectionType.GetMethod(nameof(listMap.Add));
 
-				foreach (var field in list)
+				foreach (var field in listMap)
 				{
 					object convertedValue;
 					IParseError error;

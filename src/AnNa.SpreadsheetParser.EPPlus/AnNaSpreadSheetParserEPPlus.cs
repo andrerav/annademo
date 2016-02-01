@@ -9,6 +9,7 @@ using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using OfficeOpenXml;
 using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
+using System.Collections;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
@@ -340,10 +341,29 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			// Set field data
 			var sheetAccessHelper = new TypeAccessorHelper(typeof(F));
 			var fields = Util.GetFields(sheet);
+
 			foreach (var field in fields.Where(fld => !fld.Ignorable))
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
 			}
+
+			var listMaps = Util.GetListMaps(sheet);
+			foreach (var listMap in listMaps)
+			{
+				var fieldCount = listMap.Count;
+				var values = (IEnumerable)sheetAccessHelper.Get(sheet.Fields, listMap.First().FieldName);
+
+				i = 0;
+				foreach (var value in values)
+				{
+					if (i >= fieldCount)
+						break;
+
+					worksheet.Cells[listMap[i].CellAddress].Value = value;
+					i++;
+				}
+			}
+
 		}
 
 		#region Utility Methods

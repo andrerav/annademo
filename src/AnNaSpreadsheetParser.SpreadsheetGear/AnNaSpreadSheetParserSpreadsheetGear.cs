@@ -8,6 +8,7 @@ using SpreadsheetGear;
 using ISheet = AnNa.SpreadsheetParser.Interface.Sheets.ISheet;
 using System.Globalization;
 using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
+using System.Collections;
 
 namespace AnNa.SpreadsheetParser.SpreadsheetGear
 {
@@ -352,13 +353,29 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			var sheetAccessHelper = new TypeAccessorHelper(typeof(F));
 
 			// Set field data
-			var fields = Util.GetFields(sheet)
-				.Concat(Util.GetListMaps(sheet).SelectMany(lm => lm));
+			var fields = Util.GetFields(sheet);
 
 			foreach(var field in fields.Where(fld => !fld.Ignorable))
 			{
 				worksheet.Cells[field.CellAddress].Value = sheetAccessHelper.Get(sheet.Fields, field.FieldName);
             }
+
+			var listMaps = Util.GetListMaps(sheet);
+			foreach (var listMap in listMaps)
+			{
+				var fieldCount = listMap.Count;
+				var values = (IEnumerable)sheetAccessHelper.Get(sheet.Fields, listMap.First().FieldName);
+
+				i = 0;
+				foreach (var value in values)
+				{
+					if (i >= fieldCount)
+						break;
+
+					worksheet.Cells[listMap[i].CellAddress].Value = value;
+					i++;
+				}
+			}
 		}
 
 		#region Utility methods
