@@ -307,7 +307,7 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 			column.FieldType = typeof(string);
 			const string v1 = "ABC123";
 			const string v2 = "DEF456";
-			column.IgnoreableValues = new string[] { v1, v2 };
+			column.ValuesSkippedOnRead = new string[] { v1, v2 };
 
 			Assert.IsTrue(Util.IsIgnorableValue(v1, column));
 			Assert.IsTrue(Util.IsIgnorableValue(v2, column));
@@ -319,7 +319,7 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 		public void RowEmptinessTest()
 		{
 			var row = new AnNa.SpreadsheetParser.Interface.Sheets.Typed.CrewListSheet10.SheetRowDefinition();
-			Assert.IsTrue(Util.IsEmpty(row, Util.GetColumns(row)));
+			Assert.IsTrue(Util.IsEmpty(row, Util.GetColumns(row.GetType())));
 		}
 
 		[TestMethod]

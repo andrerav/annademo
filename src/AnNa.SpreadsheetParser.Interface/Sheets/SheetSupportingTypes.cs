@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
@@ -53,6 +54,9 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 			_missingColumns.Add(columnName);
 		}
+
+		public bool ForceWrite { get; set; } //Treats all fields and columns as SkipOnWrite = false
+		public bool ForceRead { get; set; } //Treats all fields and columns as SkipOnRead = false
 	}
 
 
@@ -150,14 +154,33 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		public bool IsOptional { get; set; }
 
 		/// <summary>
-		/// True if this column is an index column or similar and can safely be ignored when testing the row for emptiness
+		/// If true, the value of the field will not be parsed
 		/// </summary>
-		public bool Ignorable;
+		public bool SkipOnRead { get; set; }
+
+		/// <summary>
+		/// If true, no value will be written to the field
+		/// </summary>
+		public bool SkipOnWrite { get; set; }
 
 		/// <summary>
 		/// Values that can be safely ignored when parsing the spreadsheet
 		/// </summary>
-		public string[] IgnoreableValues { get; set; }
+		public string[] ValuesSkippedOnRead { get; set; }
+
+
+
+		public void MapFrom(SheetAttribute attr)
+		{
+			if (attr == null)
+				return;
+
+			FriendlyName = attr.FriendlyName;
+			IsOptional = attr.IsOptional;
+			SkipOnRead = attr.SkipOnRead;
+			SkipOnWrite = attr.SkipOnWrite;
+			ValuesSkippedOnRead = attr.ValuesSkippedOnRead;
+		}
 	}
 
 	[Serializable]

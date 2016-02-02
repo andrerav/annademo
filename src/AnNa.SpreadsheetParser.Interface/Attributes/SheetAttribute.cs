@@ -13,9 +13,10 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 
 		public bool IsOptional { get; set; }
 
-		public bool Ignorable { get; set; }
+		public bool SkipOnRead { get; set; }
+		public bool SkipOnWrite { get; set; }
 
-		public string[] IgnorableValues { get; set; }
+		public string[] ValuesSkippedOnRead { get; set; }
 
 		public SheetAttribute(string friendlyName)
 		{
@@ -48,11 +49,11 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 		private string _cellAddress;
 		public string CellAddress => _cellAddress;
 
-		public FieldAttribute (string cellAddress) : this(cellAddress, cellAddress, false) { }
-		public FieldAttribute(string cellAddress, string friendlyName, bool ignorable = false) : base(friendlyName)
+		public FieldAttribute (string cellAddress) : this(cellAddress, cellAddress) { }
+		public FieldAttribute(string cellAddress, string friendlyName) : base(friendlyName)
 		{
 			_cellAddress = cellAddress;
-			Ignorable = ignorable;
+			
 		}
 	}
 

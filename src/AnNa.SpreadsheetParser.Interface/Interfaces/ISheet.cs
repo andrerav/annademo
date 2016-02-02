@@ -36,5 +36,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 		/// </summary>
 		/// <param name="columnName"></param>
 		void AddToMissingColumns(string columnName);
+
+		bool ForceWrite { get; set; } //Treats all fields and columns as SkipOnWrite = false
+		bool ForceRead { get; set; } //Treats all fields and columns as SkipOnRead = false
 	}
 }

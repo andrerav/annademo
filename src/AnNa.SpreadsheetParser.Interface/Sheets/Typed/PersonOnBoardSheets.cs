@@ -31,7 +31,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		[Column("Visa_Residence_Permit_Number", "Visa Residence Permit Number")]
 		public virtual string Visa_Residence_Permit_Number { get; set; }
 
-		[Column("Number", Ignorable = true)]
+		[Column("Number", SkipOnRead = true, SkipOnWrite = true)]
 		public virtual string Number { get; set; }
 	}
 

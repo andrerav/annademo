@@ -213,7 +213,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		{
 			var accessor = ObjectAccessor.Create(row);
 
-			foreach (var column in columns.Where(c => !c.Ignorable))
+			foreach (var column in columns.Where(c => !c.SkipOnRead))
 			{
 				var value = accessor[column.FieldName];
 				if (value != null && !value.Equals(GetDefault(column.FieldType)))
@@ -236,13 +236,16 @@ namespace AnNa.SpreadsheetParser.Interface
 			where F : ISheetFields
 		{
 
-			return GetColumns(typeof(R));
+			var columns = GetColumns(typeof(R));
 
-		}
+			columns.ForEach(c => 
+			{
+				c.SkipOnWrite = c.SkipOnWrite && !sheet.ForceWrite;
+				c.SkipOnRead = c.SkipOnRead && !sheet.ForceRead;
+			});
 
-		public static List<SheetColumn> GetColumns(SheetRow row)
-		{
-			return GetColumns(row.GetType());
+			return columns;
+
 		}
 
 		public static List<SheetColumn> GetColumns(Type rowType)
@@ -257,14 +260,11 @@ namespace AnNa.SpreadsheetParser.Interface
 					var column = new SheetColumn()
 					{
 						ColumnName = columnAttr.Column,
-						Ignorable = columnAttr.Ignorable,
-						IgnoreableValues = columnAttr.IgnorableValues,
-						IsOptional = columnAttr.IsOptional,
 						FieldName = member.Name,
-						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
-						FriendlyName = columnAttr.FriendlyName
+						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType
 					};
 					
+					column.MapFrom(columnAttr);
 					result.Add(column);
 				}
 			}
@@ -296,12 +296,13 @@ namespace AnNa.SpreadsheetParser.Interface
 						CellAddress = fieldAttr.CellAddress,
 						FieldName = member.Name,
 						FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
-						FriendlyName = fieldAttr.FriendlyName,
-						IsOptional = fieldAttr.IsOptional,
-						Ignorable = fieldAttr.Ignorable,
-						IgnoreableValues = fieldAttr.IgnorableValues
 					};
-					
+
+					field.MapFrom(fieldAttr);
+
+					field.SkipOnRead = field.SkipOnRead && !sheet.ForceRead;
+					field.SkipOnWrite = field.SkipOnWrite && !sheet.ForceWrite;
+
 					result.Add(field);
 				}
 			}
@@ -349,11 +350,13 @@ namespace AnNa.SpreadsheetParser.Interface
 						{
 							CellAddress = cell,
 							FieldName = member.Name,
-							FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType,
-							FriendlyName = listMappingAttr.FriendlyName,
-							IsOptional = listMappingAttr.IsOptional,
-							IgnoreableValues = listMappingAttr.IgnorableValues
+							FieldType = member is FieldInfo ? ((FieldInfo)member).FieldType : ((PropertyInfo)member).PropertyType
 						};
+
+						field.MapFrom(listMappingAttr);
+
+						field.SkipOnRead = field.SkipOnRead && !sheet.ForceRead;
+						field.SkipOnWrite = field.SkipOnWrite && !sheet.ForceWrite;
 
 						listMappingFields.Add(field);
 					}
@@ -475,7 +478,7 @@ namespace AnNa.SpreadsheetParser.Interface
 			if (fields.Any() && sheet.Fields == null)
 				sheet.Fields = (F)Activator.CreateInstance(typeof(F));
 
-			foreach (var field in fields)
+			foreach (var field in fields.Where(f => !f.SkipOnRead))
 			{
 				object convertedValue;
 				IParseError error;
@@ -513,7 +516,7 @@ namespace AnNa.SpreadsheetParser.Interface
 				var fieldCollection = Activator.CreateInstance(collectionType);
 				var addMethod = collectionType.GetMethod(nameof(listMap.Add));
 
-				foreach (var field in listMap)
+				foreach (var field in listMap.Where(f=> !f.SkipOnRead))
 				{
 					object convertedValue;
 					IParseError error;
@@ -543,7 +546,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		public static bool IsIgnorableValue(object cellValue, SheetDataField column)
 		{
-			return cellValue != null && column.IgnoreableValues != null && column.IgnoreableValues.Contains(cellValue.ToString());
+			return cellValue != null && column.ValuesSkippedOnRead != null && column.ValuesSkippedOnRead.Contains(cellValue.ToString());
 		}
 
 		public static object GetDefault(this Type type)
