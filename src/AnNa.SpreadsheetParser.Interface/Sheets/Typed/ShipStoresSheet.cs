@@ -11,13 +11,13 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Ship_Stores";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
 			[Column("Name_Of_Article", "Name Of Article")]
 			public virtual string Name_Of_Article { get; set; }
 
 			[Column("Quantity", "Quantity")]
-			public virtual decimal Quantity { get; set; }
+			public virtual decimal? Quantity { get; set; }
 
 			[Column("Unit", "Unit")]
 			public virtual string Unit { get; set; }

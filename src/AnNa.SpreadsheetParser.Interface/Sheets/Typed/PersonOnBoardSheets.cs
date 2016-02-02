@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 {
 	[Serializable]
-	public abstract class PersonOnBoardRow : SheetRow
+	public abstract class PersonOnBoardRow : AbstractSheetRow
 	{
 		[Column("Family_Name", "Family name")]
 		public virtual string Family_Name { get; set; }

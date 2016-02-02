@@ -1,6 +1,7 @@
 ﻿using AnNa.SpreadsheetParser.Interface.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AnNa.SpreadsheetParser.Interface.Sheets
 {
@@ -8,12 +9,23 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	{
 		int RowIndex { get; set; }
 		ErrorContainer ErrorContainer { get; }
+
+		bool HasData { get; set; }
 	}
 
-	public interface ISheetFields { }
+	public interface ISheetFields
+	{
+		bool HasData { get; set; }
+	}
 
 	[Serializable]
-	public class SheetRow : ISheetRow
+	public abstract class AbstractSheetFields : ISheetFields
+	{
+		public bool HasData { get; set; } = false;
+	}
+
+	[Serializable]
+	public abstract class AbstractSheetRow : ISheetRow
 	{
 		public int RowIndex { get; set; }
 
@@ -23,6 +35,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 			get { return _errorContainer; }
 			internal set { _errorContainer = value; }
 		}
+
+		public bool HasData { get; set; } = false;
 	}
 
 	[Serializable]
@@ -57,6 +71,8 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 
 		public bool ForceWrite { get; set; } //Treats all fields and columns as SkipOnWrite = false
 		public bool ForceRead { get; set; } //Treats all fields and columns as SkipOnRead = false
+
+		public bool HasData => (Fields?.HasData ?? false) || (Rows?.Any(r => r.HasData) ?? false);
 	}
 
 

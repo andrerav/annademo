@@ -178,7 +178,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		{
 			var result = new List<R>();
 			int startrow = -1;
-			List<SheetColumn> columnNames = Util.GetColumns(sheet);
+			var columnNames = Util.GetColumns(sheet).Where(c => !c.SkipOnRead).ToList(); //Readable (SkipOnRead = false) columns from sheet definition 
 
 			var columnLookup = CreateColumnLookup2(out startrow, worksheet, columnNames);
 
@@ -203,9 +203,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				Util.MapCell(result, columnLookup, dataStartRowIndex, rowIndex, columnIndex, displayRowIndex, cellValue, maximumNumberOfRows, cell.Address);
 			}
 
-			Util.RemoveEmptyRows(result, columnNames);
-
-			sheet.Rows = result;
+			sheet.Rows = result.Where(r => r.HasData).ToList();
 			// Map fields
 			Util.MapFields(sheet, (field) => GetValueAt(sheet, field.CellAddress));
 			Util.MapLists(sheet, (field) => GetValueAt(sheet, field.CellAddress));

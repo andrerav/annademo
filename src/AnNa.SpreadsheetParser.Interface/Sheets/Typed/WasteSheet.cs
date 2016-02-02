@@ -12,7 +12,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Waste_And_Residues";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
 			[Column("Waste_Type", "Waste Type")]
 			public virtual string Waste_Type { get; set; }
@@ -50,7 +50,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Waste_And_Residues";
 
 		[Serializable]
-		public class SheetFieldDefinition : ISheetFields
+		public class SheetFieldDefinition :  AbstractSheetFields
 		{
 			[Field("B4", "Waste to be Delivered")]
 			public virtual string WasteToBeDeliveredCell { get; set; }
@@ -59,7 +59,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string PortOfLastDeliveryCell { get; set; }
 
 			[Field("F4", "Date of last Delivery")]
-			public virtual DateTime DateOfLastDeliveryCell { get; set; }
+			public virtual DateTime? DateOfLastDeliveryCell { get; set; }
 		}
 
 		[Serializable]

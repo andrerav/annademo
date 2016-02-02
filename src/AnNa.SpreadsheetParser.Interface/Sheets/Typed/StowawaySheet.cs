@@ -11,9 +11,9 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Stowaway_List";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
-			[Column("Number", "Number")]
+			[Column("Number", "Number", SkipOnRead = true)]
 			public virtual string Number { get; set; }
 			[Column("Family_Name", "Family Name")]
 			public virtual string Family_Name { get; set; }

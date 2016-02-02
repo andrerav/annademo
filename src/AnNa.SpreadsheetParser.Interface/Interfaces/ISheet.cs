@@ -6,6 +6,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets
 	public interface ISheet
 	{
 		string SheetName { get; }
+		bool HasData { get;  }
 	}
 
 	public interface ISheetWithBulkData : ISheet

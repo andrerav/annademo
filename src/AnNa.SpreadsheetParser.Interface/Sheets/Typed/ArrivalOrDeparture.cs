@@ -15,7 +15,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Arrival_Or_Departure";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
 			[Column("A_D", "Arrival Or Departure")]
 			public virtual string ArrivalOrDeparture { get; set; }
@@ -24,19 +24,19 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string Ship_Name { get; set; }
 
 			[Column("IMO_no", "IMO Number")]
-			public virtual int IMO_no { get; set; }
+			public virtual int? IMO_no { get; set; }
 
 			[Column("Port_of_call", "Port of Call")]
 			public virtual string Port_of_call { get; set; }
 
 			[Column("ETA_port_of_call", "ETA Port of Call")]
-			public virtual DateTime ETA_port_of_call { get; set; }
+			public virtual DateTime? ETA_port_of_call { get; set; }
 
 			[Column("ATA_port_of_call", "ATA Port of Call")]
 			public virtual DateTime? ATA_port_of_call { get; set; }
 
 			[Column("ETD_from_port_of_call", "ETD from Port of Call")]
-			public virtual DateTime ETD_from_port_of_call { get; set; }
+			public virtual DateTime? ETD_from_port_of_call { get; set; }
 
 			[Column("ATD_from_port_of_call", "ATD from Port of Call")]
 			public virtual DateTime? ATD_from_port_of_call { get; set; }
@@ -64,7 +64,6 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 
 			[Column("Contact_phone", "Contact Phone")]
 			public virtual string Contact_phone { get; set; }
-			
 		}
 
 

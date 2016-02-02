@@ -12,7 +12,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Cruise";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
 			[Column("*Port", "Port")]
 			public virtual string Port { get; set; }

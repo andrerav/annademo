@@ -13,7 +13,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Security";
 
 		[Serializable]
-		public class SheetFieldDefinition : ISheetFields
+		public class SheetFieldDefinition :  AbstractSheetFields
 		{
 			[Field("A8", "Valid ISSC")]
 			public virtual string Valid_ISSC { get; set; }
@@ -89,7 +89,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override int MaximumNumberOfRows => 10;
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 			{
 			[Column("Date_of_arrival", "Date Of Arrival")]
 			public virtual DateTime? Date_Of_Arrival { get; set; }
@@ -115,7 +115,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Security";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 			{
 			[Column("Date_from", "Date From")]
 			public virtual DateTime? Date_From { get; set; }

@@ -13,14 +13,14 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 		public override string SheetName => "Dangerous_And_Poluting_Goods";
 
 		[Serializable]
-		public class SheetRowDefinition : SheetRow
+		public class SheetRowDefinition : AbstractSheetRow
 		{
 			[Column("DG_classification", "Dangerous Goods Classification")]
 			public virtual string DG_Classification { get; set; }
 			[Column("IMO_Hazard_Class", "IMO Hazard Class")]
 			public virtual string Imo_Hazard_Class { get; set; }
 			[Column("UN_Number", "UN Number")]
-			public virtual int Un_Number { get; set; }
+			public virtual int? Un_Number { get; set; }
 			[Column("Transport_Unit_ID", "Transport Unit ID")]
 			public virtual string Transport_Unit_Id { get; set; }
 			[Column("Textual_Reference", "Textual Reference")]
@@ -28,12 +28,12 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Column("Stowage_position", "On Board Location")]
 			public virtual string Stowage_Position { get; set; }
 			[Column("Gross_Quantity", "Gross Quantity")]
-			public virtual decimal Gross_Quantity { get; set; }
+			public virtual decimal? Gross_Quantity { get; set; }
 			// Conditional Information
 			[Column("Net_Quantity", "Net Quantity")]
 			public virtual string Net_Quantity { get; set; }
 			[Column("Flashpoint")]
-			public virtual decimal Flashpoint { get; set; }
+			public virtual decimal? Flashpoint { get; set; }
 			[Column("MARPOL_Pollution_Code", "MARPOL Pollution Code")]
 			public virtual string MARPOL_Pollution_Code { get; set; }
 			[Column("Port_of_loading", "Port Of Loading")]
@@ -43,7 +43,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Column("Transport_document_ID", "Transport Document ID")]
 			public virtual string Transport_Document_Id { get; set; }
 			[Column("Number_of_Packages", "Number Of Packages")]
-			public virtual int Number_Of_Packages { get; set; }
+			public virtual int? Number_Of_Packages { get; set; }
 			[Column("Package_type", "Package Type")]
 			public virtual string Package_Type { get; set; }
 			[Column("Packing_group", "Packing Group")]
@@ -64,6 +64,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual string Radioactivity_Level { get; set; }
 			[Column("Criticality")]
 			public virtual string Criticality { get; set; }
+
 		}
 	}
 

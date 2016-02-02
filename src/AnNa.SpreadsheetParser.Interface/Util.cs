@@ -191,38 +191,6 @@ namespace AnNa.SpreadsheetParser.Interface
 			}
 		}
 
-		/// <summary>
-		/// Removes empty rows, ie. rows that does not have any values in non-ignored columns
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="result"></param>
-		/// <param name="columns"></param>
-		public static void RemoveEmptyRows<T>(List<T> result, List<SheetColumn> columns) where T : class, ISheetRow
-		{
-			result.RemoveAll(row => IsEmpty(row, columns));
-		}
-
-		/// <summary>
-		/// Returns true if the given row does not have any values in non-ignored columns
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="row"></param>
-		/// <param name="columns"></param>
-		/// <returns></returns>
-		public static bool IsEmpty<T>(T row, List<SheetColumn> columns) where T : ISheetRow
-		{
-			var accessor = ObjectAccessor.Create(row);
-
-			foreach (var column in columns.Where(c => !c.SkipOnRead))
-			{
-				var value = accessor[column.FieldName];
-				if (value != null && !value.Equals(GetDefault(column.FieldType)))
-				{
-					return false;
-				}
-			}
-			return true;
-		}
 
 		/// <summary>
 		/// Retrieve a list of column definitions from a given sheet
@@ -467,6 +435,9 @@ namespace AnNa.SpreadsheetParser.Interface
 					{
 						Util.SetRowValue(row, column.FieldType, column.FieldName, convertedValue ?? outValue);
 					}
+
+					if (!row.HasData)
+						row.HasData = (convertedValue ?? outValue) != null;
 				}
 			}
 		}
@@ -498,6 +469,9 @@ namespace AnNa.SpreadsheetParser.Interface
 				}
 
 				Util.SetObjectFieldValue(typeof(F), field.FieldType, field.FieldName, sheet.Fields, convertedValue ?? outValue);
+
+				if (!sheet.Fields.HasData)
+					sheet.Fields.HasData = (convertedValue ?? outValue) != null;
 			}
 		}
 
@@ -536,6 +510,9 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 
 					addMethod.Invoke(fieldCollection, new object[] { convertedValue ?? outValue });
+
+					if (!sheet.Fields.HasData)
+						sheet.Fields.HasData = (convertedValue ?? outValue) != null;
 				}
 
 				Util.SetObjectFieldValue(typeof(F), fieldCollection.GetType(), fieldName, sheet.Fields, fieldCollection);
