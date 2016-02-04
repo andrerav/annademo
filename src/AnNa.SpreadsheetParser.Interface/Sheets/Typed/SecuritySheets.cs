@@ -152,7 +152,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public override string Longitude { get; set; }
 
 			// Latitude
-			[Column("Latitude_direction", "Latitude Direction")]
+			[Column("Latitude_Direction", "Latitude Direction")]
 			public virtual string Latitude_Direction { get; set; }
 			[Column("Latitude_Degrees", "Latitude Degrees")]
 			public virtual int? Latitude_Degrees { get; set; }
