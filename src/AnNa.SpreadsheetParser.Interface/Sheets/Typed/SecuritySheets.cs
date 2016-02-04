@@ -162,13 +162,13 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			public virtual int? Latitude_Seconds { get; set; }
 
 			// Longitude
-			[Column("Longtitude_Direction", "Longitude Direction")]
+			[Column("Longitude_Direction", "Longitude Direction")]
 			public virtual string Longitude_Direction { get; set; }
-			[Column("Longtitude_Degrees", "Longitude Degrees")]
+			[Column("Longitude_Degrees", "Longitude Degrees")]
 			public virtual int? Longitude_Degrees { get; set; }
-			[Column("Longtitude_Minutes", "Longitude Minutes")]
+			[Column("Longitude_Minutes", "Longitude Minutes")]
 			public virtual int? Longitude_Minutes { get; set; }
-			[Column("Longtitude_Seconds", "Longitude Seconds")]
+			[Column("Longitude_Seconds", "Longitude Seconds")]
 			public virtual int? Longitude_Seconds { get; set; }
 		}
 	}
