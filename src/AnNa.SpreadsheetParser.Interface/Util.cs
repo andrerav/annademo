@@ -96,6 +96,27 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 				}
 
+				else if (typeHint == typeof(decimal) || typeHint == typeof(decimal?))
+				{
+					if (inValue is decimal)
+					{
+						outValue = inValue;
+					}
+					else
+					{
+						decimal tmp;
+						if (decimal.TryParse(inValue.ToString(), out tmp))
+						{
+							outValue = tmp;
+						}
+						else
+						{
+							if ((typeHint != typeof(decimal?) && inValue == null) || (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
+								error = CreateSyntaxError(typeHint, inValue);
+						}
+					}
+				}
+
 				else if (typeHint == typeof(string))
 				{
 					outValue = inValue.ToString();
