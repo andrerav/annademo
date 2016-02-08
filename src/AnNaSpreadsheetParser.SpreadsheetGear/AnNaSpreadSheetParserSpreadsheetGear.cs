@@ -65,13 +65,14 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 			return _workbook.SaveToStream(FileFormat.OpenXMLWorkbookMacroEnabled);
 		}
 
-		public List<string> SheetNames
+		public List<string> GetSheetNames(bool includeHidden = false)
 		{
-			get
-			{
-				ThrowExceptionIfNotInitialized();
-				return Workbook.Worksheets.Cast<IWorksheet>().Select(s => s.Name).ToList();
-			}
+
+			ThrowExceptionIfNotInitialized();
+			return Workbook.Worksheets
+				.Cast<IWorksheet>()
+				.Where(ws => includeHidden || ws.Visible == SheetVisibility.Visible)
+				.Select(s => s.Name).ToList();	
 		}
 
 		public bool IsAnNaSpreadsheet()

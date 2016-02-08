@@ -17,7 +17,7 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 
 			var sheetDefinitionGroups = ReflectionHelpers.GetSheetDefinitionsOrderedByAuthority(authority);
 
-			var sheetNames = parser.SheetNames;
+			var sheetNames = parser.GetSheetNames();
 
 			var method = typeof(IAnNaSpreadSheetParser10).GetMethods().First(m => m.Name == nameof(IAnNaSpreadSheetParser10.GetSheetBulkData) && m.GetParameters().Count() == 1);
 			foreach (var group in sheetDefinitionGroups)
