@@ -70,13 +70,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			return stream;
 		}
 
-		public List<string> SheetNames
+		public List<string> GetSheetNames(bool includeHidden = false)
 		{
-			get
-			{
-				ThrowExceptionIfNotInitialized();
-				return Workbook.Worksheets.Select(s => s.Name).ToList();
-			}
+			ThrowExceptionIfNotInitialized();
+			return Workbook.Worksheets.Where(ws => includeHidden || ws.Hidden == eWorkSheetHidden.Visible). Select(s => s.Name).ToList();
+			
 		}
 
 		public ITypedSheet<R,F> GetSheetBulkData<R, F>(ITypedSheet<R,F> sheet) 

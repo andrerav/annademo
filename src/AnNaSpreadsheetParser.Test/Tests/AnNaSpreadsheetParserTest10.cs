@@ -195,7 +195,7 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 		[TestMethod]
 		public void CountSheetNames()
 		{
-			var sheets = parser.SheetNames;
+			var sheets = parser.GetSheetNames();
 			Assert.IsTrue(sheets.Count > 0);
 		}
 
@@ -293,7 +293,7 @@ namespace AnNa.SpreadsheetParser.Test.Tests
 		[TestMethod]
 		public void SheetNamesTest()
 		{
-			Assert.IsTrue(parser.SheetNames.Count > 0);
+			Assert.IsTrue(parser.GetSheetNames().Count > 0);
 		}
 
 		[TestMethod]

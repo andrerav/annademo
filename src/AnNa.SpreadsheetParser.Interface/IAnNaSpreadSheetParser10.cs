@@ -149,7 +149,7 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <summary>
 		/// Returns a list of sheet names found in the opened spreadsheet
 		/// </summary>
-		List<string> SheetNames { get; }
+		List<string> GetSheetNames(bool includeHidden = false);
 
 		/// <summary>
 		/// Returns the workbook version number and authority as out parameters. Method returns true if successful.
