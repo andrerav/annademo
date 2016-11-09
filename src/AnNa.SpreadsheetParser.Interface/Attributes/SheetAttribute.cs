@@ -18,8 +18,13 @@ namespace AnNa.SpreadsheetParser.Interface.Attributes
 
 		public string[] ValuesSkippedOnRead { get; set; }
 
+		public object DefaultValueIfEmpty { get; set; }
+
 		public SheetAttribute(string friendlyName)
 		{
+			if(ValuesSkippedOnRead == null || !ValuesSkippedOnRead.Any())
+				ValuesSkippedOnRead = new[] { "NIL", "NILL", "NULL", "N/A" };
+
 			_friendlyName = friendlyName;
 		}
 	}

@@ -36,9 +36,9 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 			return AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(s => s.GetTypes())
 				.Where(p => !p.IsAbstract
-							&& p.BaseType != null
-							&& p.BaseType.IsGenericType
-							&& p.BaseType.GetGenericTypeDefinition() == typeof(AbstractTypedSheet<,>)
+							//&& p.BaseType != null
+							//&& p.BaseType.IsGenericType
+							//&& p.BaseType.GetGenericTypeDefinition() == typeof(AbstractTypedSheet<,>)
 							&& p.CustomAttributes.Any(ca => ca.AttributeType == typeof(SheetVersionAttribute)))
 				.Select(t =>
 				{

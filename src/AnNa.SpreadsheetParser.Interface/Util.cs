@@ -544,7 +544,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		public static bool IsIgnorableValue(object cellValue, SheetDataField column)
 		{
-			return cellValue != null && column.ValuesSkippedOnRead != null && column.ValuesSkippedOnRead.Contains(cellValue.ToString());
+			return cellValue != null && column.ValuesSkippedOnRead != null && column.ValuesSkippedOnRead.Contains(cellValue.ToString(), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public static object GetDefault(this Type type)
