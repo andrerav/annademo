@@ -1,21 +1,20 @@
-﻿using System;
+﻿using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
-using System.Reflection;
 
 namespace AnNa.SpreadsheetParser.Interface.Extensions
 {
 
 	public static class ParserExtensions
 	{
-		public static Dictionary<ReflectionHelpers.SheetDefinitionMetaData, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, Version workbookVersion, string authority)
+		public static Dictionary<ReflectionHelpers.SheetDefinitionMetaData, object> ParseWorkbook(this IAnNaSpreadSheetParser10 parser, Version workbookVersion, string authority, params string[] filterToSheetGroups)
 		{
 			var result = new Dictionary<ReflectionHelpers.SheetDefinitionMetaData, object>();
 
 			parser.ThrowExceptionIfNotInitialized();
 
-			var sheetDefinitionGroups = ReflectionHelpers.GetSheetDefinitionsOrderedByAuthority(authority);
+			var sheetDefinitionGroups = ReflectionHelpers.GetSheetDefinitionsOrderedByAuthority(authority, filterToSheetGroups);
 
 			var sheetNames = parser.GetSheetNames();
 

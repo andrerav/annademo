@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnNa.SpreadsheetParser.Interface.Extensions
 {
@@ -30,7 +28,7 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 		/// </summary>
 		/// <param name="authority"></param>
 		/// <returns></returns>
-		public static List<IGrouping<string, SheetDefinitionMetaData>> GetSheetDefinitionsOrderedByAuthority(string authority)
+		public static List<IGrouping<string, SheetDefinitionMetaData>> GetSheetDefinitionsOrderedByAuthority(string authority, params string[] filterToSheetGroups)
 		{
 
 			return AppDomain.CurrentDomain.GetAssemblies()
@@ -64,6 +62,7 @@ namespace AnNa.SpreadsheetParser.Interface.Extensions
 						SheetName = sheetName
 					};
 				})
+				.Where(sdm => filterToSheetGroups == null || !filterToSheetGroups.Any(ftg => !string.IsNullOrWhiteSpace(ftg)) || filterToSheetGroups.Any(ftsg => ftsg == sdm.GroupingKey))
 				.OrderByDescending(t => t.Authority == authority) //Favor authority-specific sheet definitions
 				.ThenByDescending(t => t.Version)
 				.GroupBy(g => g.GroupingKey)
