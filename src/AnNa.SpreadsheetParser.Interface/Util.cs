@@ -404,62 +404,54 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="cellAddress"></param>
 		public static void MapCell<T>(List<T> result, Dictionary<int, SheetColumn> columnLookup, int dataStartRowIndex, int rowIndex, int columnIndex, int displayRowIndex, object cellValue, int maximumNumberOfRows, string cellAddress) where T : class, ISheetRow
 		{
-			var listIdx = rowIndex - dataStartRowIndex;
+			var rowLookupIndex = rowIndex - dataStartRowIndex;
 
 			// Check that we are at a valid data row
 			if (rowIndex >= dataStartRowIndex && columnLookup.ContainsKey(columnIndex))
 			{
 				// Disregard rows beyond the maximum number of rows
-				if (maximumNumberOfRows > 0 && listIdx >= maximumNumberOfRows)
-				{
+				if (maximumNumberOfRows > 0 && rowLookupIndex >= maximumNumberOfRows)
 					return;
+				
+				var column = columnLookup[columnIndex];
+
+				if (IsIgnorableValue(cellValue, column))
+					return;
+
+				T row = null;
+				if (result.ElementAtOrDefault(rowLookupIndex) == null)
+				{
+					row = Activator.CreateInstance<T>();
+					row.RowIndex = displayRowIndex;
+					result.Add(row);
 				}
 				else
 				{
-					var column = columnLookup[columnIndex];
-
-					if (IsIgnorableValue(cellValue, column))
-					{
-						return;
-					}
-
-
-					T row = null;
-					if (result.ElementAtOrDefault(listIdx) == null)
-					{
-						row = Activator.CreateInstance<T>();
-						row.RowIndex = displayRowIndex;
-
-						result.Insert(listIdx, row);
-					}
-					else
-					{
-						row = result[listIdx];
-					}
-
-					var inValue = cellValue;
-					object convertedValue;
-					IParseError error;
-
-
-					// Apply type hinting which will do the appropriate type conversion
-					var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out error, column.IsOptional);
-
-					if (error != null)
-					{
-						error.CellAddress = cellAddress;
-						error.DataField = column;
-
-						row.ErrorContainer.AddError(error);
-					}
-					else
-					{
-						Util.SetRowValue(row, column.FieldType, column.FieldName, convertedValue ?? outValue);
-					}
-
-					if (!row.HasData)
-						row.HasData = (convertedValue ?? outValue) != null;
+					row = result[rowLookupIndex];
 				}
+
+				var inValue = cellValue;
+				object convertedValue;
+				IParseError error;
+
+				// Apply type hinting which will do the appropriate type conversion
+				var outValue = Util.ApplyTypeHint(column.FieldType, inValue, out convertedValue, out error, column.IsOptional);
+
+				if (error != null)
+				{
+					error.CellAddress = cellAddress;
+					error.DataField = column;
+
+					row.ErrorContainer.AddError(error);
+				}
+				else
+				{
+					Util.SetRowValue(row, column.FieldType, column.FieldName, convertedValue ?? outValue);
+				}
+
+				if (!row.HasData)
+					row.HasData = (convertedValue ?? outValue) != null;
+				
 			}
 		}
 
