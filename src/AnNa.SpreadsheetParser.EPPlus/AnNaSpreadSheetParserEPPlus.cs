@@ -465,8 +465,8 @@ namespace AnNa.SpreadSheetParser.EPPlus
 				var versionSheet = Workbook.Worksheets["Version"];
 				if (versionSheet != null)
 				{
-					var versionCellValue = versionSheet.Cells["B3"].Value.ToString();
-					var separatorIndex = versionCellValue.IndexOf('-');
+					var versionCellValue = versionSheet.Cells?["B3"].Value?.ToString();
+					var separatorIndex = versionCellValue?.IndexOf('-') ?? -1;
 
 					string versionString = versionCellValue;
 					if (separatorIndex > -1)
