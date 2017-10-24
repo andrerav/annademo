@@ -37,9 +37,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SpreadsheetGear2012, Version=7.0.5.140, Culture=neutral, PublicKeyToken=39c186f5904944ec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Kystverket\SafeSeaNet\SafeSeaNetWeb\Main\Source\Dlls\SpreadsheetGear2012.dll</HintPath>
+    <Reference Include="SpreadsheetGear2012">
+      <HintPath>..\..\..\Kystverket\SafeSeaNet\SafeSeaNetWeb\Production\Source\Dlls\SpreadsheetGear2012.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

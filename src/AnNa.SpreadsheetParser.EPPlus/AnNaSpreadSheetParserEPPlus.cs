@@ -17,7 +17,7 @@ namespace AnNa.SpreadSheetParser.EPPlus
 	{
 		private ExcelPackage _excelPackage;
 
-		protected ExcelWorkbook Workbook => _excelPackage.Workbook;
+		protected ExcelWorkbook Workbook => _excelPackage?.Workbook;
 
 		public void OpenFile(string path, string password = null)
 		{
