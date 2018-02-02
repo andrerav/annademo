@@ -62,7 +62,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Field("L8", "Reason for no valid ISSC")]
 			public override string Reason_For_No_Valid_ISSC { get; set; }
 
-			[Field("M8", "Security-related Matters to Report")]
+			[Field("M8", "Security-related Matters to Report", ValuesSkippedOnRead = new[]{ "NIL", "NILL", "NULL", "N/A", "NONE", "N/A", "NO"})]
 			public virtual string Security_Related_Matters_To_Report { get; set; }
 
 			[Field("H11", "CSO Phone 24/7")]
