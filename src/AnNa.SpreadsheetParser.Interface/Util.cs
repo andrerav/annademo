@@ -47,29 +47,26 @@ namespace AnNa.SpreadsheetParser.Interface
 					}
 					else
 					{
-						double tmp;
-						if (double.TryParse(inValue.ToString(), out tmp))
+						if (inValue is DateTime)
 						{
-							outValue = DateTime.FromOADate(tmp);
+							outValue = inValue;
 						}
 						else
 						{
-							if (inValue is DateTime)
+							double tmp;
+							DateTime dtmp;
+							if (DateTime.TryParse(inValue.ToString(), out dtmp))
 							{
-								outValue = inValue;
+								outValue = dtmp;
+							}
+							else if (double.TryParse(inValue.ToString(), out tmp))
+							{
+								outValue = DateTime.FromOADate(tmp);
 							}
 							else
 							{
-								DateTime dtmp;
-								if (DateTime.TryParse(inValue.ToString(), out dtmp))
-								{
-									outValue = dtmp;
-								}
-								else
-								{
-									if ((typeHint != typeof(DateTime?) && inValue == null) || (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
-										error = CreateSyntaxError(typeHint, inValue);
-								}
+								if ((typeHint != typeof(DateTime?) && inValue == null) || (inValue != null && !string.IsNullOrWhiteSpace(inValue.ToString())))
+									error = CreateSyntaxError(typeHint, inValue);
 							}
 						}
 					}

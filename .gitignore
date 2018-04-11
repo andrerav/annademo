@@ -196,3 +196,4 @@ FakesAssemblies/
 *.opt
 src/AnNaSpreadsheetParser.SpreadsheetGear/AnNa.SpreadsheetParser.SpreadsheetGear.csproj
 src/AnNaSpreadsheetParser.SpreadsheetGear/AnNa.SpreadsheetParser.SpreadsheetGear.csproj
+src/PublishPackages.Default.bat
