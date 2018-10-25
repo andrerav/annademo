@@ -20,7 +20,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Column("IMO_Hazard_Class", "IMO Hazard Class")]
 			public virtual string Imo_Hazard_Class { get; set; }
 			[Column("UN_Number", "UN Number")]
-			public virtual int? Un_Number { get; set; }
+			public virtual string Un_Number { get; set; }
 			[Column("Transport_Unit_ID", "Transport Unit ID")]
 			public virtual string Transport_Unit_Id { get; set; }
 			[Column("Textual_Reference", "Textual Reference")]
