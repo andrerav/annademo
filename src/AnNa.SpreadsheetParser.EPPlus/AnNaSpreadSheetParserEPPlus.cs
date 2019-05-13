@@ -29,6 +29,11 @@ namespace AnNa.SpreadSheetParser.EPPlus
 			_excelPackage = new ExcelPackage(stream, password);
 		}
 
+		public void CalculateWorkbook()
+		{
+			_excelPackage.Workbook?.Calculate();
+		}
+
 		public bool IsAnNaSpreadsheet()
 		{
 			if (Workbook != null)

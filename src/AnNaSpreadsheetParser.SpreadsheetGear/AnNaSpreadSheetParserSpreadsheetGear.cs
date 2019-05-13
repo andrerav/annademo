@@ -44,6 +44,11 @@ namespace AnNa.SpreadsheetParser.SpreadsheetGear
 
 		}
 
+		public void CalculateWorkbook()
+		{
+			Workbook?.WorkbookSet?.Calculate();
+		}
+
 		public void SaveToFile(string path = null, bool createDirectoryIfNotExists = false)
 		{
 			if (path == null)

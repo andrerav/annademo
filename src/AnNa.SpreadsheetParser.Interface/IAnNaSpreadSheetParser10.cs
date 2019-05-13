@@ -24,6 +24,11 @@ namespace AnNa.SpreadsheetParser.Interface
 		/// <param name="stream">Path to XSLX file</param>
 		/// <param name="password">Password if spreadsheet is encryptet/protected</param>
 		void OpenFile(Stream stream, string password = null);
+		
+		/// <summary>
+		/// Calculates all formulas in the workbook.
+		/// </summary>
+		void CalculateWorkbook();
 
 		/// <summary>
 		/// Returns true if this sheet has been recognized as an AnNa spreadsheet
