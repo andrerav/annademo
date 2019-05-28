@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AnNa.SpreadsheetParser.Interface;
 using AnNa.SpreadsheetParser.Interface.Sheets;
 using OfficeOpenXml;
 using AnNa.SpreadsheetParser.Interface.Sheets.Typed;
 using System.Collections;
+using System.Xml;
 
 namespace AnNa.SpreadSheetParser.EPPlus
 {
@@ -18,15 +16,32 @@ namespace AnNa.SpreadSheetParser.EPPlus
 		private ExcelPackage _excelPackage;
 
 		protected ExcelWorkbook Workbook => _excelPackage?.Workbook;
-
+				
 		public void OpenFile(string path, string password = null)
 		{
 			_excelPackage = new ExcelPackage(new FileInfo(path), password);
+			CheckFileFormatSupport();
 		}
 
 		public void OpenFile(Stream stream, string password = null)
 		{
 			_excelPackage = new ExcelPackage(stream, password);
+			CheckFileFormatSupport();
+		}
+
+		private void CheckFileFormatSupport()
+		{
+			if (_excelPackage.Workbook?.Worksheets?.Count > 0)
+				return;
+
+			var element = _excelPackage?.Workbook?.WorkbookXml?
+				.GetElementsByTagName("workbook")?.Cast<XmlNode>().FirstOrDefault();
+
+			if (element == null)
+				return;
+
+			if (element.Attributes["conformance"]?.Value == "strict")
+				throw new NotSupportedException("Strict Open XML Spreadsheet format is not supported.");			
 		}
 
 		public void CalculateWorkbook()

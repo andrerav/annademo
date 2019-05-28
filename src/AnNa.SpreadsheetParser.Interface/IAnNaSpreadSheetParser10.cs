@@ -13,6 +13,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		/// <summary>
 		/// Open a XLSX file from a specific path.
+		/// Throws NotSupportedException if opened file is in Strict Open XML Spreadsheet format.
 		/// </summary>
 		/// <param name="path">Path to XSLX file</param>
 		/// <param name="password">Password if spreadsheet is encryptet/protected</param>
@@ -20,6 +21,7 @@ namespace AnNa.SpreadsheetParser.Interface
 
 		/// <summary>
 		/// Open a XLSX file from a specific path.
+		/// Throws NotSupportedException if opened file is in Strict Open XML Spreadsheet format.
 		/// </summary>
 		/// <param name="stream">Path to XSLX file</param>
 		/// <param name="password">Password if spreadsheet is encryptet/protected</param>
