@@ -16,7 +16,7 @@ namespace AnNa.SpreadsheetParser.Interface.Sheets.Typed
 			[Column("Name_Of_Article", "Name Of Article")]
 			public virtual string Name_Of_Article { get; set; }
 
-			[Column("Quantity", "Quantity")]
+			[Column("Quantity", "Quantity", ValuesSkippedOnRead = new[] { "" })]
 			public virtual decimal? Quantity { get; set; }
 
 			[Column("Unit", "Unit")]
